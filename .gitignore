@@ -1,0 +1,199 @@
+# ============================================================
+# AlphaRank - .gitignore
+# Python + PyTorch + 量化项目
+# ============================================================
+
+# -------------------- Python 通用 --------------------
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# poetry
+poetry.lock
+
+# -------------------- 虚拟环境 --------------------
+venv/
+env/
+ENV/
+.venv/
+env.bak/
+venv.bak/
+
+# -------------------- IDE / 编辑器 --------------------
+# PyCharm
+.idea/
+*.iml
+*.iws
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+*.ipynb
+
+# Spyder
+.spyderproject
+.spyproject
+
+# Rope
+.ropeproject
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# -------------------- 操作系统 --------------------
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+
+# -------------------- 项目数据文件 --------------------
+# 原始数据
+data/*.parquet
+data/*.csv
+!data/.gitkeep
+
+# 因子数据
+data/factors_*.csv
+data/factors_*.parquet
+
+# 价格数据
+data/daily*.parquet
+data/daily*.csv
+
+# 预测结果
+predictions_*.csv
+predictions_*.parquet
+
+# 回测结果
+backtest_returns.csv
+daily_ic.csv
+long_short_returns.csv
+
+# -------------------- 模型文件 --------------------
+# PyTorch 模型权重
+*.pt
+*.pth
+*.pkl
+
+# 模型检查点
+logs/
+checkpoints/
+*.log
+
+# -------------------- 缓存 --------------------
+cache/
+__pycache__/
+
+# -------------------- 配置文件（敏感信息） --------------------
+# 环境变量
+.env
+.env.local
+.env.*.local
+
+# 敏感配置
+config.local.py
+secrets.py
+*.secret.py
+
+# API 密钥
+*_key.py
+*_keys.py
+
+# -------------------- 报告 / 文档临时文件 --------------------
+*.aux
+*.log
+*.out
+*.toc
+*.bbl
+*.blg
+*.synctex.gz
+
+# -------------------- 其他 --------------------
+# 临时文件
+tmp/
+temp/
+*.tmp
+
+# 压缩文件
+*.zip
+*.tar.gz
+*.rar
+
+# Excel 临时文件
+~$*.xlsx
+~$*.xls
+
+# 大文件标记
+*.h5
+*.hdf5
+
+# 覆盖率报告
+.coverage
+htmlcov/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# pytype
+.pytype/
+
+# Cython
+cython_debug/
