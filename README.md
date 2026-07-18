@@ -28,9 +28,9 @@
 ## 📦 安装与配置
 
 ```bash
-# 克隆项目（私有仓库）
-git clone https://github.com/ilovemiku520/PythonProject1.git
-cd PythonProject1
+# 克隆项目
+git clone https://github.com/ilovemiku520/VCStockRank.git
+cd VCStockRank
 
 # 创建虚拟环境（推荐 Python 3.8+）
 python -m venv venv
@@ -46,7 +46,7 @@ pip install -r requirements.txt
 ## 📂 项目结构
 
 ```
-PythonProject1/
+VCStockRank/
 ├── data/                # 数据下载、清洗与因子构建
 ├── model/               # VCFormer 核心模型（分解模块、多头预测、TPA）
 ├── training/            # 训练流程（数据集封装、损失函数、训练器）
@@ -57,7 +57,7 @@ PythonProject1/
 ├── backtest_main.py     # 回测执行入口
 ├── save_daily_only.py   # 增量数据更新工具
 ├── stock_pool.csv       # 备选股票列表
-└── description.md       # 本文档，项目说明
+└── README.md       # 本文档，项目说明
 ```
 
 ---
@@ -70,12 +70,12 @@ python data/download.py --start 2018-01-01 --end 2025-06-30
 python data/clean.py
 ```
 
-### 2. 训练模型
+### 2. 训练模型、回测与结果评估
 ```bash
 python main.py --config config.py --epochs 50 --batch_size 256
 ```
 
-### 3. 运行回测并输出结果
+### 3. 单独回测与结果评估
 ```bash
 python backtest_main.py --model_path ./saved_models/best.pth --output ./results
 ```
@@ -144,7 +144,7 @@ python backtest_main.py --model_path ./saved_models/best.pth --output ./results
 
 - [ ] 集成在线学习（Online Learning）
 - [ ] 提供 Web 界面进行超参数搜索
-- [ ] 增添丰富的数据可视化模块
+- [ ] 增添丰富的数据可视化代码模块
 ---
 
 ## 📄 许可证
