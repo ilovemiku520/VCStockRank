@@ -15,4 +15,4 @@ jobs:
           cache: pip
       - run: python -m pip install --upgrade pip
       - run: pip install numpy pandas scipy scikit-learn tqdm torch pytest
-      - run: pytest -q
+      - run: python -m pytest -q
