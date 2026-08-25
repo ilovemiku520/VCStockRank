@@ -28,6 +28,7 @@ MAX_STOCKS = 25
 
 # ================= 模型配置 =================
 class ModelConfig:
+    PROTOCOL_VERSION = 2
     # 数据配置
     MAX_STOCKS = MAX_STOCKS
     MIN_TRADING_DAYS = MIN_TRADING_DAYS
@@ -54,6 +55,9 @@ class ModelConfig:
     WEIGHT_DECAY = 1e-4
     EPOCHS = 20                      # 原 100，调试仅跑 20 轮
     PATIENCE = 5                     # 原 20，更早触发早停
+    TRAIN_RATIO = 0.70
+    VAL_RATIO = 0.15
+    LABEL_HORIZON = 5
 
     # 多任务权重（保持原样）
     LAMBDA_VOL = 0.3
@@ -70,7 +74,7 @@ class ModelConfig:
 
 # ================= 组合配置（保持不变）=================
 class PortfolioConfig:
-    TOP_K = 30
+    TOP_K = 10
     REBALANCE_FREQ = 5
     MAX_WEIGHT = 0.1
     RISK_AVERSION = 0.5

@@ -55,7 +55,10 @@ class Backtester:
         old_dates = price_data.index.get_level_values('date')
         new_dates = pd.to_datetime(old_dates).normalize()
         # 重建 MultiIndex
-        new_index = pd.MultiIndex.from_arrays([new_dates, price_data.index.get_level_values('stock')])
+        new_index = pd.MultiIndex.from_arrays(
+            [new_dates, price_data.index.get_level_values('stock')],
+            names=['date', 'stock'],
+        )
         price_data.index = new_index
         price_dates = set(price_data.index.get_level_values('date'))
 
@@ -81,11 +84,13 @@ class Backtester:
             print(f"  价格数据索引示例 (转换后): {price_data.index[:3].tolist()}")
 
         portfolio_returns = []
+        return_dates = []
         portfolio_weights = []
         portfolio_positions = []
         trade_log = []
         current_weights = None
         current_positions = None
+        pending_cost = 0.0
 
         all_stocks = price_data.index.get_level_values('stock').unique().tolist()
 
@@ -107,42 +112,7 @@ class Backtester:
                 if preds is None:
                     continue
 
-            stocks_today = list(preds.keys())
-
-            if len(stocks_today) < 5:
-                if self.verbose and i % 50 == 0:
-                    print(f"  警告: {date} 只有 {len(stocks_today)} 只股票，跳过")
-                continue
-
-            scores = np.array([preds[s]['score'] for s in stocks_today])
-            vols = np.array([preds[s]['vol'] for s in stocks_today])
-
-            top_k = min(self.config.TOP_K, len(stocks_today))
-            top_indices = np.argsort(scores)[-top_k:][::-1]
-
-            selected_stocks = [stocks_today[i] for i in top_indices]
-            selected_scores = scores[top_indices]
-            selected_vols = vols[top_indices]
-
-            target_weights = self.optimizer.optimize(
-                selected_scores,
-                selected_vols,
-                cov_matrix=None
-            )
-
-            cost = 0.0
-            if current_weights is not None:
-                full_weights = np.zeros(len(all_stocks))
-                for stock, w in zip(selected_stocks, target_weights):
-                    try:
-                        idx = all_stocks.index(stock)
-                        full_weights[idx] = w
-                    except ValueError:
-                        continue
-                turnover = np.sum(np.abs(full_weights - current_weights)) / 2
-                cost = turnover * (self.transaction_cost + self.slippage)
-
-            # 计算收益
+            # 先用上一交易日收盘后确定的持仓计算当日收益，避免信号与收益同日错位。
             if i > 0 and current_positions is not None and last_valid_date is not None:
                 prev_date = last_valid_date
                 today_returns = []
@@ -164,24 +134,54 @@ class Backtester:
                         continue
 
                 if today_returns:
-                    daily_return = np.sum(today_returns) - cost
+                    daily_return = np.sum(today_returns) - pending_cost
                     portfolio_returns.append(daily_return)
+                    return_dates.append(date)
                     if self.verbose and i % 50 == 0:
                         print(f"  日期 {date}: 持仓 {len(current_positions)} 只, 日收益 {daily_return:.6f}")
                 else:
                     if self.verbose:
                         print(f"   ⚠️ 日期 {date} 无有效收益, 设为 0")
-                    portfolio_returns.append(0.0)
+                    portfolio_returns.append(-pending_cost)
+                    return_dates.append(date)
+                pending_cost = 0.0
 
-            # 更新持仓
-            current_positions = {stock: w for stock, w in zip(selected_stocks, target_weights)}
-            current_weights = np.zeros(len(all_stocks))
-            for stock, w in zip(selected_stocks, target_weights):
-                try:
-                    idx = all_stocks.index(stock)
-                    current_weights[idx] = w
-                except ValueError:
-                    continue
+            # 仅按配置频率调仓；信号在当日收盘后生效，从下一交易日开始计收益。
+            should_rebalance = current_positions is None or i % self.config.REBALANCE_FREQ == 0
+            if should_rebalance:
+                stocks_today = list(preds.keys())
+                if len(stocks_today) < 5:
+                    if self.verbose:
+                        print(f"  警告: {date} 只有 {len(stocks_today)} 只股票，本次不调仓")
+                else:
+                    scores = np.array([preds[s]['score'] for s in stocks_today])
+                    vols = np.array([preds[s]['vol'] for s in stocks_today])
+                    top_k = min(self.config.TOP_K, len(stocks_today))
+                    top_indices = np.argsort(scores)[-top_k:][::-1]
+                    selected_stocks = [stocks_today[j] for j in top_indices]
+                    selected_scores = scores[top_indices]
+                    selected_vols = vols[top_indices]
+                    target_weights = self.optimizer.optimize(
+                        selected_scores, selected_vols, cov_matrix=None
+                    )
+
+                    full_weights = np.zeros(len(all_stocks))
+                    for stock, weight in zip(selected_stocks, target_weights):
+                        try:
+                            full_weights[all_stocks.index(stock)] = weight
+                        except ValueError:
+                            continue
+                    turnover = (
+                        np.abs(full_weights).sum()
+                        if current_weights is None
+                        else np.abs(full_weights - current_weights).sum() / 2
+                    )
+                    pending_cost = turnover * (self.transaction_cost + self.slippage)
+                    current_positions = dict(zip(selected_stocks, target_weights))
+                    current_weights = full_weights
+                    portfolio_positions.append({'date': date, **current_positions})
+                    portfolio_weights.append({'date': date, **current_positions})
+                    trade_log.append({'date': date, 'turnover': float(turnover), 'cost': float(pending_cost)})
 
             last_valid_date = date
 
@@ -197,7 +197,7 @@ class Backtester:
         if portfolio_returns:
             returns_series = pd.Series(
                 portfolio_returns,
-                index=valid_dates[1:len(portfolio_returns) + 1]
+                index=return_dates
             )
         else:
             returns_series = pd.Series()

@@ -57,30 +57,18 @@ class FactorBuilder:
         return df
 
     def _add_decomposition_factors(self, df):
-        try:
-            from statsmodels.tsa.seasonal import STL
-            if len(df) > 40:
-                stl = STL(df['close'].fillna(method='ffill'), period=20, seasonal=7)
-                result = stl.fit()
-                trend = result.trend
-                seasonal = result.seasonal
-                resid = result.resid
-                df['trend_strength'] = trend / (df['close'] + 1e-6)
-                df['seasonal_strength'] = seasonal.std() / (df['close'].std() + 1e-6)
-                df['residual_strength'] = resid.std() / (df['close'].std() + 1e-6)
-                df['trend_change'] = trend.pct_change()
-                df['cycle_ratio'] = (seasonal.abs() / df['close']).rolling(20).mean()
-                df['forecast_residual'] = df['close'] - df['close'].rolling(5).mean().shift(1)
-            else:
-                raise ValueError("Not enough data for STL")
-        except Exception:
-            trend = df['close'].rolling(20, min_periods=1).mean()
-            df['trend_strength'] = trend / (df['close'] + 1e-6)
-            df['seasonal_strength'] = (df['close'] - trend).rolling(7, min_periods=1).std() / (df['close'].std() + 1e-6)
-            df['residual_strength'] = df['close'].rolling(20, min_periods=1).std() / (trend + 1e-6)
-            df['trend_change'] = trend.pct_change()
-            df['cycle_ratio'] = (df['close'] - trend).abs() / (df['close'] + 1e-6)
-            df['forecast_residual'] = df['close'] - df['close'].rolling(5).mean().shift(1)
+        # STL 的默认平滑器会同时读取当前点两侧数据，不适用于逐日回测。
+        # 这里使用完全因果的滚动分解，只依赖当日及其之前的价格。
+        close = df['close'].ffill()
+        trend = close.rolling(20, min_periods=5).mean()
+        residual = close - trend
+        rolling_scale = close.rolling(60, min_periods=20).std()
+        df['trend_strength'] = trend / (close + 1e-6)
+        df['seasonal_strength'] = residual.rolling(7, min_periods=5).std() / (rolling_scale + 1e-6)
+        df['residual_strength'] = residual.rolling(20, min_periods=10).std() / (rolling_scale + 1e-6)
+        df['trend_change'] = trend.pct_change()
+        df['cycle_ratio'] = (residual.abs() / (close.abs() + 1e-6)).rolling(20, min_periods=5).mean()
+        df['forecast_residual'] = close - close.rolling(5, min_periods=3).mean().shift(1)
         return df
 
     def _add_dynamic_volatility_factors(self, df):
@@ -94,17 +82,16 @@ class FactorBuilder:
         df['vol_clustering'] = returns.rolling(20).apply(
             lambda x: (x.abs() > x.abs().mean() + x.abs().std()).mean() if len(x) == 20 else np.nan
         )
-        pos_vol = returns[returns > 0].rolling(20).std()
-        neg_vol = returns[returns < 0].rolling(20).std()
+        pos_vol = returns.where(returns > 0).rolling(20, min_periods=5).std()
+        neg_vol = returns.where(returns < 0).rolling(20, min_periods=5).std()
         df['vol_asymmetry'] = pos_vol / (neg_vol + 1e-6)
         df['var_95'] = returns.rolling(20).quantile(0.05)
         df['cvar_95'] = returns.rolling(20).apply(
             lambda x: x[x < x.quantile(0.05)].mean() if len(x[x < x.quantile(0.05)]) > 0 else np.nan
         )
-        if len(df) > 100:
-            df['hurst'] = self._compute_hurst(df['close'].values)
-        else:
-            df['hurst'] = 0.5
+        df['hurst'] = df['close'].rolling(100, min_periods=100).apply(
+            lambda x: self._compute_hurst(np.asarray(x), max_lag=50), raw=False
+        )
         return df
 
     def _add_statistical_factors(self, df):
@@ -201,9 +188,16 @@ class FactorBuilder:
 
         if winsorize:
             for col in factor_cols:
-                q1 = df[col].quantile(0.01)
-                q99 = df[col].quantile(0.99)
-                df[col] = df[col].clip(q1, q99)
+                if 'date' in df.index.names:
+                    df[col] = df.groupby(level='date')[col].transform(
+                        lambda values: values.clip(values.quantile(0.01), values.quantile(0.99))
+                    )
+                else:
+                    # 单序列场景使用扩展分位数，避免全样本分布泄漏。
+                    lower = df[col].expanding(min_periods=20).quantile(0.01)
+                    upper = df[col].expanding(min_periods=20).quantile(0.99)
+                    clipped = df[col].clip(lower=lower, upper=upper)
+                    df[col] = clipped.where(lower.notna() & upper.notna(), df[col])
 
         if standardize:
             if 'date' in df.index.names:

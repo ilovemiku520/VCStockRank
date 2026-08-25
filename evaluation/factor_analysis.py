@@ -70,7 +70,11 @@ class FactorAnalyzer:
         decile_df = pd.DataFrame(decile_returns).set_index('date')
         decile_df.columns = [f'group_{i}' for i in range(n_groups)]
 
-        long_short = decile_df['group_9'] - decile_df['group_0']
+        # 多日未来收益是重叠标签；按预测周期抽样，避免把同一收益窗口重复计入。
+        if period > 1:
+            decile_df = decile_df.iloc[::period]
+
+        long_short = decile_df[f'group_{n_groups - 1}'] - decile_df['group_0']
 
         self.results['decile_returns'] = decile_df
         self.results['long_short'] = long_short

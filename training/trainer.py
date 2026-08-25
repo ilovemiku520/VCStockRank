@@ -236,6 +236,7 @@ class Trainer:
             'history': self.history,
             'config': self.config,
             'input_dim': self.config.INPUT_DIM,
+            'protocol_version': getattr(self.config, 'PROTOCOL_VERSION', 1),
         }
         fname = f'checkpoint_epoch_{epoch+1}.pt' if isinstance(epoch, int) else 'best_model.pt'
         torch.save(checkpoint, os.path.join(self.log_dir, fname))

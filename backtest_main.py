@@ -30,9 +30,12 @@ def load_model_and_data(model_path='logs/best_model.pt', factor_path='data/facto
         raise FileNotFoundError(f"模型文件不存在: {model_path}")
     config = ModelConfig()
     checkpoint = torch.load(model_path, map_location=config.DEVICE, weights_only=False)
+    if checkpoint.get('protocol_version') != config.PROTOCOL_VERSION:
+        raise ValueError("checkpoint 来自旧评估协议，请先运行 main.py 重新训练")
     saved_input_dim = checkpoint.get('input_dim')
     if saved_input_dim is not None:
         config.INPUT_DIM = saved_input_dim
+    config.TEST_START_DATE = getattr(checkpoint.get('config'), 'TEST_START_DATE', None)
     print(f"  ✓ 从 checkpoint 读取 input_dim = {config.INPUT_DIM}")
 
     model = MultiTaskVCformerTPA(config)
@@ -55,7 +58,13 @@ def generate_predictions(model, config, factors):
     device = config.DEVICE
 
     predictions = {}
-    dates = factors.index.get_level_values('date').unique()
+    test_start = getattr(config, 'TEST_START_DATE', None)
+    if test_start is None:
+        raise ValueError("checkpoint 缺少测试集起始日期，禁止对全样本生成回测预测")
+    dates = [
+        date for date in factors.index.get_level_values('date').unique()
+        if pd.Timestamp(date) >= pd.Timestamp(test_start)
+    ]
 
     for date in tqdm(dates, desc="  预测交易日"):
         date_data = factors.xs(date, level='date')
@@ -146,16 +155,8 @@ def run_backtest_and_evaluate(predictions, price_data, factors, portfolio_config
 
     print("\n[4/4] 计算评估指标...")
 
-    # ----- 生成日收益率（用于 IC 和分层收益）-----
-    # 按股票分组计算日收益率，对齐到因子数据的索引
-    price_data_ret = price_data.groupby('stock')['close'].pct_change().reset_index()
-    price_data_ret['date'] = pd.to_datetime(price_data_ret['date'])
-    price_data_ret.set_index(['date', 'stock'], inplace=True)
-    price_data_ret.rename(columns={'close': 'daily_ret'}, inplace=True)
-
-    # 构建评估用的数据框，包含预测得分和日收益率
-    temp_factors = factors[['excess_ret_5d']].copy()  # 保留原列，但以下评估将使用 daily_ret
-    temp_factors = temp_factors.join(price_data_ret['daily_ret'], how='inner')  # 只保留有价格的交易日
+    # 构建评估用的数据框；收益口径与训练标签保持一致。
+    temp_factors = factors[['excess_ret_5d']].copy()
 
     # 添加预测得分
     for date, preds in filtered_predictions.items():
@@ -167,14 +168,13 @@ def run_backtest_and_evaluate(predictions, price_data, factors, portfolio_config
             except:
                 pass
 
-    temp_factors = temp_factors.dropna(subset=['pred_score', 'daily_ret'])
+    temp_factors = temp_factors.dropna(subset=['pred_score', 'excess_ret_5d'])
 
     # ---- IC 分析 ----
     print("  计算信息系数 (IC)...")
     if not temp_factors.empty:
         fa = FactorAnalyzer(temp_factors)
-        # 使用日收益率，period=1
-        ic_series = fa.compute_ic(factor_col='pred_score', ret_col='daily_ret', method='spearman')
+        ic_series = fa.compute_ic(factor_col='pred_score', ret_col='excess_ret_5d', method='spearman')
         ic_mean = ic_series.mean()
         ic_std = ic_series.std()
         icir = ic_mean / ic_std if ic_std > 0 else np.nan
@@ -186,27 +186,26 @@ def run_backtest_and_evaluate(predictions, price_data, factors, portfolio_config
         print("    ⚠ IC 分析失败：无有效数据")
 
     # ---- 分层收益 ----
-    print("  计算分层收益（基于日收益率）...")
+    print("  计算分层收益（基于未来 5 日超额收益）...")
     if not temp_factors.empty:
         try:
-            # 使用日收益率，period=1
             decile_returns, long_short = fa.compute_decile_returns(
                 factor_col='pred_score',
-                ret_col='daily_ret',
+                ret_col='excess_ret_5d',
                 n_groups=10,
-                period=1
+                period=5
             )
             decile_metrics = {}
             for col in decile_returns.columns:
                 rets = decile_returns[col].dropna()
                 if len(rets) > 0:
-                    annual_ret = (1 + rets).prod() ** (252 / len(rets)) - 1
-                    sharpe = rets.mean() / rets.std() * np.sqrt(252) if rets.std() > 0 else np.nan
+                    annual_ret = (1 + rets).prod() ** ((252 / 5) / len(rets)) - 1
+                    sharpe = rets.mean() / rets.std() * np.sqrt(252 / 5) if rets.std() > 0 else np.nan
                     decile_metrics[col] = {'annual_return': annual_ret, 'sharpe': sharpe}
             long_short_rets = long_short.dropna()
             if len(long_short_rets) > 0:
-                ls_annual = (1 + long_short_rets).prod() ** (252 / len(long_short_rets)) - 1
-                ls_sharpe = long_short_rets.mean() / long_short_rets.std() * np.sqrt(252) if long_short_rets.std() > 0 else np.nan
+                ls_annual = (1 + long_short_rets).prod() ** ((252 / 5) / len(long_short_rets)) - 1
+                ls_sharpe = long_short_rets.mean() / long_short_rets.std() * np.sqrt(252 / 5) if long_short_rets.std() > 0 else np.nan
                 decile_metrics['long_short'] = {'annual_return': ls_annual, 'sharpe': ls_sharpe}
             print(f"    ✓ 分层收益计算完成")
         except Exception as e:

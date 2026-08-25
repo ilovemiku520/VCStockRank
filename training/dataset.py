@@ -18,7 +18,8 @@ class TimeSeriesDataset(Dataset):
 
     def __init__(self, df, feature_cols, target_col='excess_ret_5d',
                  vol_col='future_vol_5d', seq_len=60,
-                 mode='train', normalize=True):
+                 mode='train', normalize=True, scaler=None,
+                 sample_start=None, sample_end=None):
         """
         Parameters:
         -----------
@@ -37,16 +38,21 @@ class TimeSeriesDataset(Dataset):
         self.seq_len = seq_len
         self.mode = mode
         self.normalize = normalize
+        self.sample_start = pd.Timestamp(sample_start) if sample_start is not None else None
+        self.sample_end = pd.Timestamp(sample_end) if sample_end is not None else None
 
         # 标准化器
-        self.scaler = StandardScaler()
+        self.scaler = scaler or StandardScaler()
 
         # 准备样本
         self.samples = self._prepare_samples()
 
         # 如果标准化，拟合scaler
-        if normalize and mode == 'train' and len(self.samples) > 0:
-            self._fit_scaler()
+        if normalize and len(self.samples) > 0:
+            if mode == 'train':
+                self._fit_scaler()
+            elif scaler is None:
+                raise ValueError("验证/测试集启用标准化时必须传入训练集 scaler")
 
     def _prepare_samples(self):
         """准备样本（带调试日志）"""
@@ -73,12 +79,20 @@ class TimeSeriesDataset(Dataset):
                 continue
 
             sample_count = 0
-            for i in range(len(stock_data) - self.seq_len - 5):
+            for i in range(len(stock_data) - self.seq_len):
                 X = features[i:i + self.seq_len]
                 y_rank = targets[i + self.seq_len] if targets is not None else 0
                 y_vol = vols[i + self.seq_len] if vols is not None else 0
+                sample_date = pd.Timestamp(stock_data.index[i + self.seq_len])
+
+                if self.sample_start is not None and sample_date < self.sample_start:
+                    continue
+                if self.sample_end is not None and sample_date > self.sample_end:
+                    continue
 
                 if np.isnan(y_rank) or np.isnan(y_vol):
+                    continue
+                if not np.isfinite(X).all():
                     continue
 
                 samples.append({
@@ -86,7 +100,7 @@ class TimeSeriesDataset(Dataset):
                     'y_rank': y_rank,
                     'y_vol': y_vol,
                     'stock': stock,
-                    'date': stock_data.index[i + self.seq_len]
+                    'date': sample_date
                 })
                 sample_count += 1
 
@@ -280,7 +294,8 @@ def create_pairwise_sequences(df, feature_cols, target_col='excess_ret_5d',
 
 def create_train_val_test_datasets(df, feature_cols, target_col='excess_ret_5d',
                                    vol_col='future_vol_5d', seq_len=60,
-                                   train_ratio=0.7, val_ratio=0.15):
+                                   train_ratio=0.7, val_ratio=0.15,
+                                   embargo_days=5, normalize=False):
     """
     创建训练/验证/测试数据集
 
@@ -298,34 +313,49 @@ def create_train_val_test_datasets(df, feature_cols, target_col='excess_ret_5d',
     --------
     train_dataset, val_dataset, test_dataset
     """
-    dates = df.index.get_level_values('date').unique()
+    dates = pd.DatetimeIndex(
+        sorted(pd.to_datetime(df.index.get_level_values('date').unique()))
+    )
     n_dates = len(dates)
+
+    if n_dates < seq_len + embargo_days * 2 + 20:
+        raise ValueError("可用交易日不足，无法创建可靠的时间顺序训练/验证/测试集")
+    if not 0 < train_ratio < 1 or not 0 < val_ratio < 1 or train_ratio + val_ratio >= 1:
+        raise ValueError("train_ratio 与 val_ratio 必须为正，且两者之和小于 1")
 
     train_end = int(n_dates * train_ratio)
     val_end = int(n_dates * (train_ratio + val_ratio))
 
-    train_dates = dates[:train_end]
-    val_dates = dates[train_end:val_end]
-    test_dates = dates[val_end:]
-
-    train_df = df.xs(train_dates, level='date')
-    val_df = df.xs(val_dates, level='date')
-    test_df = df.xs(test_dates, level='date')
+    train_sample_end_idx = train_end - embargo_days - 1
+    val_sample_end_idx = val_end - embargo_days - 1
+    if train_sample_end_idx < 0 or val_sample_end_idx < train_end:
+        raise ValueError("embargo_days 过大，时间切分后没有足够样本")
 
     train_dataset = TimeSeriesDataset(
-        train_df, feature_cols, target_col, vol_col, seq_len, mode='train'
+        df, feature_cols, target_col, vol_col, seq_len, mode='train',
+        normalize=normalize, sample_end=dates[train_sample_end_idx]
     )
 
     val_dataset = TimeSeriesDataset(
-        val_df, feature_cols, target_col, vol_col, seq_len, mode='val',
-        normalize=False
+        df, feature_cols, target_col, vol_col, seq_len, mode='val',
+        normalize=normalize, scaler=train_dataset.scaler if normalize else None,
+        sample_start=dates[train_end], sample_end=dates[val_sample_end_idx]
     )
-    val_dataset.scaler = train_dataset.scaler  # 使用训练集的scaler
 
     test_dataset = TimeSeriesDataset(
-        test_df, feature_cols, target_col, vol_col, seq_len, mode='test',
-        normalize=False
+        df, feature_cols, target_col, vol_col, seq_len, mode='test',
+        normalize=normalize, scaler=train_dataset.scaler if normalize else None,
+        sample_start=dates[val_end]
     )
-    test_dataset.scaler = train_dataset.scaler  # 使用训练集的scaler
+
+    split_metadata = {
+        'train_end': dates[train_sample_end_idx],
+        'validation_start': dates[train_end],
+        'validation_end': dates[val_sample_end_idx],
+        'test_start': dates[val_end],
+        'embargo_days': embargo_days,
+    }
+    for dataset in (train_dataset, val_dataset, test_dataset):
+        dataset.split_metadata = split_metadata
 
     return train_dataset, val_dataset, test_dataset

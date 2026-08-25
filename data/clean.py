@@ -16,7 +16,7 @@ class DataCleaner:
     - 去极值（Winsorize）
     """
 
-    def __init__(self, winsorize_limits=(0.01, 0.99), fillna_method='ffill'):
+    def __init__(self, winsorize_limits=None, fillna_method='ffill'):
         self.winsorize_limits = winsorize_limits
         self.fillna_method = fillna_method
 
@@ -56,25 +56,34 @@ class DataCleaner:
         elif self.fillna_method == 'ffill':
             if 'stock' in df.index.names:
                 return df.groupby(level='stock', group_keys=False).apply(
-                    lambda group: group.ffill().bfill()  # 关键修改
+                    lambda group: group.sort_index().ffill()
                 )
             else:
-                return df.ffill().bfill()
+                return df.sort_index().ffill()
         elif self.fillna_method == 'interpolate':
+            # 双边插值会读取未来观测。时间序列训练默认只允许使用历史值。
             if 'stock' in df.index.names:
                 return df.groupby(level='stock', group_keys=False).apply(
-                    lambda group: group.interpolate(method='time', limit_area='inside')
+                    lambda group: group.sort_index().ffill()
                 )
             else:
-                return df.interpolate(method='time', limit_area='inside')
+                return df.sort_index().ffill()
         else:
             return df
 
     def _winsorize(self, series):
-        """去极值"""
-        lower = series.quantile(self.winsorize_limits[0])
-        upper = series.quantile(self.winsorize_limits[1])
-        return series.clip(lower=lower, upper=upper)
+        """使用截至当日的扩展分位数去极值，避免读取未来分布。"""
+        if 'stock' in series.index.names:
+            return series.groupby(level='stock', group_keys=False).apply(
+                self._winsorize_single_series
+            )
+        return self._winsorize_single_series(series.sort_index())
+
+    def _winsorize_single_series(self, series):
+        lower = series.expanding(min_periods=20).quantile(self.winsorize_limits[0])
+        upper = series.expanding(min_periods=20).quantile(self.winsorize_limits[1])
+        clipped = series.clip(lower=lower, upper=upper)
+        return clipped.where(lower.notna() & upper.notna(), series)
 
     def remove_outliers_zscore(self, df, threshold=3):
         """基于Z-score剔除异常值"""

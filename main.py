@@ -15,7 +15,7 @@ from data.download import load_stock_pool, download_all
 from data.clean import DataCleaner
 from data.features import FactorBuilder
 from model.multitask import MultiTaskVCformerTPA
-from training.dataset import TimeSeriesDataset
+from training.dataset import create_train_val_test_datasets
 from training.trainer import Trainer
 from portfolio.backtest import Backtester
 from evaluation.factor_analysis import FactorAnalyzer
@@ -36,6 +36,7 @@ class MultiModalStrategy:
         self.backtest_results = None
         self.evaluation_results = {}
         self.feature_cols = None
+        self.test_start_date = None
 
     def load_data(self):
         """加载和预处理数据（核心修正：先算标签，再标准化特征）"""
@@ -80,7 +81,9 @@ class MultiModalStrategy:
         market_ret_daily = factors.groupby('date')['ret_1d'].mean()
         factors['market_ret'] = factors.index.get_level_values('date').map(market_ret_daily.to_dict())
 
-        market_ret_future = market_ret_daily.shift(-5)
+        market_ret_future = (
+            (1 + market_ret_daily).rolling(5).apply(np.prod, raw=True).shift(-5) - 1
+        )
         factors['market_ret_future'] = factors.index.get_level_values('date').map(market_ret_future.to_dict())
 
         factors['excess_ret_5d'] = factors['future_ret_5d'] - factors['market_ret_future']
@@ -116,7 +119,7 @@ class MultiModalStrategy:
 
         for col in tqdm(fill_cols, desc="  填充列"):
             factors[col] = factors.groupby('stock')[col].transform(
-                lambda g: g.ffill().bfill()
+                lambda g: g.ffill()
             )
         factors[fill_cols] = factors[fill_cols].fillna(0)
         print(f"填充完成，共填充 {len(fill_cols)} 列")
@@ -157,14 +160,43 @@ class MultiModalStrategy:
         self.config.INPUT_DIM = len(feature_cols)
         self.feature_cols = feature_cols
 
+        train_dataset, val_dataset, test_dataset = create_train_val_test_datasets(
+            self.data['factors'],
+            feature_cols=feature_cols,
+            target_col='excess_ret_5d',
+            vol_col='future_vol_5d',
+            seq_len=self.config.SEQ_LEN,
+            train_ratio=self.config.TRAIN_RATIO,
+            val_ratio=self.config.VAL_RATIO,
+            embargo_days=self.config.LABEL_HORIZON,
+            normalize=False,
+        )
+        self.test_start_date = test_dataset.split_metadata['test_start']
+        self.config.TEST_START_DATE = self.test_start_date.isoformat()
+        print(
+            "时间切分: "
+            f"训练截至 {train_dataset.split_metadata['train_end'].date()}，"
+            f"验证 {val_dataset.split_metadata['validation_start'].date()} ~ "
+            f"{val_dataset.split_metadata['validation_end'].date()}，"
+            f"测试自 {self.test_start_date.date()} 起；"
+            f"边界禁入期 {self.config.LABEL_HORIZON} 个交易日"
+        )
+
+        if len(train_dataset) == 0 or len(val_dataset) == 0 or len(test_dataset) == 0:
+            print("错误: 数据集为空")
+            return None
+
         best_model_path = os.path.join('logs', 'best_model.pt')
         if os.path.exists(best_model_path):
             try:
                 checkpoint = torch.load(best_model_path, map_location=self.config.DEVICE, weights_only=False)
+                if checkpoint.get('protocol_version') != self.config.PROTOCOL_VERSION:
+                    raise ValueError("checkpoint 来自旧评估协议，需要重新训练")
                 saved_input_dim = checkpoint.get('input_dim')
-                if saved_input_dim is not None and saved_input_dim != self.config.INPUT_DIM:
-                    print(f"检测到保存模型的 input_dim = {saved_input_dim}，自动更新配置")
-                    self.config.INPUT_DIM = saved_input_dim
+                if saved_input_dim != self.config.INPUT_DIM:
+                    raise ValueError(
+                        f"checkpoint 特征维度 {saved_input_dim} 与当前 {self.config.INPUT_DIM} 不一致"
+                    )
                 self.model = MultiTaskVCformerTPA(self.config)
                 self.model.load_state_dict(checkpoint['model_state_dict'])
                 self.model.to(self.config.DEVICE)
@@ -173,24 +205,18 @@ class MultiModalStrategy:
             except Exception as e:
                 print(f"加载已有模型失败: {e}，将重新训练")
 
-        dataset = TimeSeriesDataset(
-            self.data['factors'],
-            feature_cols=feature_cols,
-            target_col='excess_ret_5d',
-            vol_col='future_vol_5d',
-            seq_len=self.config.SEQ_LEN
-        )
-
-        if len(dataset) == 0:
-            print("错误: 数据集为空")
-            return None
-
-        batch_size = min(self.config.BATCH_SIZE, len(dataset))
+        batch_size = min(self.config.BATCH_SIZE, len(train_dataset))
         train_loader = DataLoader(
-            dataset,
+            train_dataset,
             batch_size=batch_size,
             shuffle=True,
             drop_last=True
+        )
+        val_loader = DataLoader(
+            val_dataset,
+            batch_size=min(self.config.BATCH_SIZE, len(val_dataset)),
+            shuffle=False,
+            drop_last=False,
         )
 
         if len(train_loader) == 0:
@@ -201,7 +227,7 @@ class MultiModalStrategy:
         self.model.to(self.config.DEVICE)
         print(f"模型参数量: {sum(p.numel() for p in self.model.parameters()):,}")
 
-        self.trainer = Trainer(self.model, self.config, train_loader)
+        self.trainer = Trainer(self.model, self.config, train_loader, val_loader=val_loader)
         self.model = self.trainer.train()
         torch.save(self.model.state_dict(), 'model_checkpoint.pt')
         print("\n模型训练完成并保存")
@@ -228,6 +254,9 @@ class MultiModalStrategy:
 
         predictions = {}
         dates = factors.index.get_level_values('date').unique()
+        if self.test_start_date is None:
+            raise RuntimeError("缺少测试集起始日期，禁止对训练区间执行回测")
+        dates = [date for date in dates if pd.Timestamp(date) >= self.test_start_date]
 
         for date in tqdm(dates, desc="  预测交易日"):
             date_data = factors.xs(date, level='date')
@@ -322,7 +351,7 @@ class MultiModalStrategy:
                 print("回测结果为空")
 
     def evaluate_predictions(self):
-        """使用日收益率评估预测效果（IC、分层收益）"""
+        """在测试区间使用未来 5 日超额收益评估预测效果。"""
         print("\n" + "=" * 60)
         print("5. 模型评估（IC & 分层收益）")
         print("=" * 60)
@@ -331,21 +360,8 @@ class MultiModalStrategy:
             print("错误: 没有预测结果")
             return None
 
-        # 准备日收益率
-        price_data = self.data.get('price_raw')
-        if price_data is None:
-            print("错误: 缺少价格数据")
-            return None
-
-        # 计算日收益率
-        price_data_ret = price_data.groupby('stock')['close'].pct_change().reset_index()
-        price_data_ret['date'] = pd.to_datetime(price_data_ret['date'])
-        price_data_ret.set_index(['date', 'stock'], inplace=True)
-        price_data_ret.rename(columns={'close': 'daily_ret'}, inplace=True)
-
-        # 构建评估数据框
+        # 收益口径与模型训练标签保持一致。
         temp_factors = self.data['factors'][['excess_ret_5d']].copy()
-        temp_factors = temp_factors.join(price_data_ret['daily_ret'], how='inner')
 
         # 添加预测得分（只保留有预测的日期和股票）
         for date, preds in self.predictions.items():
@@ -357,7 +373,7 @@ class MultiModalStrategy:
                 except:
                     pass
 
-        temp_factors = temp_factors.dropna(subset=['pred_score', 'daily_ret'])
+        temp_factors = temp_factors.dropna(subset=['pred_score', 'excess_ret_5d'])
 
         if temp_factors.empty:
             print("无有效数据用于评估")
@@ -368,7 +384,7 @@ class MultiModalStrategy:
 
         # IC
         print("计算信息系数 (IC)...")
-        ic_series = fa.compute_ic(factor_col='pred_score', ret_col='daily_ret', method='spearman')
+        ic_series = fa.compute_ic(factor_col='pred_score', ret_col='excess_ret_5d', method='spearman')
         ic_mean = ic_series.mean()
         ic_std = ic_series.std()
         icir = ic_mean / ic_std if ic_std > 0 else np.nan
@@ -376,27 +392,27 @@ class MultiModalStrategy:
         print(f"  IC 均值: {ic_mean:.4f}, ICIR: {icir:.4f}, 正收益比率: {ic_pos:.2%}")
 
         # 分层收益
-        print("计算分层收益（十分位，基于日收益）...")
+        print("计算分层收益（十分位，基于未来 5 日超额收益）...")
         decile_returns, long_short = fa.compute_decile_returns(
             factor_col='pred_score',
-            ret_col='daily_ret',
+            ret_col='excess_ret_5d',
             n_groups=10,
-            period=1
+            period=5
         )
         decile_metrics = {}
         for col in decile_returns.columns:
             rets = decile_returns[col].dropna()
             if len(rets) > 0:
-                annual_ret = (1 + rets).prod() ** (252 / len(rets)) - 1
-                sharpe = rets.mean() / rets.std() * np.sqrt(252) if rets.std() > 0 else np.nan
+                annual_ret = (1 + rets).prod() ** ((252 / 5) / len(rets)) - 1
+                sharpe = rets.mean() / rets.std() * np.sqrt(252 / 5) if rets.std() > 0 else np.nan
                 decile_metrics[col] = {'annual_return': annual_ret, 'sharpe': sharpe}
         long_short_rets = long_short.dropna()
         if len(long_short_rets) > 0:
-            ls_annual = (1 + long_short_rets).prod() ** (252 / len(long_short_rets)) - 1
-            ls_sharpe = long_short_rets.mean() / long_short_rets.std() * np.sqrt(252) if long_short_rets.std() > 0 else np.nan
+            ls_annual = (1 + long_short_rets).prod() ** ((252 / 5) / len(long_short_rets)) - 1
+            ls_sharpe = long_short_rets.mean() / long_short_rets.std() * np.sqrt(252 / 5) if long_short_rets.std() > 0 else np.nan
             decile_metrics['long_short'] = {'annual_return': ls_annual, 'sharpe': ls_sharpe}
 
-        print("\n分层组合年化收益与夏普（基于日收益）:")
+        print("\n分层组合年化收益与夏普（基于未来 5 日超额收益）:")
         for g, m in decile_metrics.items():
             print(f"  {g:12s}: 年化收益 {m.get('annual_return', np.nan):.2%}, 夏普 {m.get('sharpe', np.nan):.3f}")
 
