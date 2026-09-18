@@ -1,0 +1,4 @@
+# Standalone preview and CSV analysis; training additionally needs requirements.txt.
+streamlit>=1.50,<2
+pandas>=2.0,<4
+numpy>=1.24,<3

@@ -1,9 +1,5 @@
 # backtest_main.py
-"""
-独立回测与评估脚本
-功能：加载已训练模型和因子数据，执行回测并输出绩效指标、IC 分析、分层收益。
-依赖：logs/best_model.pt, data/factors_filled.csv, data/daily_raw.parquet
-"""
+"""Standalone research entry point."""
 
 import os
 import numpy as np
@@ -14,10 +10,11 @@ import warnings
 warnings.filterwarnings('ignore')
 
 from config import ModelConfig, PortfolioConfig
+from research.inference import predict_panel
+from research.runtime import configure_runtime
 from model.multitask import MultiTaskVCformerTPA
 from portfolio.backtest import Backtester
 from evaluation.factor_analysis import FactorAnalyzer
-
 
 def load_model_and_data(model_path='logs/best_model.pt', factor_path='data/factors_filled.csv'):
     print("\n[1/4] 加载模型与因子数据...")
@@ -32,11 +29,14 @@ def load_model_and_data(model_path='logs/best_model.pt', factor_path='data/facto
     checkpoint = torch.load(model_path, map_location=config.DEVICE, weights_only=False)
     if checkpoint.get('protocol_version') != config.PROTOCOL_VERSION:
         raise ValueError("checkpoint 来自旧评估协议，请先运行 main.py 重新训练")
-    saved_input_dim = checkpoint.get('input_dim')
-    if saved_input_dim is not None:
-        config.INPUT_DIM = saved_input_dim
-    config.TEST_START_DATE = getattr(checkpoint.get('config'), 'TEST_START_DATE', None)
-    print(f"  ✓ 从 checkpoint 读取 input_dim = {config.INPUT_DIM}")
+    saved_config = checkpoint['config']
+    for key in dir(saved_config):
+        if key.isupper() and key != 'DEVICE':
+            setattr(config, key, getattr(saved_config, key))
+    config.FEATURE_COLS = checkpoint.get('feature_cols')
+    if not config.FEATURE_COLS:
+        raise ValueError('Checkpoint is missing its feature schema; retrain the model.')
+    configure_runtime(config)
 
     model = MultiTaskVCformerTPA(config)
     model.load_state_dict(checkpoint['model_state_dict'])
@@ -45,67 +45,8 @@ def load_model_and_data(model_path='logs/best_model.pt', factor_path='data/facto
     print("  ✓ 模型加载成功")
     return model, config, factors
 
-
 def generate_predictions(model, config, factors):
-    print("\n[2/4] 生成预测...")
-    model.eval()
-    exclude_cols = ['close', 'open', 'high', 'low', 'volume', 'amount',
-                    'turnover', 'stock', 'future_ret_5d', 'future_vol_5d',
-                    'market_ret', 'excess_ret_5d', 'ret_1d']
-    feature_cols = [col for col in factors.columns
-                    if col not in exclude_cols and not col.startswith('future_')]
-    seq_len = config.SEQ_LEN
-    device = config.DEVICE
-
-    predictions = {}
-    test_start = getattr(config, 'TEST_START_DATE', None)
-    if test_start is None:
-        raise ValueError("checkpoint 缺少测试集起始日期，禁止对全样本生成回测预测")
-    dates = [
-        date for date in factors.index.get_level_values('date').unique()
-        if pd.Timestamp(date) >= pd.Timestamp(test_start)
-    ]
-
-    for date in tqdm(dates, desc="  预测交易日"):
-        date_data = factors.xs(date, level='date')
-        stocks = date_data.index.get_level_values('stock').unique()
-        if len(stocks) < 1:
-            continue
-
-        scores = []
-        vols = []
-        stock_list = []
-
-        for stock in stocks:
-            stock_data = factors.xs(stock, level='stock').sort_index()
-            try:
-                idx = stock_data.index.get_loc(date)
-            except KeyError:
-                continue
-            if idx < seq_len:
-                continue
-            X = stock_data[feature_cols].iloc[idx - seq_len:idx].values
-            if X.shape[0] != seq_len:
-                continue
-            X_tensor = torch.FloatTensor(X).unsqueeze(0).to(device)
-            with torch.no_grad():
-                outputs = model(X_tensor, return_attention=False)
-            score = outputs['rank_score'].detach().cpu().numpy().flatten()[0]
-            vol = outputs['vol_pred'].detach().cpu().numpy().flatten()[0]
-            scores.append(score)
-            vols.append(vol)
-            stock_list.append(stock)
-
-        if scores:
-            predictions[date] = {
-                'scores': np.array(scores),
-                'vols': np.array(vols),
-                'stocks': np.array(stock_list)
-            }
-
-    print(f"  ✓ 预测完成，共 {len(predictions)} 个交易日")
-    return predictions
-
+    return predict_panel(model, config, factors, config.FEATURE_COLS, config.TEST_START_DATE)
 
 def get_price_data(factors):
     raw_path = "data/daily_raw.parquet"
@@ -127,11 +68,9 @@ def get_price_data(factors):
     else:
         raise FileNotFoundError("未找到价格数据，请运行 save_daily_only.py 生成。")
 
-
 def run_backtest_and_evaluate(predictions, price_data, factors, portfolio_config):
     print("\n[3/4] 执行回测...")
 
-    # ====== 过滤：只保留 price_data 中存在的股票 ======
     price_stocks = set(price_data.index.get_level_values('stock').unique())
     filtered_predictions = {}
     for date, preds in predictions.items():
@@ -148,17 +87,14 @@ def run_backtest_and_evaluate(predictions, price_data, factors, portfolio_config
     if len(filtered_predictions) == 0:
         raise ValueError("过滤后无有效交易日，请检查股票代码是否与价格数据匹配。")
 
-    # ====== 执行回测 ======
     backtester = Backtester(portfolio_config, verbose=True)
     result = backtester.run(filtered_predictions, price_data)
     metrics = result.metrics
 
     print("\n[4/4] 计算评估指标...")
 
-    # 构建评估用的数据框；收益口径与训练标签保持一致。
     temp_factors = factors[['excess_ret_5d']].copy()
 
-    # 添加预测得分
     for date, preds in filtered_predictions.items():
         if date not in temp_factors.index.get_level_values('date'):
             continue
@@ -170,7 +106,6 @@ def run_backtest_and_evaluate(predictions, price_data, factors, portfolio_config
 
     temp_factors = temp_factors.dropna(subset=['pred_score', 'excess_ret_5d'])
 
-    # ---- IC 分析 ----
     print("  计算信息系数 (IC)...")
     if not temp_factors.empty:
         fa = FactorAnalyzer(temp_factors)
@@ -185,7 +120,6 @@ def run_backtest_and_evaluate(predictions, price_data, factors, portfolio_config
         ic_mean = ic_std = icir = ic_positive_ratio = np.nan
         print("    ⚠ IC 分析失败：无有效数据")
 
-    # ---- 分层收益 ----
     print("  计算分层收益（基于未来 5 日超额收益）...")
     if not temp_factors.empty:
         try:
@@ -228,7 +162,6 @@ def run_backtest_and_evaluate(predictions, price_data, factors, portfolio_config
         'returns': result.returns,
     }
     return results
-
 
 def main():
     print("=" * 60)
@@ -278,7 +211,6 @@ def main():
         for group, m in results['decile_metrics'].items():
             print(f"{group:12s}: 年化收益 {m.get('annual_return', np.nan):.2%}, 夏普 {m.get('sharpe', np.nan):.3f}")
 
-    # 保存结果
     returns = results['returns']
     if not returns.empty:
         returns_df = pd.DataFrame({'date': returns.index, 'return': returns.values})
@@ -298,6 +230,7 @@ def main():
 
     print("\n✅ 评估完成。")
 
-
 if __name__ == "__main__":
+    from research.console import configure_console
+    configure_console()
     main()

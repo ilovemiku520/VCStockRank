@@ -2,10 +2,10 @@
 import pandas as pd
 import numpy as np
 from scipy import stats
+from tqdm import tqdm
 import warnings
 
 warnings.filterwarnings('ignore')
-
 
 class FactorBuilder:
     def __init__(self, winsorize=True, standardize=True):
@@ -22,7 +22,6 @@ class FactorBuilder:
         df = self._add_statistical_factors(df)
         return df
 
-    # ========== 以下方法保持不变 ==========
     def _add_price_factors(self, df):
         for period in [1, 5, 10, 20]:
             df[f'ret_{period}d'] = df['close'].pct_change(period)
@@ -57,8 +56,7 @@ class FactorBuilder:
         return df
 
     def _add_decomposition_factors(self, df):
-        # STL 的默认平滑器会同时读取当前点两侧数据，不适用于逐日回测。
-        # 这里使用完全因果的滚动分解，只依赖当日及其之前的价格。
+
         close = df['close'].ffill()
         trend = close.rolling(20, min_periods=5).mean()
         residual = close - trend
@@ -106,7 +104,6 @@ class FactorBuilder:
         df['rolling_sharpe_20d'] = df['ret_1d'].rolling(20).mean() / (df['ret_1d'].rolling(20).std() + 1e-6)
         return df
 
-    # ========== 辅助函数 ==========
     @staticmethod
     def _compute_rsi(price, period):
         delta = price.diff()
@@ -170,14 +167,10 @@ class FactorBuilder:
         hurst = np.polyfit(np.log(lags), np.log(tau), 1)[0] / 2
         return np.clip(hurst, 0, 1)
 
-    # ========== 核心修正：process_factors 明确排除标签列 ==========
     def process_factors(self, df, winsorize=True, standardize=True):
-        """
-        只标准化因子特征，不碰原始价格列和标签列。
-        """
+        """Clip and scale features without modifying raw prices or forward labels."""
         df = df.copy()
 
-        # 这些列永远不标准化
         protected_cols = [
             'close', 'open', 'high', 'low', 'volume', 'amount', 'turnover',
             'ret_1d', 'future_ret_5d', 'future_vol_5d', 'market_ret', 'excess_ret_5d'
@@ -186,43 +179,34 @@ class FactorBuilder:
         numeric_cols = df.select_dtypes(include=[np.number]).columns
         factor_cols = [col for col in numeric_cols if col not in protected_cols]
 
-        if winsorize:
-            for col in factor_cols:
-                if 'date' in df.index.names:
-                    df[col] = df.groupby(level='date')[col].transform(
-                        lambda values: values.clip(values.quantile(0.01), values.quantile(0.99))
-                    )
-                else:
-                    # 单序列场景使用扩展分位数，避免全样本分布泄漏。
-                    lower = df[col].expanding(min_periods=20).quantile(0.01)
-                    upper = df[col].expanding(min_periods=20).quantile(0.99)
-                    clipped = df[col].clip(lower=lower, upper=upper)
-                    df[col] = clipped.where(lower.notna() & upper.notna(), df[col])
-
-        if standardize:
-            if 'date' in df.index.names:
-                for date in df.index.get_level_values('date').unique():
-                    idx = df.index.get_level_values('date') == date
-                    for col in factor_cols:
-                        col_data = df.loc[idx, col]
-                        mean = col_data.mean()
-                        std = col_data.std()
-                        if std > 0:
-                            df.loc[idx, col] = (col_data - mean) / std
-            else:
-                for col in factor_cols:
-                    mean = df[col].mean()
-                    std = df[col].std()
-                    if std > 0:
-                        df[col] = (df[col] - mean) / std
+        values = df[factor_cols].astype(float).replace([np.inf, -np.inf], np.nan)
+        if 'date' in df.index.names:
+            groups = values.groupby(level='date')
+            if winsorize:
+                values = values.clip(groups.transform('quantile', q=.01),
+                                     groups.transform('quantile', q=.99))
+            if standardize:
+                groups = values.groupby(level='date')
+                std = groups.transform('std').replace(0, np.nan)
+                values = (values - groups.transform('mean')) / std
+        else:
+            if winsorize:
+                lower = values.expanding(min_periods=20).quantile(.01)
+                upper = values.expanding(min_periods=20).quantile(.99)
+                values = values.clip(lower, upper)
+            if standardize:
+                mean = values.expanding(min_periods=2).mean()
+                std = values.expanding(min_periods=2).std().replace(0, np.nan)
+                values = (values - mean) / std
+        df[factor_cols] = values
         return df
 
     def create_factors_panel(self, daily_data):
-        """创建完整的面板因子数据"""
+        """Build per-stock features, then normalize within each trading date."""
         all_factors = []
         stocks = daily_data.index.get_level_values('stock').unique()
 
-        for stock in stocks:
+        for stock in tqdm(stocks, desc='Building causal features'):
             stock_data = daily_data.xs(stock, level='stock').sort_index()
             factors = self.build_all_factors(stock_data)
             factors['stock'] = stock

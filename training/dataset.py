@@ -9,28 +9,13 @@ import warnings
 
 warnings.filterwarnings('ignore')
 
-
 class TimeSeriesDataset(Dataset):
-    """
-    时间序列数据集
-    用于多任务学习：排序得分 + 波动率预测
-    """
+    """Return historical windows ending before the target date, plus forward labels."""
 
     def __init__(self, df, feature_cols, target_col='excess_ret_5d',
                  vol_col='future_vol_5d', seq_len=60,
                  mode='train', normalize=True, scaler=None,
                  sample_start=None, sample_end=None):
-        """
-        Parameters:
-        -----------
-        df : DataFrame with MultiIndex (date, stock)
-        feature_cols : list, 特征列名
-        target_col : str, 目标列（超额收益）
-        vol_col : str, 波动率列
-        seq_len : int, 序列长度
-        mode : str, 'train', 'val', 'test'
-        normalize : bool, 是否标准化
-        """
         self.df = df
         self.feature_cols = feature_cols
         self.target_col = target_col
@@ -41,13 +26,10 @@ class TimeSeriesDataset(Dataset):
         self.sample_start = pd.Timestamp(sample_start) if sample_start is not None else None
         self.sample_end = pd.Timestamp(sample_end) if sample_end is not None else None
 
-        # 标准化器
         self.scaler = scaler or StandardScaler()
 
-        # 准备样本
         self.samples = self._prepare_samples()
 
-        # 如果标准化，拟合scaler
         if normalize and len(self.samples) > 0:
             if mode == 'train':
                 self._fit_scaler()
@@ -55,7 +37,7 @@ class TimeSeriesDataset(Dataset):
                 raise ValueError("验证/测试集启用标准化时必须传入训练集 scaler")
 
     def _prepare_samples(self):
-        """准备样本（带调试日志）"""
+        """Build finite historical windows with labels inside the requested split."""
         samples = []
         stocks = self.df.index.get_level_values('stock').unique()
 
@@ -73,7 +55,6 @@ class TimeSeriesDataset(Dataset):
             targets = stock_data[self.target_col].values if self.target_col in stock_data else None
             vols = stock_data[self.vol_col].values if self.vol_col in stock_data else None
 
-            # 检查是否全是 NaN
             if np.isnan(features).all():
                 print(f"      跳过: 所有特征全为 NaN")
                 continue
@@ -110,11 +91,10 @@ class TimeSeriesDataset(Dataset):
         return samples
 
     def _fit_scaler(self):
-        """拟合标准化器"""
+        """Fit scaling statistics on the samples supplied to this training dataset."""
         if len(self.samples) == 0:
             return
 
-        # 收集所有特征
         all_features = np.vstack([s['X'] for s in self.samples])
         self.scaler.fit(all_features)
 
@@ -126,7 +106,6 @@ class TimeSeriesDataset(Dataset):
 
         X = sample['X'].astype(np.float32)
 
-        # 标准化
         if self.normalize:
             X = self.scaler.transform(X)
 
@@ -138,27 +117,14 @@ class TimeSeriesDataset(Dataset):
             'rank_target': torch.FloatTensor(y_rank),
             'vol_target': torch.FloatTensor(y_vol),
             'stock': sample['stock'],
-            'date': sample['date']
+            'date': sample['date'].isoformat()
         }
 
-
 class PairwiseDataset(Dataset):
-    """
-    配对数据集（用于排序学习）
-    从同一交易日采样股票对
-    """
+    """Build same-date stock pairs using historical feature windows."""
 
     def __init__(self, df, feature_cols, target_col='excess_ret_5d',
                  seq_len=60, max_pairs_per_day=1000):
-        """
-        Parameters:
-        -----------
-        df : DataFrame with MultiIndex (date, stock)
-        feature_cols : list, 特征列名
-        target_col : str, 目标列
-        seq_len : int, 序列长度
-        max_pairs_per_day : int, 每天最多采样对数
-        """
         self.df = df
         self.feature_cols = feature_cols
         self.target_col = target_col
@@ -167,29 +133,25 @@ class PairwiseDataset(Dataset):
 
         self.pairs = self._prepare_pairs()
 
-        # 标准化器
         self.scaler = StandardScaler()
         self._fit_scaler()
 
     def _prepare_pairs(self):
-        """准备配对样本"""
+        """Sample stock pairs within each trading date."""
         pairs = []
 
-        # 按日期分组
         dates = self.df.index.get_level_values('date').unique()
 
         for date in tqdm(dates, desc="Creating pairs"):
-            # 获取当日所有股票
+
             date_data = self.df.xs(date, level='date')
 
             if len(date_data) < 2:
                 continue
 
-            # 获取每个股票的特征和目标
             stocks = date_data.index.get_level_values('stock').unique()
             targets = date_data[self.target_col].values
 
-            # 只取有足够历史数据的股票
             valid_stocks = []
             for stock in stocks:
                 stock_data = self.df.xs(stock, level='stock').sort_index()
@@ -199,23 +161,19 @@ class PairwiseDataset(Dataset):
             if len(valid_stocks) < 2:
                 continue
 
-            # 采样配对
             n_pairs = min(self.max_pairs_per_day, len(valid_stocks) * 10)
 
             for _ in range(n_pairs):
-                # 随机选择两只股票
+
                 idx1, idx2 = np.random.choice(len(valid_stocks), 2, replace=False)
                 stock1 = valid_stocks[idx1]
                 stock2 = valid_stocks[idx2]
 
-                # 获取目标值
                 target1 = date_data.xs(stock1, level='stock')[self.target_col].values[0]
                 target2 = date_data.xs(stock2, level='stock')[self.target_col].values[0]
 
-                # 确定配对标签（1表示股票1优于股票2）
                 label = 1 if target1 > target2 else 0
 
-                # 获取历史序列
                 seq1 = self._get_sequence(stock1, date, self.seq_len)
                 seq2 = self._get_sequence(stock2, date, self.seq_len)
 
@@ -230,16 +188,14 @@ class PairwiseDataset(Dataset):
         return pairs
 
     def _get_sequence(self, stock, end_date, seq_len):
-        """获取股票的历史序列"""
+        """Extract a finite window strictly before the requested target date."""
         stock_data = self.df.xs(stock, level='stock').sort_index()
 
-        # 找到end_date的位置
         idx = stock_data.index.get_loc(end_date)
 
         if idx < seq_len:
             return None
 
-        # 取前seq_len天的特征
         seq = stock_data[self.feature_cols].iloc[idx - seq_len:idx].values
 
         if np.isnan(seq).any():
@@ -248,7 +204,7 @@ class PairwiseDataset(Dataset):
         return seq.astype(np.float32)
 
     def _fit_scaler(self):
-        """拟合标准化器"""
+        """Fit scaling statistics on the samples supplied to this training dataset."""
         if len(self.pairs) == 0:
             return
 
@@ -277,42 +233,18 @@ class PairwiseDataset(Dataset):
             'date': pair['date']
         }
 
-
 def create_pairwise_sequences(df, feature_cols, target_col='excess_ret_5d',
                               seq_len=60, max_pairs_per_day=1000):
-    """
-    创建配对序列数据（便捷函数）
-
-    Returns:
-    --------
-    PairwiseDataset
-    """
+    """Construct a pairwise ranking dataset from an indexed panel."""
     return PairwiseDataset(
         df, feature_cols, target_col, seq_len, max_pairs_per_day
     )
-
 
 def create_train_val_test_datasets(df, feature_cols, target_col='excess_ret_5d',
                                    vol_col='future_vol_5d', seq_len=60,
                                    train_ratio=0.7, val_ratio=0.15,
                                    embargo_days=5, normalize=False):
-    """
-    创建训练/验证/测试数据集
-
-    Parameters:
-    -----------
-    df : DataFrame
-    feature_cols : list
-    target_col : str
-    vol_col : str
-    seq_len : int
-    train_ratio : float
-    val_ratio : float
-
-    Returns:
-    --------
-    train_dataset, val_dataset, test_dataset
-    """
+    """Split chronologically and purge forward-label overlap at both boundaries."""
     dates = pd.DatetimeIndex(
         sorted(pd.to_datetime(df.index.get_level_values('date').unique()))
     )

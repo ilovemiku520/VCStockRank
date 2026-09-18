@@ -6,34 +6,22 @@ import warnings
 
 warnings.filterwarnings('ignore')
 
-
 class DataCleaner:
-    """
-    数据清洗类：
-    - 去重
-    - 缺失值处理（向前填充/插值）
-    - 异常值检测与处理
-    - 去极值（Winsorize）
-    """
+    """Clean each stock causally; never fill an observation from the future."""
 
     def __init__(self, winsorize_limits=None, fillna_method='ffill'):
         self.winsorize_limits = winsorize_limits
         self.fillna_method = fillna_method
 
     def clean(self, df, price_cols=None):
-        """
-        主清洗函数
-        """
+        """Remove duplicate observations and apply the configured causal missing-value policy."""
         df = df.copy()
 
-        # 1. 去重
         if df.index.duplicated().any():
             df = df[~df.index.duplicated(keep='first')]
 
-        # 2. 处理缺失值
         df = self._handle_missing(df)
 
-        # 3. 去极值（对数值列，排除宏观列）
         macro_cols = ['bond_10y', 'social_financing', 'pmi', 'cpi', 'm2']
         if self.winsorize_limits is not None:
             numeric_cols = df.select_dtypes(include=[np.number]).columns
@@ -41,7 +29,6 @@ class DataCleaner:
             for col in numeric_cols:
                 df[col] = self._winsorize(df[col])
 
-        # 4. 检查价格列异常
         if price_cols is not None:
             for col in price_cols:
                 if col in df.columns:
@@ -50,7 +37,7 @@ class DataCleaner:
         return df
 
     def _handle_missing(self, df):
-        """处理缺失值"""
+        """Forward-fill within each stock in chronological order."""
         if self.fillna_method == 'drop':
             return df.dropna()
         elif self.fillna_method == 'ffill':
@@ -61,7 +48,7 @@ class DataCleaner:
             else:
                 return df.sort_index().ffill()
         elif self.fillna_method == 'interpolate':
-            # 双边插值会读取未来观测。时间序列训练默认只允许使用历史值。
+
             if 'stock' in df.index.names:
                 return df.groupby(level='stock', group_keys=False).apply(
                     lambda group: group.sort_index().ffill()
@@ -72,7 +59,7 @@ class DataCleaner:
             return df
 
     def _winsorize(self, series):
-        """使用截至当日的扩展分位数去极值，避免读取未来分布。"""
+        """Clip using expanding quantiles computed only from available history."""
         if 'stock' in series.index.names:
             return series.groupby(level='stock', group_keys=False).apply(
                 self._winsorize_single_series
@@ -86,7 +73,7 @@ class DataCleaner:
         return clipped.where(lower.notna() & upper.notna(), series)
 
     def remove_outliers_zscore(self, df, threshold=3):
-        """基于Z-score剔除异常值"""
+        """Filter z-score outliers, then apply the configured missing-value policy."""
         macro_cols = ['bond_10y', 'social_financing', 'pmi', 'cpi', 'm2']
         numeric_cols = df.select_dtypes(include=[np.number]).columns
         numeric_cols = [col for col in numeric_cols if col not in macro_cols]

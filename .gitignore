@@ -117,6 +117,8 @@ data/daily*.parquet
 data/daily*.csv
 
 # 预测结果
+runs/
+.streamlit/secrets.toml
 predictions_*.csv
 predictions_*.parquet
 
@@ -124,6 +126,9 @@ predictions_*.parquet
 backtest_returns.csv
 daily_ic.csv
 long_short_returns.csv
+!reports/**/backtest_returns.csv
+!reports/**/daily_ic.csv
+!reports/**/long_short_returns.csv
 
 # -------------------- 模型文件 --------------------
 # PyTorch 模型权重

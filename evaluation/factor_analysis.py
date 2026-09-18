@@ -7,12 +7,8 @@ import warnings
 
 warnings.filterwarnings('ignore')
 
-
 class FactorAnalyzer:
-    """
-    因子分析类
-    计算IC、IR、十分位组合、分层收益等
-    """
+    """Evaluate daily cross-sectional IC and non-overlapping return groups."""
 
     def __init__(self, factor_data, returns_data=None):
         self.factor_data = factor_data
@@ -20,7 +16,7 @@ class FactorAnalyzer:
         self.results = {}
 
     def compute_ic(self, factor_col, ret_col='excess_ret_5d', method='spearman'):
-        """计算信息系数（IC）"""
+        """Compute one cross-sectional correlation for each trading date."""
         ic_list = []
         dates = self.factor_data.index.get_level_values('date').unique()
 
@@ -44,10 +40,7 @@ class FactorAnalyzer:
         return ic_series.mean() / (ic_series.std() + 1e-6)
 
     def compute_decile_returns(self, factor_col, ret_col='excess_ret_5d', n_groups=10, period=1):
-        """
-        计算十分位组合收益
-        period : int, 收益周期（天数），默认1表示日收益。若 ret_col 为5日收益，则 period=5
-        """
+        """Form score-ranked return groups and subsample by the forward-label horizon."""
         decile_returns = []
         dates = self.factor_data.index.get_level_values('date').unique()
 
@@ -67,10 +60,11 @@ class FactorAnalyzer:
             group_ret['date'] = date
             decile_returns.append(group_ret)
 
+        if not decile_returns:
+            return pd.DataFrame(columns=[f'group_{i}' for i in range(n_groups)]), pd.Series(dtype=float)
         decile_df = pd.DataFrame(decile_returns).set_index('date')
         decile_df.columns = [f'group_{i}' for i in range(n_groups)]
 
-        # 多日未来收益是重叠标签；按预测周期抽样，避免把同一收益窗口重复计入。
         if period > 1:
             decile_df = decile_df.iloc[::period]
 
@@ -83,7 +77,7 @@ class FactorAnalyzer:
         return decile_df, long_short
 
     def compute_grouped_metrics(self, factor_col, ret_col='excess_ret_5d', n_groups=10, period=1):
-        """计算各分组的绩效指标，年化时考虑周期 period"""
+        """Annualize group statistics using the label horizon, not daily frequency."""
         decile_df, _ = self.compute_decile_returns(factor_col, ret_col, n_groups, period=period)
 
         metrics = {}
@@ -91,7 +85,7 @@ class FactorAnalyzer:
             rets = decile_df[col].dropna()
             if len(rets) < 10:
                 continue
-            # 调整年化天数
+
             annual_factor = 252 / period
             metrics[col] = {
                 'mean_return': rets.mean(),
@@ -168,7 +162,6 @@ class FactorAnalyzer:
             decile, ls = self.compute_decile_returns(factor, ret_col, period=period)
             turnover = self.compute_factor_turnover(factor)
 
-            # 手动计算年化收益和夏普（考虑 period）
             annual_factor = 252 / period
             results[factor] = {
                 'ic_mean': ic.mean(),
