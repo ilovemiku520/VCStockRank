@@ -1,0 +1,16 @@
+{
+  "population": 4992,
+  "confidence": 0.95,
+  "target_margin": 0.05,
+  "planning_proportion": 0.5,
+  "z_statistic": 1.9599639845400536,
+  "required_stocks": 357,
+  "capacity_stocks": 227,
+  "selected_stocks": 227,
+  "planned_margin": 0.063553991903869,
+  "target_met": false,
+  "method": "simple random sampling without replacement; normal-approximation planning",
+  "scope": "Finite stock-pool binary proportion, not model-return confidence or power.",
+  "seed": 42,
+  "frame": "Deduplicated Shanghai/Shenzhen A shares, excluding ST and delisting names."
+}

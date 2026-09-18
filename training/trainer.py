@@ -12,6 +12,7 @@ import warnings
 warnings.filterwarnings('ignore')
 
 from .loss import MultiTaskLoss
+from research.checkpoints import snapshot_config
 
 class Trainer:
     def __init__(self, model, config, train_loader, val_loader=None,
@@ -235,7 +236,7 @@ class Trainer:
             'scheduler_state_dict': self.scheduler.state_dict(),
             'best_val_loss': self.best_val_loss,
             'history': self.history,
-            'config': self.config,
+            'config': snapshot_config(self.config),
             'input_dim': self.config.INPUT_DIM,
             'feature_cols': getattr(self.config, 'FEATURE_COLS', None),
             'protocol_version': getattr(self.config, 'PROTOCOL_VERSION', 1),

@@ -28,9 +28,7 @@ class FactorBuilder:
         df['ret_excess_20d'] = df['close'] / df['close'].rolling(20).mean() - 1
         df['price_position_20d'] = (df['close'] - df['close'].rolling(20).min()) / \
                                    (df['close'].rolling(20).max() - df['close'].rolling(20).min() + 1e-6)
-        df['max_drawdown_20d'] = df['close'].rolling(20).apply(
-            lambda x: (x.max() - x.iloc[-1]) / x.max() if x.max() > 0 else 0
-        )
+        df['max_drawdown_20d'] = (df['close'].rolling(20).max() - df['close']) / df['close'].rolling(20).max()
         return df
 
     def _add_volume_factors(self, df):
@@ -78,14 +76,14 @@ class FactorBuilder:
         df['vol_change_5d'] = df['rv_20d'] / df['rv_20d'].shift(5) - 1
         df['vol_change_20d'] = df['rv_20d'] / df['rv_20d'].shift(20) - 1
         df['vol_clustering'] = returns.rolling(20).apply(
-            lambda x: (x.abs() > x.abs().mean() + x.abs().std()).mean() if len(x) == 20 else np.nan
+            lambda x: (np.abs(x) > np.abs(x).mean() + np.abs(x).std(ddof=1)).mean(), raw=True
         )
         pos_vol = returns.where(returns > 0).rolling(20, min_periods=5).std()
         neg_vol = returns.where(returns < 0).rolling(20, min_periods=5).std()
         df['vol_asymmetry'] = pos_vol / (neg_vol + 1e-6)
         df['var_95'] = returns.rolling(20).quantile(0.05)
         df['cvar_95'] = returns.rolling(20).apply(
-            lambda x: x[x < x.quantile(0.05)].mean() if len(x[x < x.quantile(0.05)]) > 0 else np.nan
+            lambda x: x[x < np.quantile(x, .05)].mean() if np.any(x < np.quantile(x, .05)) else np.nan, raw=True
         )
         df['hurst'] = df['close'].rolling(100, min_periods=100).apply(
             lambda x: self._compute_hurst(np.asarray(x), max_lag=50), raw=False
@@ -93,13 +91,13 @@ class FactorBuilder:
         return df
 
     def _add_statistical_factors(self, df):
-        df['skew_20d'] = df['close'].rolling(20).apply(lambda x: stats.skew(x) if len(x) == 20 else np.nan)
-        df['kurt_20d'] = df['close'].rolling(20).apply(lambda x: stats.kurtosis(x) if len(x) == 20 else np.nan)
+        df['skew_20d'] = df['close'].rolling(20).apply(lambda x: stats.skew(x), raw=True)
+        df['kurt_20d'] = df['close'].rolling(20).apply(lambda x: stats.kurtosis(x), raw=True)
         df['autocorr_1'] = df['close'].rolling(20).apply(
-            lambda x: x.autocorr(lag=1) if len(x) == 20 else np.nan
+            lambda x: np.corrcoef(x[1:], x[:-1])[0, 1], raw=True
         )
         df['autocorr_5'] = df['close'].rolling(20).apply(
-            lambda x: x.autocorr(lag=5) if len(x) == 20 else np.nan
+            lambda x: np.corrcoef(x[5:], x[:-5])[0, 1], raw=True
         )
         df['rolling_sharpe_20d'] = df['ret_1d'].rolling(20).mean() / (df['ret_1d'].rolling(20).std() + 1e-6)
         return df
@@ -173,7 +171,7 @@ class FactorBuilder:
 
         protected_cols = [
             'close', 'open', 'high', 'low', 'volume', 'amount', 'turnover',
-            'ret_1d', 'future_ret_5d', 'future_vol_5d', 'market_ret', 'excess_ret_5d'
+            'ret_1d', 'future_ret_5d', 'future_vol_5d', 'market_ret', 'excess_ret_5d', 'future_return', 'target_excess', 'future_risk'
         ]
 
         numeric_cols = df.select_dtypes(include=[np.number]).columns

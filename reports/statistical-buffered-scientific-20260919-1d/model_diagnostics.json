@@ -1,0 +1,69 @@
+{
+  "method": "PCA (95% train variance) + SVD ridge + historical EWMA RMS",
+  "selected_alpha": 1.0,
+  "validation_trials": [
+    {
+      "alpha": 0.0001,
+      "validation_ic": 0.04319501221958766,
+      "validation_mse": 0.000706309437011735
+    },
+    {
+      "alpha": 0.001,
+      "validation_ic": 0.043210455209025396,
+      "validation_mse": 0.0007063086867962874
+    },
+    {
+      "alpha": 0.01,
+      "validation_ic": 0.04338857158034905,
+      "validation_mse": 0.0007063015744290133
+    },
+    {
+      "alpha": 0.1,
+      "validation_ic": 0.04516057443104008,
+      "validation_mse": 0.0007062584755946542
+    },
+    {
+      "alpha": 1.0,
+      "validation_ic": 0.05219887829624809,
+      "validation_mse": 0.0007063217493505371
+    }
+  ],
+  "selection": "Highest validation mean daily Spearman IC; MSE breaks ties.",
+  "input_features": 153,
+  "components": 62,
+  "explained_variance_ratio": 0.9502661770246957,
+  "retained_condition_number": 10.783071319015619,
+  "effective_degrees_of_freedom": 30.896972506283877,
+  "ewma_half_life": 10,
+  "refit_on_validation": false,
+  "turnover_control": {
+    "selected_buffer": 20,
+    "validation_trials": [
+      {
+        "buffer": 0,
+        "validation_net_return": -0.03700352247119487,
+        "validation_drawdown": -0.1565798345078895,
+        "validation_turnover": 71.89948318798183
+      },
+      {
+        "buffer": 5,
+        "validation_net_return": -0.015592361354462847,
+        "validation_drawdown": -0.17251188736729117,
+        "validation_turnover": 47.42237612493407
+      },
+      {
+        "buffer": 10,
+        "validation_net_return": 0.01611899523910787,
+        "validation_drawdown": -0.15265323094768626,
+        "validation_turnover": 38.89923278329561
+      },
+      {
+        "buffer": 20,
+        "validation_net_return": 0.04934458946250175,
+        "validation_drawdown": -0.1339990744712847,
+        "validation_turnover": 30.60609156088522
+      }
+    ],
+    "selection": "Highest validation net return; lower turnover and then smaller buffer break ties."
+  }
+}

@@ -2,6 +2,7 @@
 """Standalone research entry point."""
 
 import os
+from pathlib import Path
 import numpy as np
 import pandas as pd
 import torch
@@ -10,8 +11,11 @@ import warnings
 warnings.filterwarnings('ignore')
 
 from config import ModelConfig, PortfolioConfig
+from research.horizons import portfolio_for
 from research.inference import predict_panel
 from research.runtime import configure_runtime
+from research.checkpoints import restore_config
+from research.experiments import read_json
 from model.multitask import MultiTaskVCformerTPA
 from portfolio.backtest import Backtester
 from evaluation.factor_analysis import FactorAnalyzer
@@ -27,15 +31,10 @@ def load_model_and_data(model_path='logs/best_model.pt', factor_path='data/facto
         raise FileNotFoundError(f"模型文件不存在: {model_path}")
     config = ModelConfig()
     checkpoint = torch.load(model_path, map_location=config.DEVICE, weights_only=False)
-    if checkpoint.get('protocol_version') != config.PROTOCOL_VERSION:
+    if checkpoint.get('protocol_version') not in (3, 4):
         raise ValueError("checkpoint 来自旧评估协议，请先运行 main.py 重新训练")
-    saved_config = checkpoint['config']
-    for key in dir(saved_config):
-        if key.isupper() and key != 'DEVICE':
-            setattr(config, key, getattr(saved_config, key))
-    config.FEATURE_COLS = checkpoint.get('feature_cols')
-    if not config.FEATURE_COLS:
-        raise ValueError('Checkpoint is missing its feature schema; retrain the model.')
+    summary_path = Path(factor_path).resolve().parent.parent / 'summary.json'
+    restore_config(config, checkpoint, read_json(summary_path, {}).get('settings'))
     configure_runtime(config)
 
     model = MultiTaskVCformerTPA(config)
@@ -68,7 +67,7 @@ def get_price_data(factors):
     else:
         raise FileNotFoundError("未找到价格数据，请运行 save_daily_only.py 生成。")
 
-def run_backtest_and_evaluate(predictions, price_data, factors, portfolio_config):
+def run_backtest_and_evaluate(predictions, price_data, factors, portfolio_config, horizon=5):
     print("\n[3/4] 执行回测...")
 
     price_stocks = set(price_data.index.get_level_values('stock').unique())
@@ -93,7 +92,8 @@ def run_backtest_and_evaluate(predictions, price_data, factors, portfolio_config
 
     print("\n[4/4] 计算评估指标...")
 
-    temp_factors = factors[['excess_ret_5d']].copy()
+    target = 'target_excess' if 'target_excess' in factors else 'excess_ret_5d'
+    temp_factors = factors[[target]].rename(columns={target: 'excess_ret_5d'}).copy()
 
     for date, preds in filtered_predictions.items():
         if date not in temp_factors.index.get_level_values('date'):
@@ -120,26 +120,26 @@ def run_backtest_and_evaluate(predictions, price_data, factors, portfolio_config
         ic_mean = ic_std = icir = ic_positive_ratio = np.nan
         print("    ⚠ IC 分析失败：无有效数据")
 
-    print("  计算分层收益（基于未来 5 日超额收益）...")
+    print(f"  计算分层收益（基于未来 {horizon} 日超额收益）...")
     if not temp_factors.empty:
         try:
             decile_returns, long_short = fa.compute_decile_returns(
                 factor_col='pred_score',
                 ret_col='excess_ret_5d',
                 n_groups=10,
-                period=5
+                period=horizon
             )
             decile_metrics = {}
             for col in decile_returns.columns:
                 rets = decile_returns[col].dropna()
                 if len(rets) > 0:
-                    annual_ret = (1 + rets).prod() ** ((252 / 5) / len(rets)) - 1
-                    sharpe = rets.mean() / rets.std() * np.sqrt(252 / 5) if rets.std() > 0 else np.nan
+                    annual_ret = (1 + rets).prod() ** ((252 / horizon) / len(rets)) - 1
+                    sharpe = rets.mean() / rets.std() * np.sqrt(252 / horizon) if rets.std() > 0 else np.nan
                     decile_metrics[col] = {'annual_return': annual_ret, 'sharpe': sharpe}
             long_short_rets = long_short.dropna()
             if len(long_short_rets) > 0:
-                ls_annual = (1 + long_short_rets).prod() ** ((252 / 5) / len(long_short_rets)) - 1
-                ls_sharpe = long_short_rets.mean() / long_short_rets.std() * np.sqrt(252 / 5) if long_short_rets.std() > 0 else np.nan
+                ls_annual = (1 + long_short_rets).prod() ** ((252 / horizon) / len(long_short_rets)) - 1
+                ls_sharpe = long_short_rets.mean() / long_short_rets.std() * np.sqrt(252 / horizon) if long_short_rets.std() > 0 else np.nan
                 decile_metrics['long_short'] = {'annual_return': ls_annual, 'sharpe': ls_sharpe}
             print(f"    ✓ 分层收益计算完成")
         except Exception as e:
@@ -183,8 +183,8 @@ def main():
     price_data = get_price_data(factors)
     print(f"  ✓ 价格数据形状: {price_data.shape}")
 
-    portfolio_config = PortfolioConfig()
-    results = run_backtest_and_evaluate(predictions, price_data, factors, portfolio_config)
+    portfolio_config = portfolio_for(config)
+    results = run_backtest_and_evaluate(predictions, price_data, factors, portfolio_config, config.LABEL_HORIZON)
 
     metrics = results['backtest_metrics']
     print("\n" + "=" * 60)

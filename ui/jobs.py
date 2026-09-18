@@ -5,8 +5,10 @@ from pathlib import Path
 import subprocess
 import pandas as pd
 import streamlit as st
-from research.experiments import create_experiment, launch_experiment, list_experiments, read_json, update_status
+from research.experiments import create_experiment, launch_experiment, launch_statistical_baseline, list_experiments, read_json, update_status
 from ui.i18n import tr, stage_label
+from research.sampling import eligible_pool, sample_plan, capacity_estimate
+from research.experiments import ROOT
 
 @st.fragment(run_every='3s')
 def job_status():
@@ -21,6 +23,19 @@ def job_status():
     label = stage_label(status.get('stage', 'pending'))
     if state == 'complete':
         st.success(tr('研究完成，可在研究概览查看结果。', 'Complete. Open Overview to view results.'))
+        summary = read_json(directory / 'summary.json', {})
+        if summary.get('protocol_version') == 4 and not summary.get('algorithm'):
+            current_job = st.session_state.get('job')
+            busy = current_job is not None and current_job['process'].poll() is None
+            available = (directory / 'data/factors_filled.csv').exists()
+            buffer = st.checkbox(tr('由验证集选择持仓排名缓冲以控制换手', 'Select a holding-rank buffer on validation to control turnover'), value=True, key=f'buffer-{directory.name}')
+            if st.button(tr('用本次数据拟合 PCA 岭回归对照', 'Fit a PCA-ridge comparison on these data'), disabled=busy or not available):
+                try:
+                    st.session_state['job'] = launch_statistical_baseline(directory, turnover_control=buffer)
+                    st.rerun()
+                except (OSError, ValueError) as error:
+                    st.error(str(error))
+            st.caption(tr('使用同一行情和时间切分，参数只按验证集选择；统计模型在 CPU 上拟合并自动重放检查。', 'Reuse the same data and splits with validation-only parameter selection. The statistical model fits on CPU and automatically replays saved parameters.'))
     elif state == 'failed':
         st.error(f"{label}: {status.get('message', '')}")
     else:
@@ -48,6 +63,8 @@ def job_status():
             st.caption(tr('验证集早停已触发，完整训练流程已结束。', 'Validation early stopping was reached; the full training pipeline is complete.'))
         st.line_chart(history[['train_loss', 'val_loss']])
     log = directory / 'run.log'
+    if not log.exists():
+        log = directory.parent / (directory.name + '.launch.log')
     if log.exists():
         with log.open('rb') as handle:
             handle.seek(max(0, log.stat().st_size - 12000))
@@ -65,12 +82,23 @@ def research_page():
         st.warning(tr('训练依赖缺失，请执行：', 'Missing training dependencies. Run: ') + 'pip install -r requirements.txt')
     active = st.session_state.get('job')
     busy = active is not None and active['process'].poll() is None
+    pool = eligible_pool(ROOT / 'stock_pool.csv')
+    capacity = capacity_estimate()
+    if 'stock_budget' not in st.session_state:
+        st.session_state['stock_budget'] = min(len(pool), max(1, capacity['estimated_capacity']))
+    budget = st.number_input(tr('股票容量预算（可调整，非硬件极限）', 'Stock capacity budget (estimate, not a hardware limit)'), min_value=1, max_value=len(pool), key='stock_budget')
+    plan = sample_plan(len(pool), int(budget))
+    st.info(tr('统计目标 / 容量预算 / 实际抽样：', 'Statistical target / capacity budget / planned sample: ') + f"{plan['required_stocks']} / {budget} / {plan['selected_stocks']}")
+    if not plan['target_met']:
+        st.warning(tr('容量不足以达到目标 ±5 个百分点；当前近似规划误差为 ', 'Capacity is below the ±5 pp target; approximate planning margin is ') + f"±{plan['planned_margin']:.2%}")
+    st.caption(tr('95% 置信、未知比例 p=0.5、有限总体无放回简单随机抽样。仅适用于股票池比例估计，不是收益置信度。容量来自空闲内存和显存的保守估算，未经极限压力验证。', '95% confidence, worst-case p=0.5, finite-population simple random sampling without replacement. This is stock-pool proportion planning, not return confidence. Capacity is a conservative free-memory estimate, not a stress-tested maximum.'))
     with st.form('new_research'):
         left, right = st.columns(2)
         start = left.date_input(tr('数据开始日期', 'Start date'), date.today() - timedelta(days=365 * 3))
         end = right.date_input(tr('数据结束日期', 'End date'), date.today() - timedelta(days=1), max_value=date.today())
-        count = left.number_input(tr('最多使用股票数', 'Maximum stocks'), min_value=10, max_value=100, value=25, step=5)
+        count = int(budget)
         epochs = right.number_input(tr('训练轮数上限', 'Maximum epochs'), min_value=1, max_value=200, value=20)
+        horizon = right.selectbox(tr('版本 / 预测与调仓周期', 'Version / prediction and rebalance horizon'), [1, 3, 5], index=2, format_func=lambda value: f'{value} ' + tr('个交易日', 'trading days'))
         seed = left.number_input(tr('随机种子', 'Random seed'), min_value=0, max_value=2147483647, value=42)
         st.caption(tr('70% 训练 / 15% 验证 / 15% 测试；边界禁入 5 日；验证集早停；按日期分组排序。',
                       '70% train / 15% validation / 15% test; 5-day boundary embargo; validation early stopping; within-date ranking.'))
@@ -81,7 +109,7 @@ def research_page():
         else:
             try:
                 directory = create_experiment({'DATA_START': start.isoformat(), 'DATA_END': end.isoformat(),
-                                                'MAX_STOCKS': count, 'EPOCHS': epochs, 'SEED': seed})
+                                                'MAX_STOCKS': count, 'EPOCHS': epochs, 'SEED': seed, 'LABEL_HORIZON': horizon, 'SAMPLING_METHOD': 'random', 'CONFIDENCE': .95, 'MARGIN': .05})
                 st.session_state['job'] = launch_experiment(directory)
                 st.rerun()
             except (OSError, ValueError) as error:

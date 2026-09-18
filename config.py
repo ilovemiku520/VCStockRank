@@ -7,7 +7,7 @@ MIN_TRADING_DAYS = 180
 MAX_STOCKS = 25
 
 class ModelConfig:
-    PROTOCOL_VERSION = 3
+    PROTOCOL_VERSION = 4
     SEED = 42
     CPU_THREADS = 4
     REUSE_CHECKPOINT = False
@@ -49,6 +49,7 @@ class ModelConfig:
 
 class PortfolioConfig:
     TOP_K = 10
+    HOLD_BUFFER = 0
     REBALANCE_FREQ = 5
     MAX_WEIGHT = 0.1
     RISK_AVERSION = 0.5

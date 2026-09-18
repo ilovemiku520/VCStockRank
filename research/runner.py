@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 import time
 import traceback
-from research.experiments import ROOT, read_json, update_status
+from research.experiments import ROOT, read_json, write_json, update_status
 
 def run(directory):
     directory = Path(directory).resolve()
@@ -12,17 +12,21 @@ def run(directory):
     stage = 'initializing'
     try:
         os.chdir(directory)
+        from research.provenance import capture_source
+        write_json(directory / 'source_snapshot.json', {**capture_source(ROOT), 'timing': 'experiment start'})
         from config import ModelConfig
         from research.pipeline import MultiModalStrategy
         from research.reporting import export_results
         config = ModelConfig()
         settings = read_json(directory / 'settings.json', {})
-        allowed = {'DATA_START', 'DATA_END', 'MAX_STOCKS', 'EPOCHS', 'PATIENCE', 'SEED', 'CPU_THREADS', 'BATCH_SIZE'}
+        allowed = {'DATA_START', 'DATA_END', 'MAX_STOCKS', 'EPOCHS', 'PATIENCE', 'SEED', 'CPU_THREADS', 'BATCH_SIZE', 'LABEL_HORIZON', 'SAMPLING_METHOD', 'CONFIDENCE', 'MARGIN'}
         unknown = settings.keys() - allowed
         if unknown:
             raise ValueError(f'Unknown settings: {sorted(unknown)}')
         for key, value in settings.items():
             setattr(config, key, value)
+        from research.horizons import validate_horizon
+        validate_horizon(getattr(config, 'LABEL_HORIZON', 5))
         config.CACHE_DIR = str(ROOT / 'cache/market')
         strategy = MultiModalStrategy(config)
         steps = [('download', strategy.load_data), ('training', strategy.train_model),
