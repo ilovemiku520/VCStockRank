@@ -2,21 +2,22 @@
 import numpy as np
 import pandas as pd
 
-
-def read_returns(source):
+def read_returns(source, language='zh'):
+    def fail(zh, en):
+        raise ValueError(en if language == 'en' else zh)
     frame = pd.read_csv(source)
     if not {'date', 'return'}.issubset(frame.columns):
-        raise ValueError('CSV 需要 date 和 return 两列；收益使用小数，例如 0.01 表示 1%。')
+        fail('CSV 需要 date 和 return 两列；收益使用小数，例如 0.01 表示 1%。',
+             'CSV requires date and return columns; use decimal returns (0.01 = 1%).')
     dates = pd.to_datetime(frame['date'], errors='coerce')
     values = pd.to_numeric(frame['return'], errors='coerce')
     if frame.empty or dates.isna().any() or not np.isfinite(values).all():
-        raise ValueError('数据不能为空，日期和收益必须完整有效。')
+        fail('数据不能为空，日期和收益必须完整有效。', 'Data must contain valid dates and finite returns.')
     if dates.duplicated().any():
-        raise ValueError('每个日期只能有一条收益记录，请先处理重复日期。')
+        fail('每个日期只能有一条收益记录，请先处理重复日期。', 'Duplicate dates found; use one return record per date.')
     if (values < -1).any():
-        raise ValueError('单日收益不能低于 -100%，请检查收益单位。')
+        fail('单日收益不能低于 -100%，请检查收益单位。', 'Daily returns cannot be below -100%; check the units.')
     return pd.Series(values.to_numpy(), index=pd.DatetimeIndex(dates), name='return').sort_index()
-
 
 def performance(returns):
     equity = (1 + returns).cumprod()
@@ -32,7 +33,6 @@ def performance(returns):
                      if len(returns) > 1 and volatility > 0 else None),
     }
     return metrics, pd.DataFrame({'净值': equity, '回撤': drawdown})
-
 
 def demo_returns():
     rng = np.random.default_rng(42)

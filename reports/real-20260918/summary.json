@@ -1,0 +1,506 @@
+{
+  "protocol_version": 3,
+  "data_source": {
+    "source": "BaoStock",
+    "adjustflag": "2",
+    "adjustment": "forward-adjusted",
+    "requested_start": "2023-09-18",
+    "requested_end": "2026-09-17",
+    "stocks": [
+      {
+        "code": "sz.000001",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:51:29.565080"
+      },
+      {
+        "code": "sz.000002",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:51:31.793773"
+      },
+      {
+        "code": "sz.000006",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:51:34.526543"
+      },
+      {
+        "code": "sz.000007",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:51:39.427654"
+      },
+      {
+        "code": "sz.000008",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:51:45.849701"
+      },
+      {
+        "code": "sz.000009",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:51:53.647434"
+      },
+      {
+        "code": "sz.000011",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:52:00.455583"
+      },
+      {
+        "code": "sz.000012",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:52:05.769464"
+      },
+      {
+        "code": "sz.000014",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:52:07.196627"
+      },
+      {
+        "code": "sz.000017",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:52:07.849555"
+      },
+      {
+        "code": "sz.000019",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:52:10.070253"
+      },
+      {
+        "code": "sz.000020",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:52:14.188289"
+      },
+      {
+        "code": "sz.000021",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:52:15.886994"
+      },
+      {
+        "code": "sz.000025",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:52:16.431375"
+      },
+      {
+        "code": "sz.000026",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:52:17.990382"
+      },
+      {
+        "code": "sz.000027",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:52:25.839417"
+      },
+      {
+        "code": "sz.000028",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:52:29.204821"
+      },
+      {
+        "code": "sz.000029",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:52:35.392693"
+      },
+      {
+        "code": "sz.000030",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:52:37.631311"
+      },
+      {
+        "code": "sz.000031",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:52:39.840302"
+      },
+      {
+        "code": "sz.000032",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:52:46.555053"
+      },
+      {
+        "code": "sz.000034",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:52:50.001722"
+      },
+      {
+        "code": "sz.000035",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:52:51.585793"
+      },
+      {
+        "code": "sz.000036",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:53:07.467724"
+      },
+      {
+        "code": "sz.000037",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:53:10.463999"
+      }
+    ],
+    "failed_stocks": [],
+    "retrieved_at": "2026-09-18T23:11:29.391806"
+  },
+  "data_rows": 18175,
+  "stock_count": 25,
+  "feature_count": 51,
+  "feature_columns": [
+    "pct_chg",
+    "rv_20d",
+    "rsi_14",
+    "ret_5d",
+    "ret_20d",
+    "ret_10d",
+    "ret_excess_20d",
+    "price_position_20d",
+    "max_drawdown_20d",
+    "turnover_ma5",
+    "turnover_ratio",
+    "amihud",
+    "amihud_ma20",
+    "volume_ma5",
+    "volume_ma20",
+    "volume_ratio",
+    "money_flow",
+    "money_flow_ma5",
+    "rsi_28",
+    "macd",
+    "macd_signal",
+    "macd_hist",
+    "bb_position",
+    "atr_14",
+    "atr_ratio",
+    "kdj_k",
+    "kdj_d",
+    "kdj_j",
+    "trend_strength",
+    "seasonal_strength",
+    "residual_strength",
+    "trend_change",
+    "cycle_ratio",
+    "forecast_residual",
+    "rv_5d",
+    "rv_10d",
+    "rv_60d",
+    "vol_term_structure",
+    "vol_term_slope",
+    "vol_change_5d",
+    "vol_change_20d",
+    "vol_clustering",
+    "vol_asymmetry",
+    "var_95",
+    "cvar_95",
+    "hurst",
+    "skew_20d",
+    "kurt_20d",
+    "autocorr_1",
+    "autocorr_5",
+    "rolling_sharpe_20d"
+  ],
+  "sample_counts": {
+    "train": 11825,
+    "validation": 2600,
+    "test": 2625
+  },
+  "split": {
+    "train_end": "2025-10-21 00:00:00",
+    "validation_start": "2025-10-29 00:00:00",
+    "validation_end": "2026-04-02 00:00:00",
+    "test_start": "2026-04-13 00:00:00",
+    "embargo_days": 5
+  },
+  "settings": {
+    "BATCH_SIZE": 256,
+    "CACHE_DIR": "cache/market",
+    "CNN_CHANNELS": 32,
+    "CNN_FILTERS": [
+      3,
+      6,
+      12,
+      24
+    ],
+    "CPU_THREADS": 4,
+    "DATA_END": "2026-09-17",
+    "DATA_START": "2023-09-18",
+    "DEVICE": "cuda",
+    "DROPOUT": 0.1,
+    "EPOCHS": 20,
+    "FEATURE_COLS": [
+      "pct_chg",
+      "rv_20d",
+      "rsi_14",
+      "ret_5d",
+      "ret_20d",
+      "ret_10d",
+      "ret_excess_20d",
+      "price_position_20d",
+      "max_drawdown_20d",
+      "turnover_ma5",
+      "turnover_ratio",
+      "amihud",
+      "amihud_ma20",
+      "volume_ma5",
+      "volume_ma20",
+      "volume_ratio",
+      "money_flow",
+      "money_flow_ma5",
+      "rsi_28",
+      "macd",
+      "macd_signal",
+      "macd_hist",
+      "bb_position",
+      "atr_14",
+      "atr_ratio",
+      "kdj_k",
+      "kdj_d",
+      "kdj_j",
+      "trend_strength",
+      "seasonal_strength",
+      "residual_strength",
+      "trend_change",
+      "cycle_ratio",
+      "forecast_residual",
+      "rv_5d",
+      "rv_10d",
+      "rv_60d",
+      "vol_term_structure",
+      "vol_term_slope",
+      "vol_change_5d",
+      "vol_change_20d",
+      "vol_clustering",
+      "vol_asymmetry",
+      "var_95",
+      "cvar_95",
+      "hurst",
+      "skew_20d",
+      "kurt_20d",
+      "autocorr_1",
+      "autocorr_5",
+      "rolling_sharpe_20d"
+    ],
+    "HIDDEN_DIM": 64,
+    "INPUT_DIM": 51,
+    "LABEL_HORIZON": 5,
+    "LAMBDA_DECOMP": 0.05,
+    "LAMBDA_VOL": 0.3,
+    "LEARNING_RATE": 0.0005,
+    "MAX_STOCKS": 25,
+    "MIN_TRADING_DAYS": 180,
+    "NUM_HEADS": 4,
+    "NUM_LAYERS": 1,
+    "PATIENCE": 5,
+    "PROTOCOL_VERSION": 3,
+    "REUSE_CHECKPOINT": false,
+    "SEED": 42,
+    "SEQ_LEN": 30,
+    "TEST_START_DATE": "2026-04-13T00:00:00",
+    "TEST_WINDOW": 10,
+    "TRAIN_RATIO": 0.7,
+    "TRAIN_WINDOW": 720,
+    "VAL_RATIO": 0.15,
+    "VAL_WINDOW": 10,
+    "WEIGHT_DECAY": 0.0001
+  },
+  "device": "cuda",
+  "gpu": "NVIDIA GeForce RTX 3060",
+  "peak_gpu_memory_mb": 114.146484375,
+  "epochs_completed": 19,
+  "best_epoch": 14,
+  "best_validation_loss": 0.1151695874604311,
+  "elapsed_seconds": 227.0930000001099,
+  "test_first_return": "2026-04-14 00:00:00",
+  "test_last_return": "2026-09-17 00:00:00",
+  "metrics": {
+    "total_return": -0.018777659238895406,
+    "annual_return": -0.04287888500469195,
+    "annual_volatility": 0.231390480505765,
+    "sharpe_ratio": -0.16066366167694077,
+    "max_drawdown": -0.18192382285478592,
+    "calmar_ratio": -0.23569692155665867,
+    "win_rate": 0.5504587155963303,
+    "profit_factor": 0.9881351306615073,
+    "max_consecutive_loss": 5,
+    "max_consecutive_gain": 13,
+    "n_days": 109,
+    "ic": null,
+    "icir": null
+  },
+  "evaluation": {
+    "ic_mean": 0.04774777466642098,
+    "ic_std": 0.2764045452804635,
+    "icir": 0.172745982226783,
+    "ic_positive_ratio": 0.5428571428571428,
+    "decile_metrics": {
+      "group_0": {
+        "annual_return": -0.13000030338822754,
+        "sharpe": -0.19819438825221802
+      },
+      "group_1": {
+        "annual_return": -0.04545953398509461,
+        "sharpe": 0.06889714098009875
+      },
+      "group_2": {
+        "annual_return": -0.1277072895115644,
+        "sharpe": -0.2613441561795352
+      },
+      "group_3": {
+        "annual_return": -0.3540713281314979,
+        "sharpe": -1.2365054983241743
+      },
+      "group_4": {
+        "annual_return": -0.334759792286647,
+        "sharpe": -1.5467912702386548
+      },
+      "group_5": {
+        "annual_return": 0.12848143804847023,
+        "sharpe": 0.45504341189223335
+      },
+      "group_6": {
+        "annual_return": -0.11503410313966067,
+        "sharpe": -0.6572146848421251
+      },
+      "group_7": {
+        "annual_return": 0.3360452100114826,
+        "sharpe": 1.5236885871779458
+      },
+      "group_8": {
+        "annual_return": 0.25574654986290635,
+        "sharpe": 0.8647702236242467
+      },
+      "group_9": {
+        "annual_return": 0.29315321458123655,
+        "sharpe": 1.0005420958200328
+      },
+      "long_short": {
+        "annual_return": 0.24599260881505636,
+        "sharpe": 0.6514847365206857
+      }
+    }
+  },
+  "benchmark": "Daily equal-weight of the same stock pool, before transaction costs; not CSI 300.",
+  "base_git_revision": "5d30f1425a3caaef39d2436ed5bdca6b080101d8",
+  "environment": {
+    "python": "3.12.14",
+    "torch": "2.8.0+cu126",
+    "numpy": "2.5.2",
+    "pandas": "3.0.5",
+    "scipy": "1.18.1",
+    "baostock": "0.9.3"
+  },
+  "artifact_hashes": {
+    "stock_pool.csv": "85a9052a5bd6f6782eb03cd76a8221d112ae2956cedf0daa94e3e529789de8d8",
+    "data/market.parquet": "c58fa569acd1843fc5433dbe4be7046a6ae23aa6a1bcaeab3e92e71d08177172",
+    "logs/best_model.pt": "b0ab21bffd527b00df2f7cf43acbd3f292e400d602f71e00350a6894dcbf77bb",
+    "backtest_returns.csv": "dba38d5e5313db39b8b7ddf6c1402d725b09f151f0c1a676d704b22b5a2a85ca"
+  },
+  "source_hashes": {
+    "research/experiments.py": "bd1c0e970ecbb2e4914c2c22b6889a656fa81c47692d1a2ff74671d7377c2e97",
+    "research/inference.py": "2c1fb7e21f703d8f9b8b5a535b38584d95766850e40ce921f276c5a1900b5d70",
+    "research/pipeline.py": "77c3d105542e1d10dddc79d9d9a75264e2a4084b38a51ac5ff511af3ff5ff891",
+    "research/reporting.py": "37ae9b35bd18662bda55e30fa997d82c9cbbe3a51f52d60f5ca0c3abbda41253",
+    "research/runner.py": "a91dcb3b858d9f84d9688fcdc05d7f4e65908d0cd6f1a49c8d969ad1ffa0e5c9",
+    "research/runtime.py": "5e3e1b98e597229a75e6bc7cfc3dae995a44585a3f1b2a71ade1628c7f7218b2",
+    "research/__init__.py": "c2e00f9c962d542187f79f3cd261a06f4b6f49901b590aede83388aac078664e",
+    "data/clean.py": "4d1d055f338a4e074ca3ed8040312c53f56f3899b52a9f62f0d1c38a87fcc67e",
+    "data/download.py": "2fa06c95fd96bbb065a2b78642dfec5ef6b95638b0fda721a460611d799d3465",
+    "data/features.py": "c0191127740bc4a402714d3b8215987602b052da99964565a109fe11aeef1f32",
+    "data/__init__.py": "9a0e3b834a48ece7a99bc2f4ef8e1633baec0f792f422b314ef2f1f5f22fbaa0",
+    "training/dataset.py": "9e0ae2043864f00ffd011d50e28e9fa5b5240126c51344ffdd957966745db414",
+    "training/loss.py": "6334d7a858262881fac1a6ef16f7ac25975bcfe1e1846c71311a6c48398df05d",
+    "training/sampling.py": "0a714bbc4e8275ceebb0cad94a76e08b273c6f7212acec0e249d2d399c18a07d",
+    "training/trainer.py": "69bdf41471483de3dc875418f041a72014f4f0d6cb181ee6e98017915008895c",
+    "training/__init__.py": "ed4d3273de49e3a8f31403da22964a6218d7d4a31ba020df7f5b07dda1322d6e",
+    "model/decomposition.py": "ab924b7e551e6690fb20568b478d2ef0728be2276503c807b729bff43af11b00",
+    "model/multitask.py": "6a8803fdc8db7200735902be5edb3872482ffca3c06710a4fa6060717d4ada1e",
+    "model/regime_detection.py": "c7c6f79db55fbc0d1916ba3b5158db88a5d2b4b0595ff33a5724a27ba9b9a82e",
+    "model/tpa_module.py": "19aa4597556d7e93568170d5e81dc299156443ab56ee0ae48b1450c0b801af24",
+    "model/vcformer.py": "3cf2113875a6cdf529b9a90a1c0ad427be39ae5de73759f08021d6f30f2216cf",
+    "model/__init__.py": "0841857c7ddfa94bb17ba29c24d7d1e03304aec205718df6f8fb0f6b515d69fc",
+    "portfolio/backtest.py": "01ee4ad6dd389e9546ed3ad11f54bd15ebb7dc0c76886643e81cd8403d63cc12",
+    "portfolio/optimizer.py": "3b5d543a3e22c1c25a6cebb59be7225fcce5ef3d1b2527a5abc35e12e57e1046",
+    "portfolio/simulation.py": "14f0178308f2c52128e7a2aee1a0cea3542bf3ea643c301159113c7d74c4ee77",
+    "portfolio/__init__.py": "e23ec300fb40a87d29764231c54f33d67006989d51ebe3334a81b48a97e51d20",
+    "evaluation/attention_vis.py": "a0623b138a8e5c152baee9eb975611735adc8e5b3426afb6dd2c742e67bb5461",
+    "evaluation/factor_analysis.py": "4fb3d1238be4f11451592bf8c5b70d2f48fd549b87976aee203bcbe9f2a00727",
+    "evaluation/ff_regression.py": "905619ff38a73c7ed01d750dec889c12e77c20e4a90605ff1f94ad70feb0a90f",
+    "evaluation/shap_analysis.py": "42322e71bdd13539d369e4fc4a55171c2d9a886e432bc9c40b5a4c01f650617f",
+    "evaluation/__init__.py": "02e35eb80100bca6f933a35de8c4549959ce777dc61906d085aff0be8293ac51"
+  },
+  "notes": [
+    "Initial market download took about 110 seconds. elapsed_seconds covers the pipeline using those cached source rows.",
+    "19 epochs completed with validation early stopping; the best checkpoint is from epoch 14.",
+    "Market bars and model weights remain local. Hashes refer to the local artifacts used in this run.",
+    "The fixed present-day universe and as-of-download forward adjustments are not point-in-time constituent or corporate-action data.",
+    "Close-to-close simulation does not model limit-up/down, suspension execution constraints or short-sale feasibility."
+  ]
+}

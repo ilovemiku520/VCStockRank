@@ -13,7 +13,6 @@ warnings.filterwarnings('ignore')
 
 from .loss import MultiTaskLoss
 
-
 class Trainer:
     def __init__(self, model, config, train_loader, val_loader=None,
                  test_loader=None, log_dir='logs'):
@@ -45,7 +44,6 @@ class Trainer:
         self.patience_counter = 0
         self.epoch = 0
 
-        # 历史记录：始终包含验证指标，无验证时 append None
         self.history = {
             'train_loss': [],
             'train_rank_loss': [],
@@ -89,6 +87,7 @@ class Trainer:
             self.scheduler.step(val_metrics.get('loss', train_metrics['loss']))
 
             self._update_history(train_metrics, val_metrics, current_lr)
+            self._save_history()
             self._print_progress(epoch, epochs, train_metrics, val_metrics, current_lr)
             self._log_to_tensorboard(epoch, train_metrics, val_metrics)
 
@@ -121,9 +120,11 @@ class Trainer:
             vol_target = batch['vol_target'].squeeze(-1).to(self.device)
 
             outputs = self.model(x)
-            targets = {'rank_target': rank_target, 'vol_target': vol_target}
+            targets = {'rank_target': rank_target, 'vol_target': vol_target, 'dates': batch['date']}
             loss, loss_dict = self.loss_fn(outputs, targets)
 
+            if not torch.isfinite(loss):
+                raise RuntimeError('训练损失非有限，已停止，禁止保存无效结果。')
             self.optimizer.zero_grad()
             loss.backward()
             torch.nn.utils.clip_grad_norm_(self.model.parameters(), 1.0)
@@ -153,7 +154,7 @@ class Trainer:
                 vol_target = batch['vol_target'].squeeze(-1).to(self.device)
 
                 outputs = self.model(x)
-                targets = {'rank_target': rank_target, 'vol_target': vol_target}
+                targets = {'rank_target': rank_target, 'vol_target': vol_target, 'dates': batch['date']}
                 loss, loss_dict = self.loss_fn(outputs, targets)
 
                 total_loss += loss_dict['total_loss']
@@ -228,7 +229,7 @@ class Trainer:
 
     def _save_checkpoint(self, epoch):
         checkpoint = {
-            'epoch': epoch,
+            'epoch': self.epoch + 1,
             'model_state_dict': self.model.state_dict(),
             'optimizer_state_dict': self.optimizer.state_dict(),
             'scheduler_state_dict': self.scheduler.state_dict(),
@@ -236,6 +237,7 @@ class Trainer:
             'history': self.history,
             'config': self.config,
             'input_dim': self.config.INPUT_DIM,
+            'feature_cols': getattr(self.config, 'FEATURE_COLS', None),
             'protocol_version': getattr(self.config, 'PROTOCOL_VERSION', 1),
         }
         fname = f'checkpoint_epoch_{epoch+1}.pt' if isinstance(epoch, int) else 'best_model.pt'
@@ -248,7 +250,7 @@ class Trainer:
             self.model.load_state_dict(checkpoint['model_state_dict'])
             ep = checkpoint.get('epoch')
             if isinstance(ep, int):
-                print(f"Loaded best model from epoch {ep+1}")
+                print(f"Loaded best model from epoch {ep}")
             else:
                 print("Loaded best model (best checkpoint)")
 
@@ -269,7 +271,6 @@ class Trainer:
             self.writer.add_scalar('Loss/val_rank', val_metrics.get('rank_loss', 0), epoch)
             self.writer.add_scalar('Loss/val_vol', val_metrics.get('vol_loss', 0), epoch)
         self.writer.add_scalar('Learning_rate', self.history['learning_rate'][-1], epoch)
-
 
 class RollingWindowTrainer(Trainer):
     def __init__(self, model, config, data_generator, window_size=720,

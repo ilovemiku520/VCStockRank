@@ -7,7 +7,6 @@ from data.features import FactorBuilder
 from training.dataset import create_train_val_test_datasets
 from portfolio.backtest import Backtester
 
-
 def test_forward_fill_never_backfills_from_future():
     index = pd.MultiIndex.from_product(
         [pd.date_range("2024-01-01", periods=3), ["000001"]],
@@ -19,7 +18,6 @@ def test_forward_fill_never_backfills_from_future():
 
     assert np.isnan(cleaned.iloc[0]["close"])
     assert cleaned.iloc[1]["close"] == 10.0
-
 
 def test_factor_at_cutoff_is_invariant_to_future_prices():
     dates = pd.date_range("2024-01-01", periods=130)
@@ -47,7 +45,6 @@ def test_factor_at_cutoff_is_invariant_to_future_prices():
         with_future_changed.loc[dates[110]],
         check_names=False,
     )
-
 
 def test_chronological_split_has_label_embargo():
     dates = pd.date_range("2024-01-01", periods=100)
@@ -77,7 +74,6 @@ def test_chronological_split_has_label_embargo():
     assert (metadata["validation_start"] - metadata["train_end"]).days >= 5
     assert max(sample["date"] for sample in train.samples) == metadata["train_end"]
     assert min(sample["date"] for sample in test.samples) == metadata["test_start"]
-
 
 def test_backtest_applies_signal_to_next_period_return():
     class Config:

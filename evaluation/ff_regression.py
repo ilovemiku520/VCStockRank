@@ -8,12 +8,8 @@ import warnings
 
 warnings.filterwarnings('ignore')
 
-
 class FamaFrenchRegression:
-    """
-    Fama-French因子回归
-    支持三因子和五因子模型
-    """
+    """Regress portfolio excess returns on aligned Fama-French factors."""
 
     def __init__(self, model_type='five_factor'):
         """
@@ -29,25 +25,8 @@ class FamaFrenchRegression:
         self.results = {}
 
     def fit(self, portfolio_returns, factor_data):
-        """
-        拟合Fama-French回归
+        """Fit the estimator on aligned input observations."""
 
-        Parameters:
-        -----------
-        portfolio_returns : Series, 策略日收益率（索引为日期）
-        factor_data : DataFrame, 因子数据，列包含:
-            - 'Mkt-RF': 市场超额收益
-            - 'SMB': 规模因子
-            - 'HML': 价值因子
-            - 'RMW': 盈利因子 (五因子)
-            - 'CMA': 投资因子 (五因子)
-            - 'RF': 无风险利率 (可选)
-
-        Returns:
-        --------
-        results : dict, 包含alpha, beta, R2, t-stat等
-        """
-        # 对齐索引
         common_idx = portfolio_returns.index.intersection(factor_data.index)
         if len(common_idx) < 20:
             print("Warning: Insufficient overlapping observations")
@@ -55,13 +34,11 @@ class FamaFrenchRegression:
 
         y = portfolio_returns.loc[common_idx].values
 
-        # 构建X
         if self.model_type == 'three_factor':
             required_cols = ['Mkt-RF', 'SMB', 'HML']
         else:
             required_cols = ['Mkt-RF', 'SMB', 'HML', 'RMW', 'CMA']
 
-        # 检查是否存在
         available_cols = [c for c in required_cols if c in factor_data.columns]
         if len(available_cols) < len(required_cols):
             print(f"Missing factor columns: {set(required_cols) - set(available_cols)}")
@@ -69,14 +46,11 @@ class FamaFrenchRegression:
 
         X = factor_data.loc[common_idx, available_cols].values
 
-        # 添加常数项
         X = sm.add_constant(X)
 
-        # OLS回归
         model = sm.OLS(y, X)
         results = model.fit()
 
-        # 提取结果
         self.alpha = results.params[0]
         self.beta = results.params[1:]
         self.r_squared = results.rsquared
@@ -98,29 +72,19 @@ class FamaFrenchRegression:
             'model_type': self.model_type
         }
 
-        # 计算信息比率
         self.information_ratio = self.alpha / (self.resid.std() + 1e-6) * np.sqrt(252)
         self.results['information_ratio'] = self.information_ratio
 
-        # 计算年化alpha
         self.results['annualized_alpha'] = self.alpha * 252
         self.results['alpha_t_stat'] = self.t_stats[0] if len(self.t_stats) > 0 else None
 
         return self.results
 
     def fit_from_ff_data(self, portfolio_returns, ff_data_path=None):
-        """
-        从Fama-French数据文件加载因子并拟合
+        """Align returns with factor dates before fitting the regression."""
 
-        Parameters:
-        -----------
-        portfolio_returns : Series
-        ff_data_path : str, CSV文件路径（可选）
-        """
-        # 如果未提供路径，使用内置数据（示例）
         if ff_data_path is None:
-            # 这里需要实际数据，我们构造一个示例
-            # 实际使用时，可以从Kenneth French网站下载
+
             print("Please provide FF data file path")
             return {}
 
@@ -128,7 +92,7 @@ class FamaFrenchRegression:
         return self.fit(portfolio_returns, ff_data)
 
     def summary(self):
-        """打印回归结果摘要"""
+        """Return a compact statistical summary."""
         if not self.results:
             print("No results available, run fit() first")
             return
@@ -153,7 +117,7 @@ class FamaFrenchRegression:
         print("=" * 60)
 
     def plot_residuals(self, save_path=None):
-        """绘制残差图"""
+        """Plot fitted-model residual diagnostics."""
         try:
             import matplotlib.pyplot as plt
             if not hasattr(self, 'resid'):
@@ -162,23 +126,19 @@ class FamaFrenchRegression:
 
             fig, axes = plt.subplots(2, 2, figsize=(12, 10))
 
-            # 残差时序图
             axes[0, 0].plot(self.resid)
             axes[0, 0].axhline(y=0, color='r', linestyle='--')
             axes[0, 0].set_title('Residuals over Time')
             axes[0, 0].set_xlabel('Time')
             axes[0, 0].set_ylabel('Residual')
 
-            # 残差直方图
             axes[0, 1].hist(self.resid, bins=30, edgecolor='black')
             axes[0, 1].set_title('Residual Distribution')
             axes[0, 1].set_xlabel('Residual')
 
-            # Q-Q图
             stats.probplot(self.resid, dist="norm", plot=axes[1, 0])
             axes[1, 0].set_title('Q-Q Plot')
 
-            # 残差自相关
             from statsmodels.graphics.tsaplots import plot_acf
             plot_acf(self.resid, ax=axes[1, 1], lags=20)
             axes[1, 1].set_title('Autocorrelation of Residuals')

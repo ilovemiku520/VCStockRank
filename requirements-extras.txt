@@ -1,0 +1,5 @@
+# Optional explanation and regression plots, not needed by the core pipeline.
+matplotlib>=3.7
+seaborn>=0.12
+statsmodels>=0.14
+shap>=0.42

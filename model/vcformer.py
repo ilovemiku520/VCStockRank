@@ -17,9 +17,8 @@ class PositionalEncoding(nn.Module):
     def forward(self, x):
         return x + self.pe[:x.size(1)]
 
-
 class VariableCentricAttention(nn.Module):
-    """标准多头注意力（兼容所有形状）"""
+    """Apply standard multihead attention along the sequence dimension."""
     def __init__(self, d_model, nhead, dropout=0.1):
         super().__init__()
         self.attn = nn.MultiheadAttention(d_model, nhead, dropout=dropout, batch_first=True)
@@ -27,7 +26,6 @@ class VariableCentricAttention(nn.Module):
     def forward(self, x):
         attn_output, attn_weights = self.attn(x, x, x)
         return attn_output, attn_weights
-
 
 class VariableCentricTransformer(nn.Module):
     def __init__(self, d_model, nhead, num_layers=2, dropout=0.1):

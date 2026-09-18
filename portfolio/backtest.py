@@ -6,7 +6,6 @@ from tqdm import tqdm
 import warnings
 warnings.filterwarnings('ignore')
 
-
 class BacktestResult:
     def __init__(self, returns, positions, weights, metrics=None):
         self.returns = returns
@@ -34,7 +33,6 @@ class BacktestResult:
             'metrics': self.metrics
         }
 
-
 class Backtester:
     def __init__(self, config, benchmark_returns=None, verbose=True):
         self.config = config
@@ -50,165 +48,10 @@ class Backtester:
         )
 
     def run(self, predictions, price_data):
-        # ---------- 强制转换日期索引为 Timestamp ----------
-        # 1. 转换价格数据的日期索引
-        old_dates = price_data.index.get_level_values('date')
-        new_dates = pd.to_datetime(old_dates).normalize()
-        # 重建 MultiIndex
-        new_index = pd.MultiIndex.from_arrays(
-            [new_dates, price_data.index.get_level_values('stock')],
-            names=['date', 'stock'],
-        )
-        price_data.index = new_index
-        price_dates = set(price_data.index.get_level_values('date'))
-
-        # 2. 统一预测日期
-        all_dates_raw = sorted(predictions.keys())
-        all_dates = [pd.Timestamp(d).normalize() for d in all_dates_raw]
-
-        # 3. 找出共有日期
-        valid_dates = [d for d in all_dates if d in price_dates]
-
-        if not valid_dates:
-            print("错误: 没有价格数据与预测日期匹配")
-            print(f"  预测日期范围: {all_dates[0]} ~ {all_dates[-1]}")
-            print(f"  价格日期范围: {min(price_dates)} ~ {max(price_dates)}")
-            print(f"  预测日期示例: {all_dates[:5]}")
-            print(f"  价格日期示例: {list(price_dates)[:5]}")
-            return BacktestResult(pd.Series(), {}, {})
-
-        if self.verbose:
-            print(f"  回测日期范围: {valid_dates[0]} ~ {valid_dates[-1]}, 共 {len(valid_dates)} 天")
-            price_stocks = price_data.index.get_level_values('stock').unique()
-            print(f"  价格数据中的股票数: {len(price_stocks)}")
-            print(f"  价格数据索引示例 (转换后): {price_data.index[:3].tolist()}")
-
-        portfolio_returns = []
-        return_dates = []
-        portfolio_weights = []
-        portfolio_positions = []
-        trade_log = []
-        current_weights = None
-        current_positions = None
-        pending_cost = 0.0
-
-        all_stocks = price_data.index.get_level_values('stock').unique().tolist()
-
-        # 追踪上一个有效交易日
-        last_valid_date = None
-
-        iterator = tqdm(valid_dates, desc="回测进度") if self.verbose else valid_dates
-
-        total_attempts = 0
-        price_missing_count = 0
-
-        for i, date in enumerate(iterator):
-            # 获取该日期的预测
-            preds = predictions.get(date)
-            if preds is None:
-                # 尝试用字符串格式获取
-                alt_date = date.strftime('%Y-%m-%d')
-                preds = predictions.get(alt_date)
-                if preds is None:
-                    continue
-
-            # 先用上一交易日收盘后确定的持仓计算当日收益，避免信号与收益同日错位。
-            if i > 0 and current_positions is not None and last_valid_date is not None:
-                prev_date = last_valid_date
-                today_returns = []
-                for stock, weight in current_positions.items():
-                    total_attempts += 1
-                    try:
-                        prev_price = price_data.loc[(prev_date, stock), 'close']
-                        curr_price = price_data.loc[(date, stock), 'close']
-                        ret = curr_price / prev_price - 1
-                        today_returns.append(ret * weight)
-                    except KeyError as e:
-                        price_missing_count += 1
-                        if self.verbose and price_missing_count <= 10:
-                            print(f"   ⚠️ 价格缺失: {stock} @ {date} - {e}")
-                        continue
-                    except Exception as e:
-                        if self.verbose:
-                            print(f"   ⚠️ 其他异常: {stock} @ {date} - {e}")
-                        continue
-
-                if today_returns:
-                    daily_return = np.sum(today_returns) - pending_cost
-                    portfolio_returns.append(daily_return)
-                    return_dates.append(date)
-                    if self.verbose and i % 50 == 0:
-                        print(f"  日期 {date}: 持仓 {len(current_positions)} 只, 日收益 {daily_return:.6f}")
-                else:
-                    if self.verbose:
-                        print(f"   ⚠️ 日期 {date} 无有效收益, 设为 0")
-                    portfolio_returns.append(-pending_cost)
-                    return_dates.append(date)
-                pending_cost = 0.0
-
-            # 仅按配置频率调仓；信号在当日收盘后生效，从下一交易日开始计收益。
-            should_rebalance = current_positions is None or i % self.config.REBALANCE_FREQ == 0
-            if should_rebalance:
-                stocks_today = list(preds.keys())
-                if len(stocks_today) < 5:
-                    if self.verbose:
-                        print(f"  警告: {date} 只有 {len(stocks_today)} 只股票，本次不调仓")
-                else:
-                    scores = np.array([preds[s]['score'] for s in stocks_today])
-                    vols = np.array([preds[s]['vol'] for s in stocks_today])
-                    top_k = min(self.config.TOP_K, len(stocks_today))
-                    top_indices = np.argsort(scores)[-top_k:][::-1]
-                    selected_stocks = [stocks_today[j] for j in top_indices]
-                    selected_scores = scores[top_indices]
-                    selected_vols = vols[top_indices]
-                    target_weights = self.optimizer.optimize(
-                        selected_scores, selected_vols, cov_matrix=None
-                    )
-
-                    full_weights = np.zeros(len(all_stocks))
-                    for stock, weight in zip(selected_stocks, target_weights):
-                        try:
-                            full_weights[all_stocks.index(stock)] = weight
-                        except ValueError:
-                            continue
-                    turnover = (
-                        np.abs(full_weights).sum()
-                        if current_weights is None
-                        else np.abs(full_weights - current_weights).sum() / 2
-                    )
-                    pending_cost = turnover * (self.transaction_cost + self.slippage)
-                    current_positions = dict(zip(selected_stocks, target_weights))
-                    current_weights = full_weights
-                    portfolio_positions.append({'date': date, **current_positions})
-                    portfolio_weights.append({'date': date, **current_positions})
-                    trade_log.append({'date': date, 'turnover': float(turnover), 'cost': float(pending_cost)})
-
-            last_valid_date = date
-
-            if i % 50 == 0 and self.verbose:
-                print(f"  已处理 {i+1}/{len(valid_dates)} 天，当前持仓 {len(current_positions)} 只")
-
-        if self.verbose and total_attempts > 0:
-            missing_rate = price_missing_count / total_attempts * 100
-            print(f"  价格缺失率: {missing_rate:.1f}% ({price_missing_count}/{total_attempts})")
-            if missing_rate > 50:
-                print("   ⚠️ 价格缺失率过高，请检查股票代码是否与价格数据中的一致。")
-
-        if portfolio_returns:
-            returns_series = pd.Series(
-                portfolio_returns,
-                index=return_dates
-            )
-        else:
-            returns_series = pd.Series()
-
-        metrics = self._compute_metrics(returns_series)
-        return BacktestResult(
-            returns=returns_series,
-            positions=portfolio_positions,
-            weights=portfolio_weights,
-            metrics=metrics
-        )
+        from .simulation import simulate
+        result = simulate(self.config, self.optimizer, predictions, price_data)
+        result.metrics = self._compute_metrics(result.returns)
+        return result
 
     def _compute_metrics(self, returns):
         if returns.empty:
@@ -225,7 +68,7 @@ class Backtester:
         sharpe_ratio = np.sqrt(252) * excess_return.mean() / (returns.std() + 1e-6)
 
         cumsum = (1 + returns).cumprod()
-        running_max = cumsum.expanding().max()
+        running_max = cumsum.cummax().clip(lower=1.0)
         drawdown = (cumsum - running_max) / running_max
         max_drawdown = drawdown.min()
 
@@ -315,7 +158,6 @@ class Backtester:
         """
         print(report)
         return report
-
 
 def prepare_backtest_data(factors_df, predictions_df):
     returns_dict = {}
