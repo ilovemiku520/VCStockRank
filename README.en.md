@@ -2,39 +2,15 @@
 
 [简体中文](README.md) | **English**
 
-A Python prototype for A-share cross-sectional ranking research: real market-data downloads, causal features, GPU multitask training, out-of-sample backtests and a bilingual research dashboard.
+A-share ranking research with real market data, GPU deep learning, a multivariate statistical baseline, replayable backtests and a bilingual dashboard.
 
-> This is a research prototype, not a live-trading system. Historical simulations are not executable investment returns or investment advice.
+**Two versions:** Overnight (1 trading day) and Swing (3 / 5 trading days), switchable for both real experiments and synthetic demos. “Overnight” here means daily close-to-close simulation, not intraday or overnight-gap-only trading. The original 5-day model was not a long-term investment model.
 
-## Completed real-data experiment
+[Demo guide](docs/DEMO.md) · [Algorithms and mathematics](docs/ALGORITHMS.md) · [Scientific sampling](docs/SAMPLING.md) · [Experiment analysis](docs/EXPERIMENT_ANALYSIS.md)
 
-On 2026-09-18, an **NVIDIA GeForce RTX 3060 12GB** completed data preparation, training, best-checkpoint restoration, held-out inference, backtesting and evaluation. A separate checkpoint replay verified the saved results.
+## Quick start
 
-| Item | Observed result |
-| --- | --- |
-| Source / adjustment | BaoStock daily bars / forward-adjusted (adjustflag=2) |
-| Requested and observed dates | 2023-09-18 to 2026-09-17 |
-| Stocks / trading dates / daily records | 25 / 727 / 18,175 |
-| Features / history window | 51 / 30 trading days, ending before the target date |
-| Random seed | 42 |
-| Train / validation / test samples | 11,825 / 2,600 / 2,625 |
-| Training | Maximum 20 epochs; validation early stop at 19; best epoch 14 |
-| Framework | PyTorch 2.8.0+cu126 |
-| Return interval / observations | 2026-04-14 to 2026-09-17 / 109 days |
-| Total return after costs and slippage | **-1.88%** |
-| Annualized return / Sharpe | -4.29% / -0.161 |
-| Maximum drawdown | **18.19%** |
-| Mean Spearman IC / ICIR | 0.0477 / 0.1727 |
-
-The initial market download took about 110 seconds. Feature preparation, training, backtesting and reporting using those cached rows took about 227 seconds. Runtime depends on local load. There are 2,750 prediction rows; the final five dates lack complete forward labels, so IC and labeled test samples cover fewer dates than trading signals.
-
-[Summary and hashes](reports/real-20260918/summary.json) · [Daily returns](reports/real-20260918/backtest_returns.csv) · [Training history](reports/real-20260918/training_history.csv) · [Replay validation](reports/real-20260918/replay_validation.json)
-
-The repository contains compact result artifacts, a universe snapshot and source metadata. Full market bars, features and weights remain in local `runs/` directories. Checkpoint replay reproduced 2,750 predictions and 109 daily returns with maximum absolute differences below 1e-12. This does not guarantee bitwise-identical retraining on different hardware.
-
-## Open the dashboard
-
-Python 3.11 or 3.12 is recommended. From the project directory:
+Use Python 3.11 or 3.12 from the repository directory:
 
 ```bash
 python -m venv .venv
@@ -45,93 +21,87 @@ python -m pip install -r requirements-ui.txt
 python -m streamlit run app.py
 ```
 
-Open http://127.0.0.1:8501 . Use **语言 / Language** in the sidebar to switch between Simplified Chinese and English. README language links are at the top. Interface controls and explanations switch languages; company names, raw logs and experiment field names remain in their original form.
+Open http://127.0.0.1:8501 . Browsing demos and committed reports does not require PyTorch.
 
-- **Overview:** real local or archived results by default, CSV imports, date filters, equity and equal-weight reference curves, drawdowns, training curves, daily IC and downloads.
-- **New experiment:** configure dates, universe size, epoch limit and seed; inspect pipeline stages, training progress and experiment history.
-- **Stock universe:** search and export tickers without losing leading zeros. Training filters excluded names such as ST stocks and uses the first N eligible rows; UI searches do not change the universe.
+1. Switch **语言 / Language** in the sidebar; the README links switch documentation language.
+2. In **Overview**, choose Overnight or Swing, then real experiments, uploaded CSV or synthetic demo.
+3. Inspect equity, drawdown, monthly returns, cost drag, training, IC and research recommendations; download evidence.
+4. **Version comparison** shows real 1 / 3 / 5-day runs and matched deep/statistical model comparisons.
+5. **Start research** shows the statistical requirement, adjustable capacity budget, planned sample and precision shortfall before training.
 
-Viewing the interface and saved reports does not require PyTorch. Uploaded CSVs need `date,return` columns, one observation per day and decimal net returns (0.01 = 1%). Invalid dates, duplicates, empty data and non-finite returns are rejected. Random demo data is explicitly labeled.
+Demos have fixed seeds and are explicitly synthetic. Uploaded CSVs require `date,return`, one row per day, with decimal net returns (`0.01` = 1%). Duplicate dates, empty data and nonfinite values are rejected. Stock names, raw logs and some artifact fields retain their original language.
 
-## Real training and GPU setup
+## Real experiments, including losses
+
+Three protocol-v4 GPU experiments and three statistical baselines completed on September 19, 2026 (Beijing time), with independent checkpoint replay. All used the same 25-stock pilot pool, 727 dates and 18,175 forward-adjusted BaoStock daily bars from 2023-09-18 through 2026-09-17. The return interval contains 109 days, 2026-04-14 through 2026-09-17.
+
+| Method | 1-day net return | 3-day net return | 5-day net return |
+| --- | ---: | ---: | ---: |
+| VCformer-TPA deep model | −5.38% | −1.88% | −13.31% |
+| PCA-ridge + historical EWMA risk | +0.15% | +4.01% | −0.52% |
+| Same-pool daily equal-weight reference, before costs | −7.30% | −7.30% | −7.30% |
+
+These are **exploratory results**: a legacy first-25 pool, one seed and an already-inspected test period. Do not choose a model from this table and call the same dates independent final validation. Block intervals for the statistical models’ mean daily differences include zero; a stable advantage has not been established. See [costs, drawdowns and monthly analysis](docs/EXPERIMENT_ANALYSIS.md).
+
+[1-day deep](reports/shortline-20260919-1d/summary.json) · [3-day deep](reports/shortline-20260919-3d/summary.json) · [5-day deep](reports/shortline-20260919-5d/summary.json) · [1-day statistical](reports/statistical-shortline-20260919-1d/summary.json) · [3-day statistical](reports/statistical-shortline-20260919-3d/summary.json) · [5-day statistical](reports/statistical-shortline-20260919-5d/summary.json)
+
+The legacy protocol-v3 run returning −1.88% remains in [real-20260918](reports/real-20260918/summary.json). Protocol v4 changes risk labels to horizon-specific forward RMS daily returns, allowing a valid 1-day target. Comparing v3 with v4 does not isolate holding period alone.
+
+## Algorithms and sampling
+
+- **Deep model:** 51 causal features, a 30-day historical window, within-date ranking and an auxiliary future-risk task. CUDA is used automatically when available.
+- **Statistical model:** last value, mean and standard deviation form 153 historical inputs. Train-only standardization and full-SVD PCA retain 95% of feature variance; SVD ridge handles collinearity with validation-selected penalties. Historical EWMA estimates risk; moving blocks describe time-dependent uncertainty. See [formulas and limitations](docs/ALGORITHMS.md).
+- **New sampling:** seeded simple random sampling without replacement; count is the smaller of statistical requirement and adjustable capacity budget. Defaults: 95% confidence, ±5 percentage-point proportion margin, worst-case proportion 50%. The 4,992-stock eligible frame requires 357 stocks. The current 227-stock budget plans about ±6.36 pp, missing the target. This is stock-pool proportion planning, **not return confidence**.
+
+## Training and replay
 
 ```bash
 python -m pip install -r requirements.txt -r requirements-ui.txt
-python -m streamlit run app.py
-```
-
-The pipeline selects CUDA when PyTorch can access it, otherwise CPU. Install a CUDA-enabled PyTorch build compatible with the driver first. This run used cu126, for example:
-
-```bash
-python -m pip install torch==2.8.0 --index-url https://download.pytorch.org/whl/cu126
-python -c "import torch; print(torch.__version__, torch.cuda.is_available())"
-```
-
-Consult the [official PyTorch installation guide](https://pytorch.org/get-started/locally/) for other hardware. The core workflow does not need torchvision, AKShare or XGBoost. Optional explanation and regression plotting dependencies are in `requirements-extras.txt`.
-
-The same isolated pipeline is available from the command line:
-
-```bash
-python run_experiment.py --start 2023-09-18 --end 2026-09-17 --stocks 25 --epochs 20 --seed 42
+python run_experiment.py --start 2023-09-18 --end 2026-09-17 --horizon 1 --stocks 227 --epochs 20 --seed 42
 python verify_experiment.py runs/<experiment-id>
+# Exact source data and splits, with validation-only parameter selection
+python compare_models.py runs/<experiment-id>
+python compare_models.py runs/statistical-<experiment-id> --verify
+# Matched pilot comparison, retaining legacy first-25 selection
+python compare_horizons.py --start 2023-09-18 --end 2026-09-17 --stocks 25 --epochs 20 --name shortline-my-run
 ```
 
-Each experiment trains from scratch in its own directory. Source rows are cached by ticker, date range and adjustment under `cache/market/`. Compatibility entry points `main.py` and `backtest_main.py` remain available. To backtest independently, run `python ../../backtest_main.py` from the experiment directory.
+Omit `--stocks` for an available-memory estimate. An explicit stock budget is still capped at the statistical requirement; use `--sampling legacy` only for first-N reproduction. Each run saves independent settings, pool snapshot, prices, model, logs and evidence under `runs/`. Exact replay requires the original local snapshot; source revisions and adjusted-price updates can change fresh downloads.
 
-Closing the browser does not stop background training. The stop button controls jobs launched in the current session; completed artifacts remain available after reopening. This is a local, single-user dashboard bound to 127.0.0.1 by default.
+Real deep runs used an RTX 3060 12GB and PyTorch 2.8.0+cu126. Deep training falls back to CPU; statistical fitting uses CPU. Install a driver-compatible build using the [official PyTorch instructions](https://pytorch.org/get-started/locally/). Closing the page does not stop a worker; the stop button controls only jobs launched by the current session. The dashboard defaults to localhost and is intended for local single-user use.
 
-## Evaluation protocol v3 and fixes
+## Evaluation protocol
 
-1. Split trading dates into 70% training, 15% validation and 15% test, purging five forward-label dates at both boundaries.
-2. Historical windows end before the target date. No future backfilling is used. Panel feature clipping and normalization are cross-sectional by date; single-series processing uses expanding historical statistics.
-3. Batches retain daily cross-sections. Ranking compares stocks only within the same date and excludes tied labels. Date metadata uses collatable strings.
-4. Early stopping and checkpoint selection use validation loss only. Test dates are excluded from model selection. Checkpoints store feature order and model settings; both entry points share batched inference.
-5. Defaults select the top 10 stocks, rebalance every five trading dates and cap a position at 10%. Weights drift with prices; infeasible allocation caps leave cash; dates without new signals still accrue returns.
-6. Both buys and sells incur 0.1% costs plus 0.05% slippage on traded notional, including initial entry. Signals use a research close-to-next-close approximation. No pointless trade is placed on the last date.
-7. Drawdown includes initial capital. Forward five-day group returns use non-overlapping windows. The dashboard reference is the same pool's daily equal-weight return before costs, **not CSI 300**.
+Chronological 70% / 15% / 15% splits use a common 5-day embargo at both boundaries. Features end before the signal date and never backfill from the future. Deep checkpoints are selected by validation loss; ridge penalties by validation IC. Test metrics do not enter these automated choices, but inspected dates are no longer independent confirmation of new hypotheses.
 
-Protocol v3 changes ranking and portfolio accounting; v1/v2 checkpoints must be retrained. Historical full-sample performance claims were withdrawn and are not comparable with this run.
+Prediction and rebalancing horizons are 1 / 3 / 5 days. Default top-10 holdings and a 10% cap effectively impose equal weights when fully invested; do not attribute algorithm differences to the risk estimator alone. Weights drift with prices; buys and sells incur 0.1% costs plus 0.05% slippage, including entry. No final-day rebalance is created. Drawdown includes starting capital. IC uses horizon-specific labels; quantile returns use nonoverlapping periods. The reference is same-pool daily equal-weight gross return, **not CSI 300**.
 
-## Code layout
+## Structure and validation
 
 ```text
-app.py                     Thin dashboard entry point
-ui/                        Language helpers, pages, charts and job views
-research/experiments.py     Experiment directories, processes and durable status
-research/pipeline.py        Data, training, inference and evaluation orchestration
-research/inference.py       Shared feature selection and batched predictions
-research/runner.py          Staged execution and failure reporting
-research/reporting.py       Results, provenance, environment and file hashes
-data/                      BaoStock downloads, caching, cleaning and features
-model/                     Decomposition, attention, temporal CNNs and task heads
-training/                  Datasets, date-aware sampling, losses and trainer
-portfolio/                 Allocation, holdings simulation and metrics
-evaluation/                IC, grouped returns and optional explanations
-reports/                   Compact, versioned evidence from real runs
-runs/                      Local market data, weights, logs and results
-tests/                     Temporal, ranking, portfolio, UI and GPU checks
+app.py / ui/                Bilingual dashboard, versions, comparisons and analysis
+research/pipeline.py        Deep-model experiment workflow
+research/statistical.py     PCA, SVD ridge, EWMA and block intervals
+research/sampling.py        Sampling frame, statistical count and capacity budget
+research/analysis.py        Monthly returns, drawdown, costs and diagnostics
+research/experiments.py     Isolated workers and persistent status
+research/reporting.py       Evidence, source metadata, environment and hashes
+data/ / training/ / model/  Downloads, causal labels, features and deep model
+portfolio/ / evaluation/    Shared simulation, costs and evaluation
+reports/ / docs/            Compact real evidence and guides
+runs/                      Local prices, factors and checkpoints, not committed
+tests/                     Time integrity, matrices, sampling, backtests and UI
 ```
 
-Python comments and docstrings are concise English. Core, UI and optional-analysis dependencies are separate. Importing configuration no longer prints settings or globally changes CPU thread counts; runtime initialization explicitly sets threads and random seeds.
-
-## Validation
+Python comments and docstrings are English. Core, UI and optional analysis dependencies are separate. Windows and Linux CI use the same suite:
 
 ```bash
 python -m pip install -r requirements-dev.txt
 python -m pytest -q
 ```
 
-Tests cover date collation, within-date ranking, matching inference windows, weight drift, cash constraints, first-day costs, CSV validation, language switching and failed jobs. GPU forward/backward checks skip automatically on CPU-only hosts. CI runs on Windows and Linux.
+## Limitations
 
-## Known limitations
-
-- A fixed present-day universe can introduce survivorship bias. These 25 stocks do not represent the entire market.
-- Forward adjustments are as of download time; point-in-time constituents and corporate-action snapshots are unavailable.
-- Close-price simulations omit limit-up/down execution, suspension constraints, tax differences and actual execution delays.
-- Only one chronological split and one seed have been evaluated; full walk-forward robustness remains future work.
-- VCFormer is a historical module name. Its current attention implementation is standard sequence-axis multihead attention, not evidence for a validated variable-axis-specific architecture.
-- This experiment lost money. Treat it as an inspectable research baseline, not a return promise.
-
-## License
+Current-universe and as-of-download adjustment biases remain; random sampling does not remove them. Simulations omit limit-up/down execution, suspension constraints, tax differences and real execution latency. Independent multi-window, multi-seed confirmation is not complete. This is an auditable research prototype, not a live-trading system or a return promise.
 
 [MIT License](LICENSE) · [@ilovemiku520](https://github.com/ilovemiku520)

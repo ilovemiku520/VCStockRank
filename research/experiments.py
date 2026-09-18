@@ -44,7 +44,17 @@ def create_experiment(settings, root=ROOT, name=None):
     directory = Path(root) / 'runs' / run_id
     directory.mkdir(parents=True, exist_ok=False)
     (directory / 'data').mkdir()
-    shutil.copy2(Path(root) / 'stock_pool.csv', directory / 'stock_pool.csv')
+    if settings.get('SAMPLING_METHOD') == 'random':
+        from research.sampling import eligible_pool, sample_plan, draw_pool
+        pool = eligible_pool(Path(root) / 'stock_pool.csv')
+        plan = sample_plan(len(pool), settings['MAX_STOCKS'], settings.get('CONFIDENCE', .95), settings.get('MARGIN', .05))
+        selected = draw_pool(pool, plan['selected_stocks'], settings.get('SEED', 42))
+        selected.to_csv(directory / 'stock_pool.csv', index=False)
+        write_json(directory / 'sampling_plan.json', {**plan, 'seed': settings.get('SEED', 42),
+                    'frame': 'Deduplicated Shanghai/Shenzhen A shares, excluding ST and delisting names.'})
+        settings = {**settings, 'MAX_STOCKS': len(selected)}
+    else:
+        shutil.copy2(Path(root) / 'stock_pool.csv', directory / 'stock_pool.csv')
     write_json(directory / 'settings.json', settings)
     update_status(directory, 'created', 'pending')
     return directory

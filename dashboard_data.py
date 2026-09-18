@@ -34,7 +34,7 @@ def performance(returns):
     }
     return metrics, pd.DataFrame({'净值': equity, '回撤': drawdown})
 
-def demo_returns():
-    rng = np.random.default_rng(42)
+def demo_returns(horizon=5):
+    rng = np.random.default_rng(42 + horizon)
     return pd.Series(rng.normal(.0003, .009, 180),
                      index=pd.bdate_range('2025-01-02', periods=180), name='return')

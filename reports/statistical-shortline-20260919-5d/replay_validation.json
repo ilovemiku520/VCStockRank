@@ -1,0 +1,7 @@
+{
+  "checkpoint_replay": "passed",
+  "prediction_rows": 2750,
+  "return_days": 109,
+  "max_score_abs_error": 9.985502008591496e-17,
+  "max_return_abs_error": 9.8879238130678e-17
+}

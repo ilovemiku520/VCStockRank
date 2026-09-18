@@ -1,0 +1,39 @@
+{
+  "method": "PCA (95% train variance) + SVD ridge + historical EWMA RMS",
+  "selected_alpha": 1.0,
+  "validation_trials": [
+    {
+      "alpha": 0.0001,
+      "validation_ic": -0.013172618779992038,
+      "validation_mse": 0.0018066104051229948
+    },
+    {
+      "alpha": 0.001,
+      "validation_ic": -0.012795399845080798,
+      "validation_mse": 0.0018064969164413626
+    },
+    {
+      "alpha": 0.01,
+      "validation_ic": -0.012432999420060844,
+      "validation_mse": 0.001805389853223898
+    },
+    {
+      "alpha": 0.1,
+      "validation_ic": -0.008313350517016344,
+      "validation_mse": 0.0017965062961493345
+    },
+    {
+      "alpha": 1.0,
+      "validation_ic": 0.026553590219758116,
+      "validation_mse": 0.0017693548466751925
+    }
+  ],
+  "selection": "Highest validation mean daily Spearman IC; MSE breaks ties.",
+  "input_features": 153,
+  "components": 62,
+  "explained_variance_ratio": 0.9508486595043122,
+  "retained_condition_number": 10.58465484443634,
+  "effective_degrees_of_freedom": 30.928759679130902,
+  "ewma_half_life": 10,
+  "refit_on_validation": false
+}

@@ -1,0 +1,84 @@
+{
+  "start": "2026-04-14",
+  "end": "2026-09-17",
+  "days": 109,
+  "total_return": -0.053790668034281786,
+  "max_drawdown": -0.16480067794219722,
+  "drawdown_peak": "2026-05-11",
+  "drawdown_trough": "2026-07-13",
+  "drawdown_recovery": null,
+  "positive_day_ratio": 0.5045871559633027,
+  "average_up_day": 0.009945915732008606,
+  "average_down_day": -0.010974452714524248,
+  "reference_return": -0.07295456040371495,
+  "return_difference_pp": 1.9163892369433166,
+  "relative_wealth_return": 0.02067200975367367,
+  "monthly": [
+    {
+      "month": "2026-04",
+      "strategy": 0.003320368562615972,
+      "reference": 0.018692653979272444,
+      "difference_pp": -1.5372285416656473
+    },
+    {
+      "month": "2026-05",
+      "strategy": -0.09336824289870749,
+      "reference": -0.042812411251763605,
+      "difference_pp": -5.055583164694388
+    },
+    {
+      "month": "2026-06",
+      "strategy": -0.05746061288285942,
+      "reference": -0.04798224017197217,
+      "difference_pp": -0.9478372710887251
+    },
+    {
+      "month": "2026-07",
+      "strategy": 0.10282571488714165,
+      "reference": -0.03232772384428895,
+      "difference_pp": 13.51534387314306
+    },
+    {
+      "month": "2026-08",
+      "strategy": 0.03072573171481796,
+      "reference": 0.08831726787372829,
+      "difference_pp": -5.759153615891033
+    },
+    {
+      "month": "2026-09",
+      "strategy": -0.029116409935831644,
+      "reference": -0.05173019948332125,
+      "difference_pp": 2.2613789547489604
+    }
+  ],
+  "costs": {
+    "rebalances": 109,
+    "two_way_turnover": 8.57554758462348,
+    "mean_two_way_turnover": 0.07867474848278423,
+    "gross_return_same_holdings": -0.04153798140514653,
+    "net_return": -0.053790668034281786,
+    "terminal_drag_pp": 1.2252686629135257
+  },
+  "training": {
+    "best_epoch": 20,
+    "epochs": 20,
+    "train_loss_at_best": 0.1019863383844494,
+    "validation_loss_at_best": 0.1011663302779197,
+    "last_validation_loss": 0.1011663302779197,
+    "train_loss_reduction": 0.6280299360993887,
+    "validation_loss_reduction": 0.31703207089181507
+  },
+  "ic": {
+    "mean": 0.024271546850831556,
+    "days": 109,
+    "positive_ratio": 0.5412844036697247,
+    "monthly": {
+      "2026-04": -0.06811646470627424,
+      "2026-05": -0.05944460063677289,
+      "2026-06": 0.01649056683544689,
+      "2026-07": 0.17097712454364655,
+      "2026-08": -0.01227401465838361,
+      "2026-09": 0.054017538655682644
+    }
+  }
+}

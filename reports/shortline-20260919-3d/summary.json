@@ -1,0 +1,509 @@
+{
+  "protocol_version": 4,
+  "data_source": {
+    "source": "BaoStock",
+    "adjustflag": "2",
+    "adjustment": "forward-adjusted",
+    "requested_start": "2023-09-18",
+    "requested_end": "2026-09-17",
+    "stocks": [
+      {
+        "code": "sz.000001",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:51:29.565080"
+      },
+      {
+        "code": "sz.000002",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:51:31.793773"
+      },
+      {
+        "code": "sz.000006",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:51:34.526543"
+      },
+      {
+        "code": "sz.000007",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:51:39.427654"
+      },
+      {
+        "code": "sz.000008",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:51:45.849701"
+      },
+      {
+        "code": "sz.000009",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:51:53.647434"
+      },
+      {
+        "code": "sz.000011",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:52:00.455583"
+      },
+      {
+        "code": "sz.000012",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:52:05.769464"
+      },
+      {
+        "code": "sz.000014",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:52:07.196627"
+      },
+      {
+        "code": "sz.000017",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:52:07.849555"
+      },
+      {
+        "code": "sz.000019",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:52:10.070253"
+      },
+      {
+        "code": "sz.000020",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:52:14.188289"
+      },
+      {
+        "code": "sz.000021",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:52:15.886994"
+      },
+      {
+        "code": "sz.000025",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:52:16.431375"
+      },
+      {
+        "code": "sz.000026",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:52:17.990382"
+      },
+      {
+        "code": "sz.000027",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:52:25.839417"
+      },
+      {
+        "code": "sz.000028",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:52:29.204821"
+      },
+      {
+        "code": "sz.000029",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:52:35.392693"
+      },
+      {
+        "code": "sz.000030",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:52:37.631311"
+      },
+      {
+        "code": "sz.000031",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:52:39.840302"
+      },
+      {
+        "code": "sz.000032",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:52:46.555053"
+      },
+      {
+        "code": "sz.000034",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:52:50.001722"
+      },
+      {
+        "code": "sz.000035",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:52:51.585793"
+      },
+      {
+        "code": "sz.000036",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:53:07.467724"
+      },
+      {
+        "code": "sz.000037",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:53:10.463999"
+      }
+    ],
+    "failed_stocks": [],
+    "retrieved_at": "2026-09-19T00:06:18.931071"
+  },
+  "data_rows": 18175,
+  "stock_count": 25,
+  "feature_count": 51,
+  "feature_columns": [
+    "pct_chg",
+    "rv_20d",
+    "rsi_14",
+    "ret_5d",
+    "ret_20d",
+    "ret_10d",
+    "ret_excess_20d",
+    "price_position_20d",
+    "max_drawdown_20d",
+    "turnover_ma5",
+    "turnover_ratio",
+    "amihud",
+    "amihud_ma20",
+    "volume_ma5",
+    "volume_ma20",
+    "volume_ratio",
+    "money_flow",
+    "money_flow_ma5",
+    "rsi_28",
+    "macd",
+    "macd_signal",
+    "macd_hist",
+    "bb_position",
+    "atr_14",
+    "atr_ratio",
+    "kdj_k",
+    "kdj_d",
+    "kdj_j",
+    "trend_strength",
+    "seasonal_strength",
+    "residual_strength",
+    "trend_change",
+    "cycle_ratio",
+    "forecast_residual",
+    "rv_5d",
+    "rv_10d",
+    "rv_60d",
+    "vol_term_structure",
+    "vol_term_slope",
+    "vol_change_5d",
+    "vol_change_20d",
+    "vol_clustering",
+    "vol_asymmetry",
+    "var_95",
+    "cvar_95",
+    "hurst",
+    "skew_20d",
+    "kurt_20d",
+    "autocorr_1",
+    "autocorr_5",
+    "rolling_sharpe_20d"
+  ],
+  "sample_counts": {
+    "train": 11825,
+    "validation": 2600,
+    "test": 2675
+  },
+  "split": {
+    "train_end": "2025-10-21 00:00:00",
+    "validation_start": "2025-10-29 00:00:00",
+    "validation_end": "2026-04-02 00:00:00",
+    "test_start": "2026-04-13 00:00:00",
+    "embargo_days": 5
+  },
+  "settings": {
+    "BATCH_SIZE": 256,
+    "CACHE_DIR": "cache/market",
+    "CNN_CHANNELS": 32,
+    "CNN_FILTERS": [
+      3,
+      6,
+      12,
+      24
+    ],
+    "CPU_THREADS": 4,
+    "DATA_END": "2026-09-17",
+    "DATA_START": "2023-09-18",
+    "DEVICE": "cuda",
+    "DROPOUT": 0.1,
+    "EPOCHS": 20,
+    "FEATURE_COLS": [
+      "pct_chg",
+      "rv_20d",
+      "rsi_14",
+      "ret_5d",
+      "ret_20d",
+      "ret_10d",
+      "ret_excess_20d",
+      "price_position_20d",
+      "max_drawdown_20d",
+      "turnover_ma5",
+      "turnover_ratio",
+      "amihud",
+      "amihud_ma20",
+      "volume_ma5",
+      "volume_ma20",
+      "volume_ratio",
+      "money_flow",
+      "money_flow_ma5",
+      "rsi_28",
+      "macd",
+      "macd_signal",
+      "macd_hist",
+      "bb_position",
+      "atr_14",
+      "atr_ratio",
+      "kdj_k",
+      "kdj_d",
+      "kdj_j",
+      "trend_strength",
+      "seasonal_strength",
+      "residual_strength",
+      "trend_change",
+      "cycle_ratio",
+      "forecast_residual",
+      "rv_5d",
+      "rv_10d",
+      "rv_60d",
+      "vol_term_structure",
+      "vol_term_slope",
+      "vol_change_5d",
+      "vol_change_20d",
+      "vol_clustering",
+      "vol_asymmetry",
+      "var_95",
+      "cvar_95",
+      "hurst",
+      "skew_20d",
+      "kurt_20d",
+      "autocorr_1",
+      "autocorr_5",
+      "rolling_sharpe_20d"
+    ],
+    "HIDDEN_DIM": 64,
+    "INPUT_DIM": 51,
+    "LABEL_HORIZON": 3,
+    "LAMBDA_DECOMP": 0.05,
+    "LAMBDA_VOL": 0.3,
+    "LEARNING_RATE": 0.0005,
+    "MAX_STOCKS": 25,
+    "MIN_TRADING_DAYS": 180,
+    "NUM_HEADS": 4,
+    "NUM_LAYERS": 1,
+    "PATIENCE": 5,
+    "PROTOCOL_VERSION": 4,
+    "REUSE_CHECKPOINT": false,
+    "SEED": 42,
+    "SEQ_LEN": 30,
+    "TEST_START_DATE": "2026-04-13T00:00:00",
+    "TEST_WINDOW": 10,
+    "TRAIN_RATIO": 0.7,
+    "TRAIN_WINDOW": 720,
+    "VAL_RATIO": 0.15,
+    "VAL_WINDOW": 10,
+    "WEIGHT_DECAY": 0.0001
+  },
+  "device": "cuda",
+  "gpu": "NVIDIA GeForce RTX 3060",
+  "peak_gpu_memory_mb": 114.146484375,
+  "epochs_completed": 20,
+  "best_epoch": 17,
+  "best_validation_loss": 0.1090396818789568,
+  "elapsed_seconds": 232.0470000000205,
+  "test_first_return": "2026-04-14 00:00:00",
+  "test_last_return": "2026-09-17 00:00:00",
+  "metrics": {
+    "total_return": -0.018759572058838492,
+    "annual_return": -0.0428380953878672,
+    "annual_volatility": 0.2249335777556708,
+    "sharpe_ratio": -0.17172779622799328,
+    "max_drawdown": -0.21435737305310634,
+    "calmar_ratio": -0.19984428236697135,
+    "win_rate": 0.5504587155963303,
+    "profit_factor": 0.9868984322725769,
+    "max_consecutive_loss": 4,
+    "max_consecutive_gain": 9,
+    "n_days": 109,
+    "ic": null,
+    "icir": null
+  },
+  "evaluation": {
+    "ic_mean": 0.0619635741486183,
+    "ic_std": 0.2693467506974327,
+    "icir": 0.23005131485036664,
+    "ic_positive_ratio": 0.5607476635514018,
+    "decile_metrics": {
+      "group_0": {
+        "annual_return": -0.3351761489498363,
+        "sharpe": -0.993328322320981
+      },
+      "group_1": {
+        "annual_return": 0.2420719723753857,
+        "sharpe": 0.730379465380286
+      },
+      "group_2": {
+        "annual_return": -0.5358042785915992,
+        "sharpe": -2.751779968504281
+      },
+      "group_3": {
+        "annual_return": 0.018319351252409355,
+        "sharpe": 0.21982153251751463
+      },
+      "group_4": {
+        "annual_return": -0.12576217999431405,
+        "sharpe": -0.4824889668359971
+      },
+      "group_5": {
+        "annual_return": 0.652789261053883,
+        "sharpe": 1.7004772346095838
+      },
+      "group_6": {
+        "annual_return": -0.3656115218662752,
+        "sharpe": -1.7826721079613441
+      },
+      "group_7": {
+        "annual_return": 0.04997583578899345,
+        "sharpe": 0.32962444695559295
+      },
+      "group_8": {
+        "annual_return": 0.20883409603021819,
+        "sharpe": 0.8123077729855707
+      },
+      "group_9": {
+        "annual_return": 0.9279139585290035,
+        "sharpe": 2.3094129019975087
+      },
+      "long_short": {
+        "annual_return": 1.4946316085731395,
+        "sharpe": 2.0055650827353797
+      }
+    }
+  },
+  "benchmark": "Daily equal-weight of the same stock pool, before transaction costs; not CSI 300.",
+  "base_git_revision": "faf7c6f42af51d8b38880685423b562d36050576",
+  "environment": {
+    "python": "3.12.14",
+    "torch": "2.8.0+cu126",
+    "numpy": "2.5.2",
+    "pandas": "3.0.5",
+    "scipy": "1.18.1",
+    "baostock": "0.9.3"
+  },
+  "artifact_hashes": {
+    "stock_pool.csv": "85a9052a5bd6f6782eb03cd76a8221d112ae2956cedf0daa94e3e529789de8d8",
+    "data/market.parquet": "c58fa569acd1843fc5433dbe4be7046a6ae23aa6a1bcaeab3e92e71d08177172",
+    "logs/best_model.pt": "3c9e0d43834c03552fc16b7cd0aae3df11dd30dd5f395a5f940b736452bc353e",
+    "backtest_returns.csv": "53876b777046c4e1d4b07976cabf5c0378a654c03044fc7ca7fa9b38dbf27e7a"
+  },
+  "source_hashes": {
+    "research/analysis.py": "36c7e11fdacf4c12b104ea8a3883e3d2880952127504e633685d20a0209afe17",
+    "research/console.py": "7684553e2fb9eab9456da9489b3396beef1248d0b518041e95be9bfa8bc59c80",
+    "research/experiments.py": "a212a5aa8f1a9403bb2fa23f074583b9bba84f6d1265f64905219b2bc0710da0",
+    "research/horizons.py": "41bdde32bfc1bd2b97c30797a8879c5cd9167bde207440e017ca10c1910e5b63",
+    "research/inference.py": "e3f2f2e25df08a9200b09508df971dd3da01d1bef65cc05acb7078675f4bdb0e",
+    "research/pipeline.py": "cbc17c331f9e5bfec0e126e50c9b47f4f4c8ef0325670938816c2900501c63e2",
+    "research/reporting.py": "1e07c78d47b75c5751ed437470f6ee365ea7ef194b58880507a22e36f9fc06d4",
+    "research/runner.py": "b82600862d5d881ac0e66cff402284c5eef117c7f0b0ec87f4911f858a35e46d",
+    "research/runtime.py": "a73ad8d37e3416627e64bb1c53dd2fe74677115f68552a17000b5275124a0e71",
+    "research/__init__.py": "c2e00f9c962d542187f79f3cd261a06f4b6f49901b590aede83388aac078664e",
+    "data/clean.py": "4d1d055f338a4e074ca3ed8040312c53f56f3899b52a9f62f0d1c38a87fcc67e",
+    "data/download.py": "0e0f6149c1761e5c8e3ca2bec9ffabd242fef99ee3961f37482c9298dbacc421",
+    "data/features.py": "5f93e9791ba1eae6bfd6e8d26da3d89dc9f7e55a17d2ab781cf7e5c44585e1d8",
+    "data/labels.py": "8a0599c3f3bb49e20f71ad483ff08ef367494f1fa28b9fff4314515e42f67045",
+    "data/__init__.py": "9a0e3b834a48ece7a99bc2f4ef8e1633baec0f792f422b314ef2f1f5f22fbaa0",
+    "training/dataset.py": "9e0ae2043864f00ffd011d50e28e9fa5b5240126c51344ffdd957966745db414",
+    "training/loss.py": "6334d7a858262881fac1a6ef16f7ac25975bcfe1e1846c71311a6c48398df05d",
+    "training/sampling.py": "0a714bbc4e8275ceebb0cad94a76e08b273c6f7212acec0e249d2d399c18a07d",
+    "training/trainer.py": "608c749e1f795ba21ab97106921cb85a73f94e2879fe3742fa1d438be85c9477",
+    "training/__init__.py": "ed4d3273de49e3a8f31403da22964a6218d7d4a31ba020df7f5b07dda1322d6e",
+    "model/decomposition.py": "a9686a544ca4d67d5c017cbdec365a0fa337b984c6357f1230c7bc3711b152aa",
+    "model/multitask.py": "c6ee656049b72a058e1133afdf127cbb87b8d5a8709bc6855350b008a2a43da6",
+    "model/regime_detection.py": "f348dd8307ea3117391d8d38cd7bc5b05be40228a3e7bac29609127955f93491",
+    "model/tpa_module.py": "2663d257f6192c84fbf698a1343928b35b3a0490ea7fdfc4b89427f3b221bf16",
+    "model/vcformer.py": "7e5e3e4502310e889fccf887cc89ad1840d4b5e2bdfa213a1530347cc3d1fde8",
+    "model/__init__.py": "0841857c7ddfa94bb17ba29c24d7d1e03304aec205718df6f8fb0f6b515d69fc",
+    "portfolio/backtest.py": "01ee4ad6dd389e9546ed3ad11f54bd15ebb7dc0c76886643e81cd8403d63cc12",
+    "portfolio/optimizer.py": "3b5d543a3e22c1c25a6cebb59be7225fcce5ef3d1b2527a5abc35e12e57e1046",
+    "portfolio/simulation.py": "14f0178308f2c52128e7a2aee1a0cea3542bf3ea643c301159113c7d74c4ee77",
+    "portfolio/__init__.py": "e23ec300fb40a87d29764231c54f33d67006989d51ebe3334a81b48a97e51d20",
+    "evaluation/attention_vis.py": "eb25ea94cb442b89e2a7bef10f18783553873dc38be801c3b9080c8b78c71e1e",
+    "evaluation/factor_analysis.py": "2371643966716cfbc730fe0d519e88a7295ae6a2d51b85dd92c1c58a4087edff",
+    "evaluation/ff_regression.py": "7bd22fb46b3eb4442f2b8ba9870c0e877a76e61bac6b74945aa607b8d0ff4678",
+    "evaluation/shap_analysis.py": "bc238d699b566e88f4641d8ca3977132e950cfbc269e548ecd26b0b49b4bd0b3",
+    "evaluation/__init__.py": "02e35eb80100bca6f933a35de8c4549959ce777dc61906d085aff0be8293ac51"
+  },
+  "published_artifacts_note": "Local input/checkpoint hashes refer to the actual local run. downloaded_stock_pool.csv lists successfully downloaded stocks; sampled_stock_pool.csv, when present, retains the random draw including missing histories. Market bars, factors and checkpoints remain local.",
+  "limitations": [
+    "Current-universe and as-of-download adjustment biases are not removed by random sampling.",
+    "Research execution omits suspension, price-limit and tax constraints.",
+    "Single seed and reused test dates: exploratory, not independent confirmation."
+  ]
+}

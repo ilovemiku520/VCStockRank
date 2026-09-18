@@ -4,7 +4,7 @@ import pandas as pd
 import torch
 
 EXCLUDED = {'close', 'open', 'high', 'low', 'volume', 'amount', 'turnover',
-            'stock', 'future_ret_5d', 'future_vol_5d', 'market_ret', 'excess_ret_5d', 'ret_1d'}
+            'stock', 'future_ret_5d', 'future_vol_5d', 'market_ret', 'excess_ret_5d', 'ret_1d', 'target_excess'}
 
 def feature_columns(factors):
     return [c for c in factors.columns if c not in EXCLUDED and not c.startswith('future_')]

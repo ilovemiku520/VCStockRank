@@ -22,6 +22,7 @@ from research.inference import feature_columns, predict_panel
 from research.runtime import configure_runtime
 from pathlib import Path
 from portfolio.backtest import Backtester
+from research.horizons import portfolio_for
 from evaluation.factor_analysis import FactorAnalyzer
 
 class MultiModalStrategy:
@@ -77,35 +78,9 @@ class MultiModalStrategy:
         if 'ret_1d' not in factors.columns:
             factors['ret_1d'] = factors.groupby('stock')['close'].pct_change()
 
-        factors['future_ret_5d'] = factors.groupby('stock')['close'].transform(
-            lambda x: x.shift(-5) / x - 1
-        )
-
-        market_ret_daily = factors.groupby('date')['ret_1d'].mean()
-        factors['market_ret'] = factors.index.get_level_values('date').map(market_ret_daily.to_dict())
-
-        market_ret_future = (
-            (1 + market_ret_daily).rolling(5).apply(np.prod, raw=True).shift(-5) - 1
-        )
-        factors['market_ret_future'] = factors.index.get_level_values('date').map(market_ret_future.to_dict())
-
-        factors['excess_ret_5d'] = factors['future_ret_5d'] - factors['market_ret_future']
-
-        try:
-            vol_series = factors.groupby('stock')['ret_1d'].transform(
-                lambda x: x.rolling(5, min_periods=1).std().shift(-5)
-            )
-            factors['future_vol_5d'] = vol_series
-        except Exception as e:
-            print(f"波动率计算失败: {e}")
-            factors['future_vol_5d'] = np.nan
-
-        print("\n目标列非NaN统计（基于原始价格）：")
-        print(f"  future_ret_5d: {factors['future_ret_5d'].notna().sum()}")
-        print(f"  excess_ret_5d: {factors['excess_ret_5d'].notna().sum()}")
-        print(f"  future_vol_5d: {factors['future_vol_5d'].notna().sum()}")
-
-        factors.drop(columns=['market_ret_future'], inplace=True, errors='ignore')
+        from data.labels import forward_labels
+        labels = forward_labels(daily, self.config.LABEL_HORIZON)
+        factors = factors.join(labels)
 
         print("\n构建因子（标准化特征，但保留原始标签）...")
         factors = self.factor_builder.create_factors_panel(factors)
@@ -115,7 +90,7 @@ class MultiModalStrategy:
 
         print("\n填充缺失值...")
         exclude_cols = ['close', 'open', 'high', 'low', 'volume', 'amount', 'turnover', 'stock',
-                        'future_ret_5d', 'future_vol_5d', 'market_ret', 'excess_ret_5d', 'ret_1d']
+                        'future_return', 'future_risk', 'market_ret', 'target_excess', 'ret_1d']
         fill_cols = [col for col in factors.columns if col not in exclude_cols]
 
         for col in tqdm(fill_cols, desc="  填充列"):
@@ -161,12 +136,12 @@ class MultiModalStrategy:
         train_dataset, val_dataset, test_dataset = create_train_val_test_datasets(
             self.data['factors'],
             feature_cols=feature_cols,
-            target_col='excess_ret_5d',
-            vol_col='future_vol_5d',
+            target_col='target_excess',
+            vol_col='future_risk',
             seq_len=self.config.SEQ_LEN,
             train_ratio=self.config.TRAIN_RATIO,
             val_ratio=self.config.VAL_RATIO,
-            embargo_days=self.config.LABEL_HORIZON,
+            embargo_days=max(5, self.config.LABEL_HORIZON),
             normalize=False,
         )
         self.test_start_date = test_dataset.split_metadata['test_start']
@@ -179,7 +154,7 @@ class MultiModalStrategy:
             f"验证 {val_dataset.split_metadata['validation_start'].date()} ~ "
             f"{val_dataset.split_metadata['validation_end'].date()}，"
             f"测试自 {self.test_start_date.date()} 起；"
-            f"边界禁入期 {self.config.LABEL_HORIZON} 个交易日"
+            f"边界禁入期 {max(5, self.config.LABEL_HORIZON)} 个交易日"
         )
 
         if len(train_dataset) == 0 or len(val_dataset) == 0 or len(test_dataset) == 0:
@@ -253,7 +228,7 @@ class MultiModalStrategy:
             print("错误: 价格数据为空，无法回测")
             return None
 
-        backtester = Backtester(PortfolioConfig())
+        backtester = Backtester(portfolio_for(self.config))
 
         daily_predictions = {}
         for date, preds in self.predictions.items():
@@ -283,7 +258,7 @@ class MultiModalStrategy:
                 print("回测结果为空")
 
     def evaluate_predictions(self):
-        """Evaluate held-out scores against future five-day excess returns."""
+        """Evaluate held-out scores against future horizon-specific excess returns."""
         print("\n" + "=" * 60)
         print("5. 模型评估（IC & 分层收益）")
         print("=" * 60)
@@ -292,7 +267,7 @@ class MultiModalStrategy:
             print("错误: 没有预测结果")
             return None
 
-        temp_factors = self.data['factors'][['excess_ret_5d']].copy()
+        temp_factors = self.data['factors'][['target_excess']].copy()
 
         for date, preds in self.predictions.items():
             if date not in temp_factors.index.get_level_values('date'):
@@ -303,7 +278,7 @@ class MultiModalStrategy:
                 except:
                     pass
 
-        temp_factors = temp_factors.dropna(subset=['pred_score', 'excess_ret_5d'])
+        temp_factors = temp_factors.dropna(subset=['pred_score', 'target_excess'])
 
         if temp_factors.empty:
             print("无有效数据用于评估")
@@ -313,34 +288,34 @@ class MultiModalStrategy:
 
         # IC
         print("计算信息系数 (IC)...")
-        ic_series = fa.compute_ic(factor_col='pred_score', ret_col='excess_ret_5d', method='spearman')
+        ic_series = fa.compute_ic(factor_col='pred_score', ret_col='target_excess', method='spearman')
         ic_mean = ic_series.mean()
         ic_std = ic_series.std()
         icir = ic_mean / ic_std if ic_std > 0 else np.nan
         ic_pos = (ic_series > 0).mean()
         print(f"  IC 均值: {ic_mean:.4f}, ICIR: {icir:.4f}, 正收益比率: {ic_pos:.2%}")
 
-        print("计算分层收益（十分位，基于未来 5 日超额收益）...")
+        print("计算分层收益（十分位，基于指定周期未来超额收益）...")
         decile_returns, long_short = fa.compute_decile_returns(
             factor_col='pred_score',
-            ret_col='excess_ret_5d',
+            ret_col='target_excess',
             n_groups=10,
-            period=5
+            period=self.config.LABEL_HORIZON
         )
         decile_metrics = {}
         for col in decile_returns.columns:
             rets = decile_returns[col].dropna()
             if len(rets) > 0:
-                annual_ret = (1 + rets).prod() ** ((252 / 5) / len(rets)) - 1
-                sharpe = rets.mean() / rets.std() * np.sqrt(252 / 5) if rets.std() > 0 else np.nan
+                annual_ret = (1 + rets).prod() ** ((252 / self.config.LABEL_HORIZON) / len(rets)) - 1
+                sharpe = rets.mean() / rets.std() * np.sqrt(252 / self.config.LABEL_HORIZON) if rets.std() > 0 else np.nan
                 decile_metrics[col] = {'annual_return': annual_ret, 'sharpe': sharpe}
         long_short_rets = long_short.dropna()
         if len(long_short_rets) > 0:
-            ls_annual = (1 + long_short_rets).prod() ** ((252 / 5) / len(long_short_rets)) - 1
-            ls_sharpe = long_short_rets.mean() / long_short_rets.std() * np.sqrt(252 / 5) if long_short_rets.std() > 0 else np.nan
+            ls_annual = (1 + long_short_rets).prod() ** ((252 / self.config.LABEL_HORIZON) / len(long_short_rets)) - 1
+            ls_sharpe = long_short_rets.mean() / long_short_rets.std() * np.sqrt(252 / self.config.LABEL_HORIZON) if long_short_rets.std() > 0 else np.nan
             decile_metrics['long_short'] = {'annual_return': ls_annual, 'sharpe': ls_sharpe}
 
-        print("\n分层组合年化收益与夏普（基于未来 5 日超额收益）:")
+        print("\n分层组合年化收益与夏普（基于指定周期未来超额收益）:")
         for g, m in decile_metrics.items():
             print(f"  {g:12s}: 年化收益 {m.get('annual_return', np.nan):.2%}, 夏普 {m.get('sharpe', np.nan):.3f}")
 

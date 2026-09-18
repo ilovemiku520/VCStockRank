@@ -5,6 +5,7 @@ import streamlit as st
 from dashboard_data import performance, read_returns
 from research.experiments import read_json
 from ui.i18n import tr
+from ui.analysis import show_analysis
 
 def result_chart(frame, percentage=False):
     data = frame.rename_axis('date').reset_index().melt('date', var_name='series', value_name='value')
@@ -22,16 +23,23 @@ def show_results(returns, source, directory=None):
     st.caption(source)
     summary = read_json(directory / 'summary.json', {}) if directory else {}
     if summary:
-        st.success(tr('真实行情 · 样本外测试 · 训练已完成', 'Real market data · Out-of-sample test · Training complete'))
+        st.success(tr('真实行情 · 留出区间评估 · 实验已完成', 'Real market data · Held-out evaluation · Experiment complete'))
+        st.caption(tr('算法：', 'Algorithm: ') + summary.get('algorithm', 'VCformer-TPA'))
         columns = st.columns(4)
         for col, label, value in zip(columns,
                 [tr('股票 / 特征', 'Stocks / features'), tr('完成轮数 / 最优轮', 'Epochs / best epoch'),
                  tr('训练设备', 'Training device'), tr('测试样本数', 'Test samples')],
                 [f"{summary['stock_count']} / {summary['feature_count']}",
-                 f"{summary['epochs_completed']} / {summary['best_epoch']}",
+                 f"{summary['epochs_completed'] or '—'} / {summary['best_epoch'] or '—'}",
                  summary.get('gpu') or summary['device'], summary['sample_counts']['test']]):
             col.caption(label)
             col.write(str(value))
+        plan = summary.get('sampling_plan')
+        if plan:
+            st.caption(tr('抽样目标 / 已抽取 / 成功取得行情：', 'Required / sampled / downloaded stocks: ') +
+                       f"{plan['required_stocks']} / {plan['selected_stocks']} / {summary['stock_count']}")
+            if not plan['target_met'] or summary['stock_count'] < plan['selected_stocks']:
+                st.warning(tr('本次容量未达到目标精度，或存在行情缺失。规划误差不等于有效训练样本的置信保证。', 'Capacity misses the target precision or some prices are missing. The planning margin does not guarantee confidence for the usable training sample.'))
     selected = st.date_input(tr('查看日期范围', 'Date range'),
                              (returns.index.min().date(), returns.index.max().date()),
                              min_value=returns.index.min().date(), max_value=returns.index.max().date())
@@ -48,8 +56,8 @@ def show_results(returns, source, directory=None):
         col.metric(tr(label, english), '—' if value is None else (f'{value:.2f}' if label == '夏普比率' else f'{value:.2%}'))
     st.caption(tr('指标按所选区间重新计算；252 个交易日年化，夏普无风险利率 2%，初始本金计入回撤。',
                   'Metrics use the selected interval, 252 trading days/year and a 2% risk-free rate. Drawdown includes initial capital.'))
-    equity, risk, details, diagnostics = st.tabs([tr('净值走势', 'Equity'), tr('回撤分析', 'Drawdown'),
-                                                 tr('每日明细', 'Daily returns'), tr('训练与评估', 'Training & evaluation')])
+    equity, risk, details, diagnostics, analysis = st.tabs([tr('净值走势', 'Equity'), tr('回撤分析', 'Drawdown'),
+                                                 tr('每日明细', 'Daily returns'), tr('训练与评估', 'Training & evaluation'), tr('结果分析与建议', 'Analysis & next steps')])
     with equity:
         chart = curves[['净值']].rename(columns={'净值': tr('策略', 'Strategy')})
         if directory and (directory / 'benchmark_returns.csv').exists():
@@ -63,10 +71,19 @@ def show_results(returns, source, directory=None):
     with details:
         st.dataframe(pd.concat([returns.rename(tr('每日收益', 'Daily return')), curves.rename(columns={
             '净值': tr('净值', 'Equity'), '回撤': tr('回撤', 'Drawdown')})], axis=1), width='stretch')
+    with analysis:
+        if directory:
+            show_analysis(directory)
+        else:
+            st.info(tr('选择真实实验后查看有依据的模型分析；合成演示不生成模型结论。', 'Select a real experiment for evidence-based diagnostics. Synthetic demos do not support model conclusions.'))
     with diagnostics:
+        st.caption(tr('训练与 IC 为完整实验区间，不随日期筛选变化。', 'Training and IC cover the full experiment and are independent of the date filter.'))
         if not directory:
             st.info(tr('训练记录仅适用于本地实验。', 'Training records are available for local experiments.'))
         else:
+            if summary.get('model_diagnostics'):
+                st.write(tr('参数仅按验证集选择，标准化与主成分只在训练集拟合。', 'Parameters are selected on validation only; scaling and PCA are fitted on training only.'))
+                st.json(summary['model_diagnostics'])
             history_path = directory / 'logs/training_history.csv'
             if not history_path.exists():
                 history_path = directory / 'training_history.csv'
@@ -78,8 +95,8 @@ def show_results(returns, source, directory=None):
             ic_path = directory / 'daily_ic.csv'
             if ic_path.exists():
                 ic = pd.read_csv(ic_path, index_col=0, parse_dates=True)
-                st.caption(tr('每日 Spearman IC：预测分数与未来 5 日超额收益的横截面相关性。',
-                              'Daily Spearman IC: scores vs. future 5-day excess returns within each trading date.'))
+                st.caption(tr('每日 Spearman IC：预测分数与对应预测周期的未来超额收益的横截面相关性。',
+                              'Daily Spearman IC: scores vs. future horizon-specific excess returns within each trading date.'))
                 st.line_chart(ic)
             evaluation = summary.get('evaluation', {})
             if evaluation:

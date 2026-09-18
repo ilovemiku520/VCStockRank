@@ -53,6 +53,7 @@ def export_results(strategy, directory, elapsed):
     history = pd.read_csv(directory / 'logs/training_history.csv')
     summary = {
         'protocol_version': strategy.config.PROTOCOL_VERSION,
+        'sampling_plan': read_json(directory / 'sampling_plan.json', None),
         'data_source': read_json(directory / 'data/source.json', {}),
         'data_rows': len(strategy.data['daily']), 'stock_count': prices.shape[1],
         'feature_count': len(strategy.feature_cols), 'feature_columns': strategy.feature_cols,
@@ -75,4 +76,6 @@ def export_results(strategy, directory, elapsed):
                           for path in (ROOT / folder).glob('*.py')},
     }
     write_json(directory / 'summary.json', serializable(summary))
+    from research.analysis import analyze_experiment
+    write_json(directory / 'analysis.json', serializable(analyze_experiment(directory)))
     return summary

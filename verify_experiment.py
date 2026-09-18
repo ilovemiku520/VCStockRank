@@ -5,7 +5,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 from backtest_main import load_model_and_data, generate_predictions
-from config import PortfolioConfig
+from research.horizons import portfolio_for
 from portfolio.backtest import Backtester
 from research.experiments import write_json
 
@@ -26,7 +26,7 @@ def verify(directory):
         signals = {date: {stock: {'score': score, 'vol': vol}
                          for stock, score, vol in zip(item['stocks'], item['scores'], item['vols'])}
                    for date, item in predictions.items()}
-        result = Backtester(PortfolioConfig(), verbose=False).run(signals, pd.read_parquet('data/daily_raw.parquet'))
+        result = Backtester(portfolio_for(config), verbose=False).run(signals, pd.read_parquet('data/daily_raw.parquet'))
         saved_returns = pd.read_csv('backtest_returns.csv', index_col='date', parse_dates=True)['return']
         pd.testing.assert_index_equal(result.returns.index, saved_returns.index, check_names=False)
         np.testing.assert_allclose(result.returns, saved_returns, atol=1e-12, rtol=1e-10)
