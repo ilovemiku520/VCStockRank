@@ -30,6 +30,9 @@ class MultiModalStrategy:
 
     def __init__(self, config):
         self.config = config
+        if not hasattr(config, 'PORTFOLIO_SETTINGS'):
+            from research.horizons import LEGACY_PORTFOLIO
+            config.PORTFOLIO_SETTINGS = {key: getattr(PortfolioConfig, key) for key in LEGACY_PORTFOLIO}
         configure_runtime(config)
         Path("data").mkdir(exist_ok=True)
         self.factor_builder = FactorBuilder()

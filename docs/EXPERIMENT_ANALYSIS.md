@@ -2,6 +2,24 @@
 
 [中文 README](../README.md) · [English README](../README.en.md) · [Algorithms](ALGORITHMS.md)
 
+## 扩大随机样本：225 只的隔日对照 / Expanded random-sample comparison
+
+实际抽取 227 只、取得足够历史 225 只、160,526 行行情。总体 4,992，统计目标 357，预算 227，规划误差约 ±6.36 个百分点，未达到 ±5 个百分点。两只缺失/不足股票 `sz.001369`、`sh.603407` 没有被替换；有效训练样本不能继承完整简单随机样本的精度保证。
+
+The larger run uses the same data dates, split proportions and 1-day protocol, but a different random universe. Comparing it with the first-25 pilot does **not** isolate stock-count effects. The deep run completed all 20 epochs on RTX 3060, choosing epoch 16, with 103,558 training, 23,233 validation and 24,525 labeled test samples. All three larger-run models passed saved-parameter replay.
+
+| 方法 / Method | Net return | Drawdown magnitude | Gross, same holdings | Cost drag (pp) | Mean two-way turnover |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| [Deep](../reports/20260919-002021-54513a/summary.json) | −14.57% | 29.33% | −3.25% | 11.32 | 76.05% |
+| [PCA-ridge](../reports/statistical-scientific-20260919-1d/summary.json) | −0.27% | 34.13% | +12.33% | 12.60 | 72.73% |
+| [PCA-ridge + buffer](../reports/statistical-buffered-scientific-20260919-1d/summary.json) | +6.53% | 29.80% | +12.05% | 5.51 | 30.85% |
+
+同池等权毛收益为 −4.67%。缓冲保留仍排在前 30 名以内的已有持仓，再填补到前 10 个持仓；排名缓冲 20 由验证净收益从 0/5/10/20 选出。验证候选净收益分别为 −3.70%、−1.56%、+1.61%、+4.93%，全部保存在 `model_diagnostics.json`。没有用测试净收益选缓冲参数。
+
+预测分数与 IC 不变，变化来自持仓规则；每日仍检查并调整权重，因此调仓记录数仍为 109。费用拖累从 12.60 降为 5.51 个百分点，同时毛收益也略有变化，不能把全部净收益差理解成固定持仓下的单一费用效应。
+
+The buffered model's test net return is +6.53%, but drawdown is 29.80%. Its exploratory block interval for mean daily net strategy minus gross reference is **−0.1447% to +0.4635%**, including zero. The hypothesis was developed after inspecting earlier test costs; validation-only parameter selection does not turn this reused test interval into independent confirmation. New dates and predeclared robustness checks remain necessary.
+
 ## 相同试点股票池的 1 / 3 / 5 日对照 / Matched pilot comparison
 
 数据：BaoStock 前复权日线，2023-09-18—2026-09-17；25 只旧流程前排股票，727 个交易日、18,175 条记录，种子 42。统一 70/15/15 时间切分与 5 日边界禁入；109 日收益区间为 2026-04-14—2026-09-17。下载快照、成本和组合约束相同。

@@ -8,6 +8,10 @@ A-share ranking research with real market data, GPU deep learning, a multivariat
 
 [Demo guide](docs/DEMO.md) · [Algorithms and mathematics](docs/ALGORITHMS.md) · [Scientific sampling](docs/SAMPLING.md) · [Experiment analysis](docs/EXPERIMENT_ANALYSIS.md)
 
+![Real-data wealth comparison across models and horizons](assets/real-comparison.svg)
+
+Generated from committed real returns. Synthetic demos are a separate dashboard option. Blue and green are net model returns; the dashed reference is before costs.
+
 ## Quick start
 
 Use Python 3.11 or 3.12 from the repository directory:
@@ -27,9 +31,21 @@ Open http://127.0.0.1:8501 . Browsing demos and committed reports does not requi
 2. In **Overview**, choose Overnight or Swing, then real experiments, uploaded CSV or synthetic demo.
 3. Inspect equity, drawdown, monthly returns, cost drag, training, IC and research recommendations; download evidence.
 4. **Version comparison** shows real 1 / 3 / 5-day runs and matched deep/statistical model comparisons.
-5. **Start research** shows the statistical requirement, adjustable capacity budget, planned sample and precision shortfall before training.
+5. **Start research** shows the statistical requirement, adjustable capacity budget, planned sample and precision shortfall. Completed deep runs offer a one-click PCA-ridge comparison.
 
 Demos have fixed seeds and are explicitly synthetic. Uploaded CSVs require `date,return`, one row per day, with decimal net returns (`0.01` = 1%). Duplicate dates, empty data and nonfinite values are rejected. Stock names, raw logs and some artifact fields retain their original language.
+
+## Expanded overnight experiment
+
+A seeded random draw selected **227 stocks** from the 4,992-stock eligible frame. **225 stocks** supplied sufficient histories, totaling **160,526 rows**; `sz.001369` and `sh.603407` remained recorded as missing/insufficient rather than being replaced. GPU training completed 20 epochs, selecting epoch 16. Replay checked 24,750 predictions and 109 daily returns.
+
+| Same 225 stocks / 1-day horizon | Net return | Max drawdown magnitude | Cost drag (pp) |
+| --- | ---: | ---: | ---: |
+| [Deep model](reports/20260919-002021-54513a/summary.json) | −14.57% | 29.33% | 11.32 |
+| [PCA-ridge](reports/statistical-scientific-20260919-1d/summary.json) | −0.27% | 34.13% | 12.60 |
+| [PCA-ridge + validation-selected holding buffer](reports/statistical-buffered-scientific-20260919-1d/summary.json) | **+6.53%** | **29.80%** | 5.51 |
+
+Validation net return selected buffer **20** from 0 / 5 / 10 / 20. Mean two-way turnover fell from 72.73% to 30.85%. This is exploratory improvement: **drawdown remains nearly 30%, with no established persistent edge**. The block interval for mean daily return differences still includes zero. The buffer hypothesis followed inspection of earlier test costs, so these dates are not fresh independent confirmation. See the [full analysis](docs/EXPERIMENT_ANALYSIS.md).
 
 ## Real experiments, including losses
 
@@ -67,6 +83,8 @@ python compare_horizons.py --start 2023-09-18 --end 2026-09-17 --stocks 25 --epo
 ```
 
 Omit `--stocks` for an available-memory estimate. An explicit stock budget is still capped at the statistical requirement; use `--sampling legacy` only for first-N reproduction. Each run saves independent settings, pool snapshot, prices, model, logs and evidence under `runs/`. Exact replay requires the original local snapshot; source revisions and adjusted-price updates can change fresh downloads.
+
+New checkpoints freeze all model defaults and portfolio settings; source hashes are captured at experiment start. Legacy object-based checkpoints require the original `summary.json` to avoid inheriting changed code defaults during replay.
 
 Real deep runs used an RTX 3060 12GB and PyTorch 2.8.0+cu126. Deep training falls back to CPU; statistical fitting uses CPU. Install a driver-compatible build using the [official PyTorch instructions](https://pytorch.org/get-started/locally/). Closing the page does not stop a worker; the stop button controls only jobs launched by the current session. The dashboard defaults to localhost and is intended for local single-user use.
 

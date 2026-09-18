@@ -46,6 +46,18 @@ python compare_models.py runs/statistical-<completed-v4-experiment> --verify
 
 行情、特征和检查点必须留在本地；GitHub 的轻量报告不能单独重放模型。The baseline reuses downloaded data, preserves split dates and transaction assumptions, and selects hyperparameters using validation only. Its input manifest hashes the source factors and prices. Statistical fitting runs on CPU; deep training automatically uses CUDA when available.
 
+## 已实现的换手控制 / Implemented turnover control
+
+`--turnover-control` 在验证区间分别回测排名缓冲 0 / 5 / 10 / 20，按验证净收益选优，平局依次选择换手较低和缓冲较小者。持有股票仍位于前 `TOP_K + buffer` 名时优先保留，再按排名填补空位；只使用当日可用信号及此前持仓，不查看未来收益。预测分数和 IC 不变，改变的是持仓选择。
+
+The buffered variant selects its holding rule on validation net return only. It checks holdings daily but reduces constituent turnover; it does not eliminate daily weight rebalancing, transaction costs, or drawdown risk. Its development followed inspection of earlier test costs, so the reported test comparison remains exploratory.
+
+```bash
+python compare_models.py runs/<completed-v4-experiment> --turnover-control
+```
+
+工作台“开始研究”的已完成实验也提供此选项。The completed-experiment panel offers the same option.
+
 ## 下一步优先级 / Next priorities
 
 - 在新的时间区间做 walk-forward 与多种子重复，检验方向是否稳定。Use fresh-date walk-forward evaluation and multiple seeds before selecting a production method.

@@ -12,7 +12,7 @@ def overview():
                 'From real market data to out-of-sample results: inspect training, risk and provenance.'))
     versions = {'overnight': tr('隔日版 · 1 日', 'Overnight · 1 day'),
                 'swing': tr('波段版 · 3 / 5 日', 'Swing · 3 / 5 days')}
-    version = st.selectbox(tr('研究版本', 'Research version'), list(versions), index=1,
+    version = st.selectbox(tr('研究版本', 'Research version'), list(versions), index=0,
                            format_func=versions.__getitem__, key='research_version')
     horizon = 1 if version == 'overnight' else st.selectbox(tr('波段周期', 'Swing horizon'), [3, 5], index=1, key='swing_horizon')
     st.caption(tr('切换版本会筛选对应的真实实验或切换合成演示。预测周期与调仓周期相同。',

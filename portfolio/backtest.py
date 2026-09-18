@@ -44,7 +44,8 @@ class Backtester:
         from .optimizer import RiskParityOptimizer
         self.optimizer = RiskParityOptimizer(
             max_weight=config.MAX_WEIGHT,
-            min_weight=0.001
+            min_weight=0.001,
+            risk_aversion=getattr(config, 'RISK_AVERSION', .5)
         )
 
     def run(self, predictions, price_data):

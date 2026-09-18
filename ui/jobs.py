@@ -5,7 +5,7 @@ from pathlib import Path
 import subprocess
 import pandas as pd
 import streamlit as st
-from research.experiments import create_experiment, launch_experiment, list_experiments, read_json, update_status
+from research.experiments import create_experiment, launch_experiment, launch_statistical_baseline, list_experiments, read_json, update_status
 from ui.i18n import tr, stage_label
 from research.sampling import eligible_pool, sample_plan, capacity_estimate
 from research.experiments import ROOT
@@ -23,6 +23,19 @@ def job_status():
     label = stage_label(status.get('stage', 'pending'))
     if state == 'complete':
         st.success(tr('研究完成，可在研究概览查看结果。', 'Complete. Open Overview to view results.'))
+        summary = read_json(directory / 'summary.json', {})
+        if summary.get('protocol_version') == 4 and not summary.get('algorithm'):
+            current_job = st.session_state.get('job')
+            busy = current_job is not None and current_job['process'].poll() is None
+            available = (directory / 'data/factors_filled.csv').exists()
+            buffer = st.checkbox(tr('由验证集选择持仓排名缓冲以控制换手', 'Select a holding-rank buffer on validation to control turnover'), value=True, key=f'buffer-{directory.name}')
+            if st.button(tr('用本次数据拟合 PCA 岭回归对照', 'Fit a PCA-ridge comparison on these data'), disabled=busy or not available):
+                try:
+                    st.session_state['job'] = launch_statistical_baseline(directory, turnover_control=buffer)
+                    st.rerun()
+                except (OSError, ValueError) as error:
+                    st.error(str(error))
+            st.caption(tr('使用同一行情和时间切分，参数只按验证集选择；统计模型在 CPU 上拟合并自动重放检查。', 'Reuse the same data and splits with validation-only parameter selection. The statistical model fits on CPU and automatically replays saved parameters.'))
     elif state == 'failed':
         st.error(f"{label}: {status.get('message', '')}")
     else:
@@ -50,6 +63,8 @@ def job_status():
             st.caption(tr('验证集早停已触发，完整训练流程已结束。', 'Validation early stopping was reached; the full training pipeline is complete.'))
         st.line_chart(history[['train_loss', 'val_loss']])
     log = directory / 'run.log'
+    if not log.exists():
+        log = directory.parent / (directory.name + '.launch.log')
     if log.exists():
         with log.open('rb') as handle:
             handle.seek(max(0, log.stat().st_size - 12000))

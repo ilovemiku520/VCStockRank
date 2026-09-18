@@ -46,10 +46,10 @@ def export_results(strategy, directory, elapsed):
     evaluation = {key: value for key, value in strategy.evaluation_results.items()
                   if not isinstance(value, (pd.Series, pd.DataFrame))}
     config = {key: getattr(strategy.config, key) for key in dir(strategy.config) if key.isupper()}
-    try:
-        revision = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
-    except (OSError, subprocess.CalledProcessError):
-        revision = 'unknown'
+    from research.provenance import capture_source
+    provenance = read_json(directory / 'source_snapshot.json')
+    if provenance is None:
+        provenance = {**capture_source(ROOT), 'timing': 'report time; legacy run without a start snapshot'}
     history = pd.read_csv(directory / 'logs/training_history.csv')
     summary = {
         'protocol_version': strategy.config.PROTOCOL_VERSION,
@@ -66,14 +66,14 @@ def export_results(strategy, directory, elapsed):
         'test_first_return': result.returns.index.min(), 'test_last_return': result.returns.index.max(),
         'metrics': result.metrics, 'evaluation': evaluation,
         'benchmark': 'Daily equal-weight of the same stock pool, before transaction costs; not CSI 300.',
-        'base_git_revision': revision,
+        'base_git_revision': provenance['git_revision'],
+        'source_snapshot_timing': provenance['timing'],
+        'source_working_tree_dirty': provenance.get('working_tree_dirty'),
         'environment': {'python': platform.python_version(), **{name: importlib.metadata.version(name)
                          for name in ['torch', 'numpy', 'pandas', 'scipy', 'baostock']}},
         'artifact_hashes': {name: file_hash(directory / name) for name in
                            ['stock_pool.csv', 'data/market.parquet', 'logs/best_model.pt', 'backtest_returns.csv']},
-        'source_hashes': {str(path.relative_to(ROOT)).replace('\\', '/'): file_hash(path)
-                          for folder in ['research', 'data', 'training', 'model', 'portfolio', 'evaluation']
-                          for path in (ROOT / folder).glob('*.py')},
+        'source_hashes': provenance['source_hashes'],
     }
     write_json(directory / 'summary.json', serializable(summary))
     from research.analysis import analyze_experiment

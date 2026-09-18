@@ -39,7 +39,16 @@ def simulate(config, optimizer, predictions, price_data):
                       and np.isfinite(info['vol']) and info['vol'] > 0]
         if not candidates:
             continue
-        selected = sorted(candidates, key=lambda item: (-item[1]['score'], item[0]))[:config.TOP_K]
+        ranked = sorted(candidates, key=lambda item: (-item[1]['score'], item[0]))
+        buffer = getattr(config, 'HOLD_BUFFER', 0)
+        if isinstance(buffer, bool) or not isinstance(buffer, (int, np.integer)) or buffer < 0:
+            raise ValueError('Holding buffer must be a nonnegative integer.')
+        selected = ranked[:config.TOP_K]
+        if buffer:
+            # Retain incumbents inside the expanded rank band, then fill vacancies.
+            incumbents = [item for item in ranked[:config.TOP_K + buffer] if weights[item[0]] > 0]
+            kept = {stock for stock, _ in incumbents[:config.TOP_K]}
+            selected = incumbents[:config.TOP_K] + [item for item in ranked if item[0] not in kept][:config.TOP_K - len(kept)]
         allocated = optimizer.optimize([info['score'] for _, info in selected], [info['vol'] for _, info in selected])
         target = pd.Series(0.0, index=prices.columns)
         for (stock, _), weight in zip(selected, allocated):

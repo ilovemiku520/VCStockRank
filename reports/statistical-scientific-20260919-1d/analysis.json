@@ -1,0 +1,95 @@
+{
+  "start": "2026-04-14",
+  "end": "2026-09-17",
+  "days": 109,
+  "total_return": -0.0026979591544985526,
+  "max_drawdown": -0.34132099686903705,
+  "drawdown_peak": "2026-05-19",
+  "drawdown_trough": "2026-07-30",
+  "drawdown_recovery": null,
+  "positive_day_ratio": 0.4954128440366973,
+  "average_up_day": 0.01989545905120144,
+  "average_down_day": -0.018928041446333085,
+  "reference_return": -0.04668463575503168,
+  "return_difference_pp": 4.398667660053313,
+  "relative_wealth_return": 0.046140740252697876,
+  "monthly": [
+    {
+      "month": "2026-04",
+      "strategy": 0.03695115145796235,
+      "reference": 0.025835263988484902,
+      "difference_pp": 1.1115887469477448
+    },
+    {
+      "month": "2026-05",
+      "strategy": -0.0012386300214604073,
+      "reference": -0.027226536364425735,
+      "difference_pp": 2.598790634296533
+    },
+    {
+      "month": "2026-06",
+      "strategy": -0.1257337925487082,
+      "reference": -0.05268649579285645,
+      "difference_pp": -7.304729675585175
+    },
+    {
+      "month": "2026-07",
+      "strategy": -0.16671985779712784,
+      "reference": -0.07271365393003704,
+      "difference_pp": -9.400620386709079
+    },
+    {
+      "month": "2026-08",
+      "strategy": 0.3430297688065156,
+      "reference": 0.11127641600347338,
+      "difference_pp": 23.17533528030422
+    },
+    {
+      "month": "2026-09",
+      "strategy": -0.015793317154225384,
+      "reference": -0.021372169327574464,
+      "difference_pp": 0.557885217334908
+    }
+  ],
+  "costs": {
+    "rebalances": 109,
+    "two_way_turnover": 79.27047993650308,
+    "mean_two_way_turnover": 0.7272521095092026,
+    "gross_return_same_holdings": 0.12330888228386772,
+    "net_return": -0.0026979591544985526,
+    "terminal_drag_pp": 12.600684143836627
+  },
+  "ic": {
+    "mean": 0.04111805221272427,
+    "days": 109,
+    "positive_ratio": 0.6055045871559633,
+    "monthly": {
+      "2026-04": 0.012097639179185276,
+      "2026-05": -0.0038012854357408845,
+      "2026-06": -0.004477298878218234,
+      "2026-07": 0.039797253202610565,
+      "2026-08": 0.12162822709697468,
+      "2026-09": 0.08378479702231324
+    }
+  },
+  "mean_daily_difference_interval": {
+    "mean": 0.0006326209918688409,
+    "lower": -0.002078594507134348,
+    "upper": 0.0036650406810157746,
+    "confidence": 0.95,
+    "block_days": 10,
+    "repetitions": 2000,
+    "seed": 42,
+    "scope": "Exploratory mean interval under approximate stationarity; not future-profit probability."
+  },
+  "mean_ic_interval": {
+    "mean": 0.04111805221272428,
+    "lower": 0.007118444495948025,
+    "upper": 0.07841269326928112,
+    "confidence": 0.95,
+    "block_days": 10,
+    "repetitions": 2000,
+    "seed": 42,
+    "scope": "Exploratory mean interval under approximate stationarity; not future-profit probability."
+  }
+}

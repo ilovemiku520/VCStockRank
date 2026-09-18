@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 import time
 import traceback
-from research.experiments import ROOT, read_json, update_status
+from research.experiments import ROOT, read_json, write_json, update_status
 
 def run(directory):
     directory = Path(directory).resolve()
@@ -12,6 +12,8 @@ def run(directory):
     stage = 'initializing'
     try:
         os.chdir(directory)
+        from research.provenance import capture_source
+        write_json(directory / 'source_snapshot.json', {**capture_source(ROOT), 'timing': 'experiment start'})
         from config import ModelConfig
         from research.pipeline import MultiModalStrategy
         from research.reporting import export_results

@@ -12,8 +12,9 @@ from config import ModelConfig
 from portfolio.backtest import Backtester
 from research.analysis import analyze_experiment
 from research.experiments import ROOT, read_json, write_json, update_status
-from research.horizons import portfolio_for
+from research.horizons import portfolio_for, LEGACY_PORTFOLIO
 from research.reporting import serializable, file_hash
+from research.provenance import capture_source
 from research.statistical import PCARidge, historical_design, daily_ic, block_bootstrap_mean
 
 
@@ -24,12 +25,14 @@ def read_source(source, summary):
     return historical_design(factors, summary['feature_columns'], prices, summary['settings']['SEQ_LEN']), prices
 
 
-def backtest_predictions(predictions, prices, horizon):
+def backtest_predictions(predictions, prices, horizon, portfolio_settings=None):
     signals = {date: {stock: {'score': row.score, 'vol': row.vol}
                      for (_, stock), row in group.iterrows()}
                for date, group in predictions.groupby(level='date')}
     config = ModelConfig()
     config.LABEL_HORIZON = horizon
+    if portfolio_settings is not None:
+        config.PORTFOLIO_SETTINGS = portfolio_settings
     return Backtester(portfolio_for(config), verbose=False).run(signals, prices)
 
 
@@ -49,7 +52,7 @@ def verify_baseline(directory):
     saved = pd.read_csv(directory / 'predictions.csv', parse_dates=['date']).set_index(['date', 'stock']).sort_index()
     pd.testing.assert_index_equal(predictions.index, saved.index)
     np.testing.assert_allclose(predictions, saved, rtol=1e-10, atol=1e-12)
-    result = backtest_predictions(predictions, prices, summary['settings']['LABEL_HORIZON'])
+    result = backtest_predictions(predictions, prices, summary['settings']['LABEL_HORIZON'], summary['settings'].get('PORTFOLIO_SETTINGS'))
     saved_returns = pd.read_csv(directory / 'backtest_returns.csv', index_col=0, parse_dates=True).iloc[:, 0]
     pd.testing.assert_index_equal(result.returns.index, saved_returns.index, check_names=False)
     np.testing.assert_allclose(result.returns, saved_returns, rtol=1e-10, atol=1e-12)
@@ -60,16 +63,18 @@ def verify_baseline(directory):
     return check
 
 
-def run_baseline(source, name=None):
+def run_baseline(source, name=None, turnover_control=False):
     import os
     started = time.monotonic()
     source = Path(source).resolve()
     original = read_json(source / 'summary.json')
     if not original or original.get('protocol_version') != 4:
         raise ValueError('A completed protocol-v4 experiment is required.')
-    directory = ROOT / 'runs' / (name or ('statistical-' + source.name))
+    directory = ROOT / 'runs' / (name or (('statistical-buffered-' if turnover_control else 'statistical-') + source.name))
     directory.mkdir(parents=True, exist_ok=False)
     try:
+        provenance = capture_source(ROOT)
+        write_json(directory / 'source_snapshot.json', {**provenance, 'timing': 'experiment start'})
         update_status(directory, 'running', 'training')
         (design, columns), prices = read_source(source, original)
         dates = design.index.get_level_values('date')
@@ -79,13 +84,27 @@ def run_baseline(source, name=None):
                          (dates <= pd.Timestamp(split['validation_end']))].dropna(subset=['target'])
         test = design.loc[dates >= pd.Timestamp(split['test_start'])]
         model = PCARidge().fit(train, val, columns)
+        portfolio_settings = {**LEGACY_PORTFOLIO, **original['settings'].get('PORTFOLIO_SETTINGS', {})}
+        if turnover_control:
+            validation_predictions = pd.DataFrame({'score': model.predict(val), 'vol': val['risk']}, index=val.index)
+            trials = []
+            for buffer in (0, 5, 10, 20):
+                trial = backtest_predictions(validation_predictions, prices, original['settings']['LABEL_HORIZON'],
+                                             {**portfolio_settings, 'HOLD_BUFFER': buffer})
+                trials.append({'buffer': buffer, 'validation_net_return': trial.metrics['total_return'],
+                               'validation_drawdown': trial.metrics['max_drawdown'],
+                               'validation_turnover': sum(t['turnover'] for t in trial.trades)})
+            chosen = max(trials, key=lambda t: (t['validation_net_return'], -t['validation_turnover'], -t['buffer']))
+            portfolio_settings['HOLD_BUFFER'] = chosen['buffer']
+            model.diagnostics['turnover_control'] = {'selected_buffer': chosen['buffer'], 'validation_trials': trials,
+                'selection': 'Highest validation net return; lower turnover and then smaller buffer break ties.'}
         model.save(directory / 'statistical_model.npz')
         write_json(directory / 'model_diagnostics.json', model.diagnostics)
         predictions = pd.DataFrame({'score': model.predict(test), 'vol': test['risk']}, index=test.index)
         predictions.to_csv(directory / 'predictions.csv')
         ic = daily_ic(predictions.join(test['target']))
         ic.to_csv(directory / 'daily_ic.csv')
-        result = backtest_predictions(predictions, prices, original['settings']['LABEL_HORIZON'])
+        result = backtest_predictions(predictions, prices, original['settings']['LABEL_HORIZON'], portfolio_settings)
         result.returns.rename_axis('date').rename('return').to_csv(directory / 'backtest_returns.csv')
         pd.DataFrame(result.trades, columns=['date', 'turnover', 'cost']).to_csv(directory / 'trades.csv', index=False)
         pd.DataFrame(result.positions).to_csv(directory / 'positions.csv', index=False)
@@ -93,20 +112,25 @@ def run_baseline(source, name=None):
             if (source / filename).exists():
                 shutil.copy2(source / filename, directory / filename)
         summary = deepcopy(original)
-        summary.update({'algorithm': 'PCA-ridge + EWMA', 'device': 'cpu', 'gpu': None,
+        summary.update({'algorithm': 'PCA-ridge + EWMA' + (' + holding buffer' if turnover_control else ''), 'device': 'cpu', 'gpu': None,
                         'peak_gpu_memory_mb': None, 'epochs_completed': None, 'best_epoch': None,
                         'best_validation_loss': None, 'feature_count': len(columns), 'feature_columns': columns,
                         'sample_counts': {'train': len(train), 'validation': len(val), 'test': int(test['target'].notna().sum())},
                         'metrics': result.metrics, 'evaluation': {'ic_mean': ic.mean(), 'icir': ic.mean() / ic.std() if ic.std() > 0 else None,
                         'ic_positive_ratio': (ic > 0).mean()}, 'elapsed_seconds': time.monotonic() - started,
                         'source_experiment': source.name, 'model_diagnostics': model.diagnostics,
-                        'notes': ['Same source prices, pool, date splits, embargo and portfolio assumptions as source_experiment.',
+                        'notes': ['Same source prices, pool, splits, embargo, costs and weight cap as source_experiment; an optional rank buffer changes holding selection.',
                                   'Historical feature summaries and EWMA replace the deep model; this is an algorithm comparison, not a pure architecture ablation.',
                                   'The already-inspected test interval is exploratory; confirmation requires fresh unseen dates.']})
         summary['settings']['MODEL_KIND'] = 'pca-ridge'
+        summary['settings']['PORTFOLIO_SETTINGS'] = portfolio_settings
         summary['settings']['DEVICE'] = 'cpu'
-        summary['source_hashes'] = {str(p.relative_to(ROOT)).replace('\\', '/'): file_hash(p)
-                                    for p in [ROOT / 'research/statistical.py', ROOT / 'compare_models.py']}
+        summary['settings']['INPUT_DIM'] = len(columns)
+        summary['settings']['FEATURE_COLS'] = columns
+        summary['base_git_revision'] = provenance['git_revision']
+        summary['source_snapshot_timing'] = 'experiment start'
+        summary['source_working_tree_dirty'] = provenance['working_tree_dirty']
+        summary['source_hashes'] = provenance['source_hashes']
         summary['artifact_hashes'] = {name: file_hash(directory / name) for name in
                                       ['statistical_model.npz', 'predictions.csv', 'backtest_returns.csv', 'stock_pool.csv']}
         write_json(directory / 'summary.json', serializable(summary))
@@ -134,9 +158,10 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('source', help='Completed local protocol-v4 experiment directory')
     parser.add_argument('--name')
+    parser.add_argument('--turnover-control', action='store_true', help='Choose a holding-rank buffer using validation net return only')
     parser.add_argument('--verify', action='store_true', help='Replay an existing statistical experiment')
     args = parser.parse_args()
     if args.verify:
         print(verify_baseline(args.source))
     else:
-        run_baseline(args.source, args.name)
+        run_baseline(args.source, args.name, args.turnover_control)

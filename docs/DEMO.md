@@ -2,6 +2,10 @@
 
 [中文 README](../README.md) · [English README](../README.en.md)
 
+![Real-data pilot comparison](../assets/real-comparison.svg)
+
+真实收益图，与工作台的合成演示分开。Real return curves, separate from synthetic dashboard demos.
+
 ## 无需训练，先体验
 
 ```bash
@@ -17,7 +21,7 @@ python -m streamlit run app.py
 4. 调整日期范围，切换净值、回撤、每日明细。下载 CSV 后，再切换“上传 CSV”验证导入。
 5. 对真实实验打开“结果分析与建议”：查看完整区间的月度表现、等权参考、费用影响、IC 和改进优先级。
 6. 进入“版本对照”，比较同一批次 1/3/5 日结果。尚未完成的版本不会伪造结果。
-7. 安装完整依赖后，可在“开始研究”选择周期并启动自己的实验。
+7. 安装完整依赖后，可在“开始研究”选择周期并启动自己的实验。完成后点击“用本次数据拟合 PCA 岭回归对照”，自动拟合并重放验证。
 
 **分析范围**：顶部日期筛选影响收益指标、净值、回撤和每日明细。训练曲线、IC、分析建议使用完整实验区间，并在页面中明确标注。
 
@@ -33,7 +37,7 @@ Run the commands above, then open http://127.0.0.1:8501 . Saved reports and synt
 4. Filter dates, explore Equity/Drawdown/Daily returns, download a CSV and reimport it with Upload CSV.
 5. For real experiments, open **Analysis & next steps** for monthly comparisons, cost drag, drawdown, IC and research priorities.
 6. Open **Compare versions** for the matched 1/3/5-day batch. Incomplete runs never receive fabricated results.
-7. Install the full requirements to launch your own experiment with a selected horizon.
+7. Install the full requirements to launch your own experiment. Once complete, choose **Fit a PCA-ridge comparison on these data** for automatic fitting and replay.
 
 **Scope**: the date filter affects headline performance, equity, drawdown and daily details. Training, IC and diagnostics use the full saved experiment and are labeled accordingly.
 
@@ -50,3 +54,5 @@ Run the commands above, then open http://127.0.0.1:8501 . Saved reports and synt
 | 页面显示旧内容 / Stale page | 保存文件后刷新；更新依赖或模块后重启 Streamlit。Refresh after edits; restart Streamlit after dependency/module changes. |
 
 原始日志和股票名称保留原文，界面与说明可中英文切换。Raw logs and stock names retain their original language.
+
+图形可由 `python plot_results.py` 从提交的收益文件重新生成，需要 Matplotlib。The chart can be regenerated from committed returns with `python plot_results.py` and Matplotlib.

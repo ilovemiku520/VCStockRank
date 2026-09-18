@@ -1,0 +1,2344 @@
+{
+  "protocol_version": 4,
+  "sampling_plan": {
+    "population": 4992,
+    "confidence": 0.95,
+    "target_margin": 0.05,
+    "planning_proportion": 0.5,
+    "z_statistic": 1.9599639845400536,
+    "required_stocks": 357,
+    "capacity_stocks": 227,
+    "selected_stocks": 227,
+    "planned_margin": 0.063553991903869,
+    "target_met": false,
+    "method": "simple random sampling without replacement; normal-approximation planning",
+    "scope": "Finite stock-pool binary proportion, not model-return confidence or power.",
+    "seed": 42,
+    "frame": "Deduplicated Shanghai/Shenzhen A shares, excluding ST and delisting names."
+  },
+  "data_source": {
+    "source": "BaoStock",
+    "adjustflag": "2",
+    "adjustment": "forward-adjusted",
+    "requested_start": "2023-09-18",
+    "requested_end": "2026-09-17",
+    "stocks": [
+      {
+        "code": "sz.000014",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:52:07.196627"
+      },
+      {
+        "code": "sz.000036",
+        "rows": 727,
+        "cached": true,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-18T22:53:07.467724"
+      },
+      {
+        "code": "sz.000049",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:20:30.834321"
+      },
+      {
+        "code": "sz.000059",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:20:31.652439"
+      },
+      {
+        "code": "sz.000407",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:20:33.527321"
+      },
+      {
+        "code": "sz.000428",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:20:36.387878"
+      },
+      {
+        "code": "sz.000503",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:20:37.653136"
+      },
+      {
+        "code": "sz.000524",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:20:38.701522"
+      },
+      {
+        "code": "sz.000582",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:20:43.838511"
+      },
+      {
+        "code": "sz.000595",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:20:48.436425"
+      },
+      {
+        "code": "sz.000601",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:20:56.935347"
+      },
+      {
+        "code": "sz.000626",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:20:58.470446"
+      },
+      {
+        "code": "sz.000652",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:21:06.900111"
+      },
+      {
+        "code": "sz.000688",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:21:11.326942"
+      },
+      {
+        "code": "sz.000727",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:21:14.375969"
+      },
+      {
+        "code": "sz.000728",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:21:30.424834"
+      },
+      {
+        "code": "sz.000731",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:21:31.735067"
+      },
+      {
+        "code": "sz.000755",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:21:34.425228"
+      },
+      {
+        "code": "sz.000767",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:21:36.255154"
+      },
+      {
+        "code": "sz.000816",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:21:37.508522"
+      },
+      {
+        "code": "sz.000859",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:22:07.543800"
+      },
+      {
+        "code": "sz.001260",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:22:12.677792"
+      },
+      {
+        "code": "sz.001325",
+        "rows": 183,
+        "cached": false,
+        "first_date": "2025-12-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:22:16.148974"
+      },
+      {
+        "code": "sz.001330",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:22:20.158433"
+      },
+      {
+        "code": "sz.001373",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:22:23.409699"
+      },
+      {
+        "code": "sz.001391",
+        "rows": 418,
+        "cached": false,
+        "first_date": "2024-12-30",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:22:24.734922"
+      },
+      {
+        "code": "sz.002051",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:22:27.609977"
+      },
+      {
+        "code": "sz.002058",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:22:29.984326"
+      },
+      {
+        "code": "sz.002086",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:22:32.738836"
+      },
+      {
+        "code": "sz.002101",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:22:34.778428"
+      },
+      {
+        "code": "sz.002131",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:22:35.702886"
+      },
+      {
+        "code": "sz.002133",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:22:41.677104"
+      },
+      {
+        "code": "sz.002140",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:22:43.212395"
+      },
+      {
+        "code": "sz.002181",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:22:46.096967"
+      },
+      {
+        "code": "sz.002187",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:22:48.993642"
+      },
+      {
+        "code": "sz.002188",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:22:50.921512"
+      },
+      {
+        "code": "sz.002195",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:22:52.484826"
+      },
+      {
+        "code": "sz.002205",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:22:55.011359"
+      },
+      {
+        "code": "sz.002232",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:22:56.353558"
+      },
+      {
+        "code": "sz.002242",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:23:00.797953"
+      },
+      {
+        "code": "sz.002245",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:23:02.756406"
+      },
+      {
+        "code": "sz.002252",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:23:06.186602"
+      },
+      {
+        "code": "sz.002269",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:23:08.219410"
+      },
+      {
+        "code": "sz.002274",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:23:13.404752"
+      },
+      {
+        "code": "sz.002301",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:23:20.974605"
+      },
+      {
+        "code": "sz.002333",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:23:22.805042"
+      },
+      {
+        "code": "sz.002338",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:23:27.380503"
+      },
+      {
+        "code": "sz.002362",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:23:28.581054"
+      },
+      {
+        "code": "sz.002416",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:23:29.155719"
+      },
+      {
+        "code": "sz.002470",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:23:30.032204"
+      },
+      {
+        "code": "sz.002495",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:23:38.558965"
+      },
+      {
+        "code": "sz.002571",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:23:43.731152"
+      },
+      {
+        "code": "sz.002579",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:23:47.943434"
+      },
+      {
+        "code": "sz.002614",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:23:52.021731"
+      },
+      {
+        "code": "sz.002616",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:24:02.490994"
+      },
+      {
+        "code": "sz.002623",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:24:05.843137"
+      },
+      {
+        "code": "sz.002627",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:24:07.078412"
+      },
+      {
+        "code": "sz.002659",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:24:08.404790"
+      },
+      {
+        "code": "sz.002671",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:24:08.858152"
+      },
+      {
+        "code": "sz.002672",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:24:09.927526"
+      },
+      {
+        "code": "sz.002697",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:24:16.114503"
+      },
+      {
+        "code": "sz.002712",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:24:23.843602"
+      },
+      {
+        "code": "sz.002736",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:24:24.369295"
+      },
+      {
+        "code": "sz.002806",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:24:25.543606"
+      },
+      {
+        "code": "sz.002821",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:24:26.455072"
+      },
+      {
+        "code": "sz.002867",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:24:30.529683"
+      },
+      {
+        "code": "sz.002876",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:24:32.331435"
+      },
+      {
+        "code": "sz.002889",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:24:34.913921"
+      },
+      {
+        "code": "sz.002900",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:24:36.980709"
+      },
+      {
+        "code": "sz.002912",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:24:42.737979"
+      },
+      {
+        "code": "sz.002961",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:24:45.908120"
+      },
+      {
+        "code": "sz.002989",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:24:50.248577"
+      },
+      {
+        "code": "sz.002991",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:24:52.942555"
+      },
+      {
+        "code": "sz.003000",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:24:54.674712"
+      },
+      {
+        "code": "sz.003038",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:24:55.166959"
+      },
+      {
+        "code": "sz.300031",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:24:56.881953"
+      },
+      {
+        "code": "sz.300154",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:25:02.026744"
+      },
+      {
+        "code": "sz.300177",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:25:03.125101"
+      },
+      {
+        "code": "sz.300215",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:25:06.020404"
+      },
+      {
+        "code": "sz.300223",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:25:10.859627"
+      },
+      {
+        "code": "sz.300234",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:25:11.681731"
+      },
+      {
+        "code": "sz.300248",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:25:13.122886"
+      },
+      {
+        "code": "sz.300263",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:25:14.070332"
+      },
+      {
+        "code": "sz.300279",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:25:21.620390"
+      },
+      {
+        "code": "sz.300316",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:25:27.492470"
+      },
+      {
+        "code": "sz.300370",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:25:28.630518"
+      },
+      {
+        "code": "sz.300384",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:25:29.645659"
+      },
+      {
+        "code": "sz.300398",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:25:30.174584"
+      },
+      {
+        "code": "sz.300399",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:25:31.745061"
+      },
+      {
+        "code": "sz.300400",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:25:36.432865"
+      },
+      {
+        "code": "sz.300405",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:25:39.817222"
+      },
+      {
+        "code": "sz.300406",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:25:47.907458"
+      },
+      {
+        "code": "sz.300411",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:25:50.261187"
+      },
+      {
+        "code": "sz.300450",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:25:55.319222"
+      },
+      {
+        "code": "sz.300479",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:25:55.967735"
+      },
+      {
+        "code": "sz.300539",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:25:57.576791"
+      },
+      {
+        "code": "sz.300542",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:25:59.873692"
+      },
+      {
+        "code": "sz.300611",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:26:03.877197"
+      },
+      {
+        "code": "sz.300620",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:26:43.574841"
+      },
+      {
+        "code": "sz.300640",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:26:48.013348"
+      },
+      {
+        "code": "sz.300647",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:26:52.359797"
+      },
+      {
+        "code": "sz.300692",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:26:57.735690"
+      },
+      {
+        "code": "sz.300694",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:27:00.368164"
+      },
+      {
+        "code": "sz.300708",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:27:01.115732"
+      },
+      {
+        "code": "sz.300713",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:27:06.092792"
+      },
+      {
+        "code": "sz.300738",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:27:12.004696"
+      },
+      {
+        "code": "sz.300757",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:27:13.674351"
+      },
+      {
+        "code": "sz.300771",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:27:16.785533"
+      },
+      {
+        "code": "sz.300773",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:27:19.248091"
+      },
+      {
+        "code": "sz.300802",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:27:24.376927"
+      },
+      {
+        "code": "sz.300808",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:27:27.539527"
+      },
+      {
+        "code": "sz.300810",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:27:28.261350"
+      },
+      {
+        "code": "sz.300842",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:27:29.724826"
+      },
+      {
+        "code": "sz.300856",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:27:31.587625"
+      },
+      {
+        "code": "sz.300858",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:27:33.039688"
+      },
+      {
+        "code": "sz.300875",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:27:37.206934"
+      },
+      {
+        "code": "sz.300876",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:27:39.387657"
+      },
+      {
+        "code": "sz.300880",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:27:42.606867"
+      },
+      {
+        "code": "sz.300884",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:27:45.106387"
+      },
+      {
+        "code": "sz.300906",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:27:46.382696"
+      },
+      {
+        "code": "sz.300960",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:27:51.993408"
+      },
+      {
+        "code": "sz.300961",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:27:54.035775"
+      },
+      {
+        "code": "sz.300979",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:27:55.049181"
+      },
+      {
+        "code": "sz.300982",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:27:57.317643"
+      },
+      {
+        "code": "sz.300998",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:28:02.501251"
+      },
+      {
+        "code": "sz.300999",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:28:05.517863"
+      },
+      {
+        "code": "sz.301039",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:28:07.168879"
+      },
+      {
+        "code": "sz.301073",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:28:08.268011"
+      },
+      {
+        "code": "sz.301110",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:28:10.083929"
+      },
+      {
+        "code": "sz.301123",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:28:11.074370"
+      },
+      {
+        "code": "sz.301202",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:28:15.362861"
+      },
+      {
+        "code": "sz.301206",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:28:17.235580"
+      },
+      {
+        "code": "sz.301356",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:28:17.965151"
+      },
+      {
+        "code": "sz.301377",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:28:18.775684"
+      },
+      {
+        "code": "sz.301393",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:28:26.694614"
+      },
+      {
+        "code": "sz.301419",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:28:30.823703"
+      },
+      {
+        "code": "sz.301500",
+        "rows": 724,
+        "cached": false,
+        "first_date": "2023-09-21",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:28:36.086619"
+      },
+      {
+        "code": "sz.301509",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:28:37.305739"
+      },
+      {
+        "code": "sz.301529",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:28:40.480901"
+      },
+      {
+        "code": "sz.301555",
+        "rows": 702,
+        "cached": false,
+        "first_date": "2023-10-31",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:28:45.065307"
+      },
+      {
+        "code": "sz.301638",
+        "rows": 205,
+        "cached": false,
+        "first_date": "2025-11-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:28:47.034789"
+      },
+      {
+        "code": "sh.600008",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:28:58.893660"
+      },
+      {
+        "code": "sh.600162",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:28:59.709504"
+      },
+      {
+        "code": "sh.600171",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:29:02.602247"
+      },
+      {
+        "code": "sh.600185",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:29:05.810372"
+      },
+      {
+        "code": "sh.600267",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:29:08.069043"
+      },
+      {
+        "code": "sh.600272",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:29:12.393117"
+      },
+      {
+        "code": "sh.600333",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:29:12.849843"
+      },
+      {
+        "code": "sh.600336",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:29:14.189389"
+      },
+      {
+        "code": "sh.600358",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:29:16.191218"
+      },
+      {
+        "code": "sh.600499",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:29:18.654938"
+      },
+      {
+        "code": "sh.600538",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:29:19.372532"
+      },
+      {
+        "code": "sh.600540",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:29:21.818101"
+      },
+      {
+        "code": "sh.600567",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:29:24.730338"
+      },
+      {
+        "code": "sh.600587",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:29:44.676606"
+      },
+      {
+        "code": "sh.600664",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:29:48.247686"
+      },
+      {
+        "code": "sh.600720",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:29:51.224085"
+      },
+      {
+        "code": "sh.600746",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:29:53.935366"
+      },
+      {
+        "code": "sh.600748",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:29:55.494459"
+      },
+      {
+        "code": "sh.600819",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:29:55.986147"
+      },
+      {
+        "code": "sh.600824",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:29:57.393323"
+      },
+      {
+        "code": "sh.600825",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:30:02.646515"
+      },
+      {
+        "code": "sh.600830",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:30:05.113088"
+      },
+      {
+        "code": "sh.600841",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:30:08.454556"
+      },
+      {
+        "code": "sh.600850",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:30:11.057891"
+      },
+      {
+        "code": "sh.600960",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:30:16.282202"
+      },
+      {
+        "code": "sh.600983",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:30:16.771897"
+      },
+      {
+        "code": "sh.601038",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:30:19.087557"
+      },
+      {
+        "code": "sh.601298",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:30:43.926815"
+      },
+      {
+        "code": "sh.601636",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:30:46.942941"
+      },
+      {
+        "code": "sh.601778",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:30:49.580418"
+      },
+      {
+        "code": "sh.603015",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:30:52.237836"
+      },
+      {
+        "code": "sh.603031",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:30:56.656265"
+      },
+      {
+        "code": "sh.603067",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:30:58.218671"
+      },
+      {
+        "code": "sh.603070",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:31:03.188239"
+      },
+      {
+        "code": "sh.603076",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:31:08.650041"
+      },
+      {
+        "code": "sh.603109",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:31:09.561989"
+      },
+      {
+        "code": "sh.603150",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:31:11.154057"
+      },
+      {
+        "code": "sh.603185",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:31:14.721568"
+      },
+      {
+        "code": "sh.603188",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:31:17.996286"
+      },
+      {
+        "code": "sh.603262",
+        "rows": 283,
+        "cached": false,
+        "first_date": "2025-07-23",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:31:18.322070"
+      },
+      {
+        "code": "sh.603266",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:31:20.429934"
+      },
+      {
+        "code": "sh.603313",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:31:22.111806"
+      },
+      {
+        "code": "sh.603326",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:31:33.398927"
+      },
+      {
+        "code": "sh.603366",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:31:35.819063"
+      },
+      {
+        "code": "sh.603386",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:31:40.382510"
+      },
+      {
+        "code": "sh.603391",
+        "rows": 519,
+        "cached": false,
+        "first_date": "2024-07-31",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:31:42.842289"
+      },
+      {
+        "code": "sh.603506",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:31:44.986794"
+      },
+      {
+        "code": "sh.603559",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:31:48.556700"
+      },
+      {
+        "code": "sh.603569",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:31:51.168046"
+      },
+      {
+        "code": "sh.603686",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:31:57.109220"
+      },
+      {
+        "code": "sh.603688",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:32:01.170424"
+      },
+      {
+        "code": "sh.603776",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:32:02.717160"
+      },
+      {
+        "code": "sh.603809",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:32:04.080360"
+      },
+      {
+        "code": "sh.603856",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:32:05.636769"
+      },
+      {
+        "code": "sh.603920",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:32:07.829391"
+      },
+      {
+        "code": "sh.603937",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:32:12.510273"
+      },
+      {
+        "code": "sh.605011",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:32:16.785544"
+      },
+      {
+        "code": "sh.605179",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:32:18.366070"
+      },
+      {
+        "code": "sh.605300",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:32:19.093665"
+      },
+      {
+        "code": "sh.688065",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:32:22.694611"
+      },
+      {
+        "code": "sh.688077",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:32:25.436026"
+      },
+      {
+        "code": "sh.688108",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:32:26.165592"
+      },
+      {
+        "code": "sh.688129",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:32:27.339909"
+      },
+      {
+        "code": "sh.688141",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:32:28.665344"
+      },
+      {
+        "code": "sh.688158",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:32:29.730930"
+      },
+      {
+        "code": "sh.688161",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:32:32.996145"
+      },
+      {
+        "code": "sh.688216",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:32:33.688486"
+      },
+      {
+        "code": "sh.688228",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:32:34.610511"
+      },
+      {
+        "code": "sh.688269",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:32:39.403895"
+      },
+      {
+        "code": "sh.688280",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:32:48.681658"
+      },
+      {
+        "code": "sh.688307",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:32:49.246326"
+      },
+      {
+        "code": "sh.688323",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:32:51.108387"
+      },
+      {
+        "code": "sh.688332",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:32:53.555976"
+      },
+      {
+        "code": "sh.688334",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:32:58.711887"
+      },
+      {
+        "code": "sh.688368",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:33:00.032610"
+      },
+      {
+        "code": "sh.688378",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:33:01.334872"
+      },
+      {
+        "code": "sh.688582",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:33:04.391656"
+      },
+      {
+        "code": "sh.688584",
+        "rows": 631,
+        "cached": false,
+        "first_date": "2024-02-08",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:33:05.163205"
+      },
+      {
+        "code": "sh.688586",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:33:05.690897"
+      },
+      {
+        "code": "sh.688597",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:33:14.320859"
+      },
+      {
+        "code": "sh.688628",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:33:15.123373"
+      },
+      {
+        "code": "sh.688757",
+        "rows": 364,
+        "cached": false,
+        "first_date": "2025-03-25",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:33:44.742959"
+      },
+      {
+        "code": "sh.688795",
+        "rows": 192,
+        "cached": false,
+        "first_date": "2025-12-05",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:33:45.119729"
+      },
+      {
+        "code": "sh.688819",
+        "rows": 727,
+        "cached": false,
+        "first_date": "2023-09-18",
+        "last_date": "2026-09-17",
+        "retrieved_at": "2026-09-19T00:33:49.428120"
+      }
+    ],
+    "failed_stocks": [
+      "sz.001369",
+      "sh.603407"
+    ],
+    "retrieved_at": "2026-09-19T00:20:29.038710"
+  },
+  "data_rows": 160526,
+  "stock_count": 225,
+  "feature_count": 153,
+  "feature_columns": [
+    "pct_chg_last",
+    "rv_20d_last",
+    "rsi_14_last",
+    "ret_5d_last",
+    "ret_20d_last",
+    "ret_10d_last",
+    "ret_excess_20d_last",
+    "price_position_20d_last",
+    "max_drawdown_20d_last",
+    "turnover_ma5_last",
+    "turnover_ratio_last",
+    "amihud_last",
+    "amihud_ma20_last",
+    "volume_ma5_last",
+    "volume_ma20_last",
+    "volume_ratio_last",
+    "money_flow_last",
+    "money_flow_ma5_last",
+    "rsi_28_last",
+    "macd_last",
+    "macd_signal_last",
+    "macd_hist_last",
+    "bb_position_last",
+    "atr_14_last",
+    "atr_ratio_last",
+    "kdj_k_last",
+    "kdj_d_last",
+    "kdj_j_last",
+    "trend_strength_last",
+    "seasonal_strength_last",
+    "residual_strength_last",
+    "trend_change_last",
+    "cycle_ratio_last",
+    "forecast_residual_last",
+    "rv_5d_last",
+    "rv_10d_last",
+    "rv_60d_last",
+    "vol_term_structure_last",
+    "vol_term_slope_last",
+    "vol_change_5d_last",
+    "vol_change_20d_last",
+    "vol_clustering_last",
+    "vol_asymmetry_last",
+    "var_95_last",
+    "cvar_95_last",
+    "hurst_last",
+    "skew_20d_last",
+    "kurt_20d_last",
+    "autocorr_1_last",
+    "autocorr_5_last",
+    "rolling_sharpe_20d_last",
+    "pct_chg_mean",
+    "rv_20d_mean",
+    "rsi_14_mean",
+    "ret_5d_mean",
+    "ret_20d_mean",
+    "ret_10d_mean",
+    "ret_excess_20d_mean",
+    "price_position_20d_mean",
+    "max_drawdown_20d_mean",
+    "turnover_ma5_mean",
+    "turnover_ratio_mean",
+    "amihud_mean",
+    "amihud_ma20_mean",
+    "volume_ma5_mean",
+    "volume_ma20_mean",
+    "volume_ratio_mean",
+    "money_flow_mean",
+    "money_flow_ma5_mean",
+    "rsi_28_mean",
+    "macd_mean",
+    "macd_signal_mean",
+    "macd_hist_mean",
+    "bb_position_mean",
+    "atr_14_mean",
+    "atr_ratio_mean",
+    "kdj_k_mean",
+    "kdj_d_mean",
+    "kdj_j_mean",
+    "trend_strength_mean",
+    "seasonal_strength_mean",
+    "residual_strength_mean",
+    "trend_change_mean",
+    "cycle_ratio_mean",
+    "forecast_residual_mean",
+    "rv_5d_mean",
+    "rv_10d_mean",
+    "rv_60d_mean",
+    "vol_term_structure_mean",
+    "vol_term_slope_mean",
+    "vol_change_5d_mean",
+    "vol_change_20d_mean",
+    "vol_clustering_mean",
+    "vol_asymmetry_mean",
+    "var_95_mean",
+    "cvar_95_mean",
+    "hurst_mean",
+    "skew_20d_mean",
+    "kurt_20d_mean",
+    "autocorr_1_mean",
+    "autocorr_5_mean",
+    "rolling_sharpe_20d_mean",
+    "pct_chg_std",
+    "rv_20d_std",
+    "rsi_14_std",
+    "ret_5d_std",
+    "ret_20d_std",
+    "ret_10d_std",
+    "ret_excess_20d_std",
+    "price_position_20d_std",
+    "max_drawdown_20d_std",
+    "turnover_ma5_std",
+    "turnover_ratio_std",
+    "amihud_std",
+    "amihud_ma20_std",
+    "volume_ma5_std",
+    "volume_ma20_std",
+    "volume_ratio_std",
+    "money_flow_std",
+    "money_flow_ma5_std",
+    "rsi_28_std",
+    "macd_std",
+    "macd_signal_std",
+    "macd_hist_std",
+    "bb_position_std",
+    "atr_14_std",
+    "atr_ratio_std",
+    "kdj_k_std",
+    "kdj_d_std",
+    "kdj_j_std",
+    "trend_strength_std",
+    "seasonal_strength_std",
+    "residual_strength_std",
+    "trend_change_std",
+    "cycle_ratio_std",
+    "forecast_residual_std",
+    "rv_5d_std",
+    "rv_10d_std",
+    "rv_60d_std",
+    "vol_term_structure_std",
+    "vol_term_slope_std",
+    "vol_change_5d_std",
+    "vol_change_20d_std",
+    "vol_clustering_std",
+    "vol_asymmetry_std",
+    "var_95_std",
+    "cvar_95_std",
+    "hurst_std",
+    "skew_20d_std",
+    "kurt_20d_std",
+    "autocorr_1_std",
+    "autocorr_5_std",
+    "rolling_sharpe_20d_std"
+  ],
+  "sample_counts": {
+    "train": 103336,
+    "validation": 23230,
+    "test": 24525
+  },
+  "split": {
+    "train_end": "2025-10-21 00:00:00",
+    "validation_start": "2025-10-29 00:00:00",
+    "validation_end": "2026-04-02 00:00:00",
+    "test_start": "2026-04-13 00:00:00",
+    "embargo_days": 5
+  },
+  "settings": {
+    "BATCH_SIZE": 256,
+    "CACHE_DIR": "cache/market",
+    "CNN_CHANNELS": 32,
+    "CNN_FILTERS": [
+      3,
+      6,
+      12,
+      24
+    ],
+    "CONFIDENCE": 0.95,
+    "CPU_THREADS": 4,
+    "DATA_END": "2026-09-17",
+    "DATA_START": "2023-09-18",
+    "DEVICE": "cpu",
+    "DROPOUT": 0.1,
+    "EPOCHS": 20,
+    "FEATURE_COLS": [
+      "pct_chg_last",
+      "rv_20d_last",
+      "rsi_14_last",
+      "ret_5d_last",
+      "ret_20d_last",
+      "ret_10d_last",
+      "ret_excess_20d_last",
+      "price_position_20d_last",
+      "max_drawdown_20d_last",
+      "turnover_ma5_last",
+      "turnover_ratio_last",
+      "amihud_last",
+      "amihud_ma20_last",
+      "volume_ma5_last",
+      "volume_ma20_last",
+      "volume_ratio_last",
+      "money_flow_last",
+      "money_flow_ma5_last",
+      "rsi_28_last",
+      "macd_last",
+      "macd_signal_last",
+      "macd_hist_last",
+      "bb_position_last",
+      "atr_14_last",
+      "atr_ratio_last",
+      "kdj_k_last",
+      "kdj_d_last",
+      "kdj_j_last",
+      "trend_strength_last",
+      "seasonal_strength_last",
+      "residual_strength_last",
+      "trend_change_last",
+      "cycle_ratio_last",
+      "forecast_residual_last",
+      "rv_5d_last",
+      "rv_10d_last",
+      "rv_60d_last",
+      "vol_term_structure_last",
+      "vol_term_slope_last",
+      "vol_change_5d_last",
+      "vol_change_20d_last",
+      "vol_clustering_last",
+      "vol_asymmetry_last",
+      "var_95_last",
+      "cvar_95_last",
+      "hurst_last",
+      "skew_20d_last",
+      "kurt_20d_last",
+      "autocorr_1_last",
+      "autocorr_5_last",
+      "rolling_sharpe_20d_last",
+      "pct_chg_mean",
+      "rv_20d_mean",
+      "rsi_14_mean",
+      "ret_5d_mean",
+      "ret_20d_mean",
+      "ret_10d_mean",
+      "ret_excess_20d_mean",
+      "price_position_20d_mean",
+      "max_drawdown_20d_mean",
+      "turnover_ma5_mean",
+      "turnover_ratio_mean",
+      "amihud_mean",
+      "amihud_ma20_mean",
+      "volume_ma5_mean",
+      "volume_ma20_mean",
+      "volume_ratio_mean",
+      "money_flow_mean",
+      "money_flow_ma5_mean",
+      "rsi_28_mean",
+      "macd_mean",
+      "macd_signal_mean",
+      "macd_hist_mean",
+      "bb_position_mean",
+      "atr_14_mean",
+      "atr_ratio_mean",
+      "kdj_k_mean",
+      "kdj_d_mean",
+      "kdj_j_mean",
+      "trend_strength_mean",
+      "seasonal_strength_mean",
+      "residual_strength_mean",
+      "trend_change_mean",
+      "cycle_ratio_mean",
+      "forecast_residual_mean",
+      "rv_5d_mean",
+      "rv_10d_mean",
+      "rv_60d_mean",
+      "vol_term_structure_mean",
+      "vol_term_slope_mean",
+      "vol_change_5d_mean",
+      "vol_change_20d_mean",
+      "vol_clustering_mean",
+      "vol_asymmetry_mean",
+      "var_95_mean",
+      "cvar_95_mean",
+      "hurst_mean",
+      "skew_20d_mean",
+      "kurt_20d_mean",
+      "autocorr_1_mean",
+      "autocorr_5_mean",
+      "rolling_sharpe_20d_mean",
+      "pct_chg_std",
+      "rv_20d_std",
+      "rsi_14_std",
+      "ret_5d_std",
+      "ret_20d_std",
+      "ret_10d_std",
+      "ret_excess_20d_std",
+      "price_position_20d_std",
+      "max_drawdown_20d_std",
+      "turnover_ma5_std",
+      "turnover_ratio_std",
+      "amihud_std",
+      "amihud_ma20_std",
+      "volume_ma5_std",
+      "volume_ma20_std",
+      "volume_ratio_std",
+      "money_flow_std",
+      "money_flow_ma5_std",
+      "rsi_28_std",
+      "macd_std",
+      "macd_signal_std",
+      "macd_hist_std",
+      "bb_position_std",
+      "atr_14_std",
+      "atr_ratio_std",
+      "kdj_k_std",
+      "kdj_d_std",
+      "kdj_j_std",
+      "trend_strength_std",
+      "seasonal_strength_std",
+      "residual_strength_std",
+      "trend_change_std",
+      "cycle_ratio_std",
+      "forecast_residual_std",
+      "rv_5d_std",
+      "rv_10d_std",
+      "rv_60d_std",
+      "vol_term_structure_std",
+      "vol_term_slope_std",
+      "vol_change_5d_std",
+      "vol_change_20d_std",
+      "vol_clustering_std",
+      "vol_asymmetry_std",
+      "var_95_std",
+      "cvar_95_std",
+      "hurst_std",
+      "skew_20d_std",
+      "kurt_20d_std",
+      "autocorr_1_std",
+      "autocorr_5_std",
+      "rolling_sharpe_20d_std"
+    ],
+    "HIDDEN_DIM": 64,
+    "INPUT_DIM": 153,
+    "LABEL_HORIZON": 1,
+    "LAMBDA_DECOMP": 0.05,
+    "LAMBDA_VOL": 0.3,
+    "LEARNING_RATE": 0.0005,
+    "MARGIN": 0.05,
+    "MAX_STOCKS": 227,
+    "MIN_TRADING_DAYS": 180,
+    "NUM_HEADS": 4,
+    "NUM_LAYERS": 1,
+    "PATIENCE": 5,
+    "PROTOCOL_VERSION": 4,
+    "REUSE_CHECKPOINT": false,
+    "SAMPLING_METHOD": "random",
+    "SEED": 42,
+    "SEQ_LEN": 30,
+    "TEST_START_DATE": "2026-04-13T00:00:00",
+    "TEST_WINDOW": 10,
+    "TRAIN_RATIO": 0.7,
+    "TRAIN_WINDOW": 720,
+    "VAL_RATIO": 0.15,
+    "VAL_WINDOW": 10,
+    "WEIGHT_DECAY": 0.0001,
+    "MODEL_KIND": "pca-ridge"
+  },
+  "device": "cpu",
+  "gpu": null,
+  "peak_gpu_memory_mb": null,
+  "epochs_completed": null,
+  "best_epoch": null,
+  "best_validation_loss": null,
+  "elapsed_seconds": 23.5,
+  "test_first_return": "2026-04-14 00:00:00",
+  "test_last_return": "2026-09-17 00:00:00",
+  "metrics": {
+    "total_return": -0.0026979591545017723,
+    "annual_return": -0.006226447785341649,
+    "annual_volatility": 0.41089956147036316,
+    "sharpe_ratio": 0.13875379545707198,
+    "max_drawdown": -0.3413209968690379,
+    "calmar_ratio": -0.01824220555564206,
+    "win_rate": 0.4954128440366973,
+    "profit_factor": 1.0319991895343685,
+    "max_consecutive_loss": 8,
+    "max_consecutive_gain": 4,
+    "n_days": 109,
+    "ic": null,
+    "icir": null
+  },
+  "evaluation": {
+    "ic_mean": 0.04111805221272428,
+    "icir": 0.21095569330962183,
+    "ic_positive_ratio": 0.6055045871559633
+  },
+  "benchmark": "Daily equal-weight of the same stock pool, before transaction costs; not CSI 300.",
+  "base_git_revision": "09acd85a00a4fb370521898e3c246ea0c173c308",
+  "environment": {
+    "python": "3.12.14",
+    "torch": "2.8.0+cu126",
+    "numpy": "2.5.2",
+    "pandas": "3.0.5",
+    "scipy": "1.18.1",
+    "baostock": "0.9.3"
+  },
+  "artifact_hashes": {
+    "statistical_model.npz": "ef96ff942be148f5df09fcd5b5cce6b07e7e3e23a9c396184cdacd6618e1ebf2",
+    "predictions.csv": "5b4ad48cb2c4c66307d03dbf62055eceab0568646f01c4cfa046120c7c8c4b5c",
+    "backtest_returns.csv": "e0ec29985a4fc4e7bb0ae3a5005d091e8156a4626c873aa0e8c18bd98b183396",
+    "stock_pool.csv": "0adf470d9bc80bd7bbec400ee0c3419e0f18e61d0a108a9008e0ce416d348382"
+  },
+  "source_hashes": {
+    "config.py": "c3a379e1b5ca93302dc7f37e9700fff91952181eea574575162c1acee1470eb3",
+    "backtest_main.py": "9e5c3c83fa0a9014a73738026e494993dd3e5bb9262023ac2ef333886edd0019",
+    "compare_models.py": "bc6eb5c2fc8d8def54a935376d0b4351cc5a0c342a3770da53aa71edb62189a1",
+    "research/analysis.py": "36c7e11fdacf4c12b104ea8a3883e3d2880952127504e633685d20a0209afe17",
+    "research/checkpoints.py": "db8e89bc23c8dfc2d7300444efdd03c8869ba7a0d42ff67e17620a6239b23e6a",
+    "research/console.py": "7684553e2fb9eab9456da9489b3396beef1248d0b518041e95be9bfa8bc59c80",
+    "research/experiments.py": "36da4c31d782dd5ac688f76f34208e9d3f654f1ca6fc2befc727dfda91a97712",
+    "research/horizons.py": "82ea49760e072507f6b924d658a4ae4763d4d3c7430bd295d34c939b268c25c8",
+    "research/inference.py": "e3f2f2e25df08a9200b09508df971dd3da01d1bef65cc05acb7078675f4bdb0e",
+    "research/pipeline.py": "3be28f042db085a626cb059ec1dd4399c3bb4c0b1cb9a792cbfca2ded38bc3af",
+    "research/provenance.py": "2c392c1f677b6bae555cb5cf5892ffd27afd2fb2403fc5bcc739ce4cf8e44fd5",
+    "research/reporting.py": "7e1aa519f72d50ce63fc714bc4f5b7a5764a9dc8f7b443d0ae8f2fa7d25b9389",
+    "research/runner.py": "f7fd82880cfdfed0de04cc1e487d52a88a3653e0a72fbfabe3615a1f2556285b",
+    "research/runtime.py": "a73ad8d37e3416627e64bb1c53dd2fe74677115f68552a17000b5275124a0e71",
+    "research/sampling.py": "63e34e0f1ef80f122091c6dbc11ffd077d34cb119f01c8fbc1b8828701e293da",
+    "research/statistical.py": "dcd6309ebad261a8b0471a39fcd9e963754ebac1b4b9b5f11b343828a654ccb0",
+    "research/__init__.py": "c2e00f9c962d542187f79f3cd261a06f4b6f49901b590aede83388aac078664e",
+    "data/clean.py": "4d1d055f338a4e074ca3ed8040312c53f56f3899b52a9f62f0d1c38a87fcc67e",
+    "data/download.py": "0e0f6149c1761e5c8e3ca2bec9ffabd242fef99ee3961f37482c9298dbacc421",
+    "data/features.py": "b270f04989eaf29632e29e72983f9d4e181cda27f049584fe933ca93cefe2c77",
+    "data/labels.py": "8a0599c3f3bb49e20f71ad483ff08ef367494f1fa28b9fff4314515e42f67045",
+    "data/__init__.py": "9a0e3b834a48ece7a99bc2f4ef8e1633baec0f792f422b314ef2f1f5f22fbaa0",
+    "training/dataset.py": "9e0ae2043864f00ffd011d50e28e9fa5b5240126c51344ffdd957966745db414",
+    "training/loss.py": "6334d7a858262881fac1a6ef16f7ac25975bcfe1e1846c71311a6c48398df05d",
+    "training/sampling.py": "0a714bbc4e8275ceebb0cad94a76e08b273c6f7212acec0e249d2d399c18a07d",
+    "training/trainer.py": "2e49ec852eca6c3d79f6562786a6eae15aa39b2d5bc06d6214e5e2d9cdebbcbe",
+    "training/__init__.py": "ed4d3273de49e3a8f31403da22964a6218d7d4a31ba020df7f5b07dda1322d6e",
+    "model/decomposition.py": "a9686a544ca4d67d5c017cbdec365a0fa337b984c6357f1230c7bc3711b152aa",
+    "model/multitask.py": "c6ee656049b72a058e1133afdf127cbb87b8d5a8709bc6855350b008a2a43da6",
+    "model/regime_detection.py": "f348dd8307ea3117391d8d38cd7bc5b05be40228a3e7bac29609127955f93491",
+    "model/tpa_module.py": "2663d257f6192c84fbf698a1343928b35b3a0490ea7fdfc4b89427f3b221bf16",
+    "model/vcformer.py": "7e5e3e4502310e889fccf887cc89ad1840d4b5e2bdfa213a1530347cc3d1fde8",
+    "model/__init__.py": "0841857c7ddfa94bb17ba29c24d7d1e03304aec205718df6f8fb0f6b515d69fc",
+    "portfolio/backtest.py": "597d65735abaee3e4053cfc8143c1d3bd47d52b58d7cf76b4895f45854015262",
+    "portfolio/optimizer.py": "3b5d543a3e22c1c25a6cebb59be7225fcce5ef3d1b2527a5abc35e12e57e1046",
+    "portfolio/simulation.py": "14f0178308f2c52128e7a2aee1a0cea3542bf3ea643c301159113c7d74c4ee77",
+    "portfolio/__init__.py": "e23ec300fb40a87d29764231c54f33d67006989d51ebe3334a81b48a97e51d20",
+    "evaluation/attention_vis.py": "eb25ea94cb442b89e2a7bef10f18783553873dc38be801c3b9080c8b78c71e1e",
+    "evaluation/factor_analysis.py": "2371643966716cfbc730fe0d519e88a7295ae6a2d51b85dd92c1c58a4087edff",
+    "evaluation/ff_regression.py": "7bd22fb46b3eb4442f2b8ba9870c0e877a76e61bac6b74945aa607b8d0ff4678",
+    "evaluation/shap_analysis.py": "bc238d699b566e88f4641d8ca3977132e950cfbc269e548ecd26b0b49b4bd0b3",
+    "evaluation/__init__.py": "02e35eb80100bca6f933a35de8c4549959ce777dc61906d085aff0be8293ac51"
+  },
+  "algorithm": "PCA-ridge + EWMA",
+  "source_experiment": "20260919-002021-54513a",
+  "model_diagnostics": {
+    "method": "PCA (95% train variance) + SVD ridge + historical EWMA RMS",
+    "selected_alpha": 1.0,
+    "validation_trials": [
+      {
+        "alpha": 0.0001,
+        "validation_ic": 0.04319501221958766,
+        "validation_mse": 0.000706309437011735
+      },
+      {
+        "alpha": 0.001,
+        "validation_ic": 0.043210455209025396,
+        "validation_mse": 0.0007063086867962874
+      },
+      {
+        "alpha": 0.01,
+        "validation_ic": 0.04338857158034905,
+        "validation_mse": 0.0007063015744290133
+      },
+      {
+        "alpha": 0.1,
+        "validation_ic": 0.04516057443104008,
+        "validation_mse": 0.0007062584755946542
+      },
+      {
+        "alpha": 1.0,
+        "validation_ic": 0.05219887829624809,
+        "validation_mse": 0.0007063217493505371
+      }
+    ],
+    "selection": "Highest validation mean daily Spearman IC; MSE breaks ties.",
+    "input_features": 153,
+    "components": 62,
+    "explained_variance_ratio": 0.9502661770246957,
+    "retained_condition_number": 10.783071319015619,
+    "effective_degrees_of_freedom": 30.896972506283877,
+    "ewma_half_life": 10,
+    "refit_on_validation": false
+  },
+  "notes": [
+    "Same source prices, pool, splits, embargo, costs and weight cap as source_experiment; the buffered variant changes holding selection.",
+    "Historical feature summaries and EWMA replace the deep model; this is an algorithm comparison, not a pure architecture ablation.",
+    "The already-inspected test interval is exploratory; confirmation requires fresh unseen dates."
+  ],
+  "source_snapshot_timing": "experiment start",
+  "source_working_tree_dirty": true,
+  "published_artifacts_note": "Local input/checkpoint hashes refer to the actual local run. downloaded_stock_pool.csv lists successfully downloaded stocks; sampled_stock_pool.csv, when present, retains the random draw including missing histories. Market bars, factors and checkpoints remain local.",
+  "limitations": [
+    "Current-universe and as-of-download adjustment biases are not removed by random sampling.",
+    "Research execution omits suspension, price-limit and tax constraints.",
+    "Single seed and reused test dates: exploratory, not independent confirmation."
+  ]
+}

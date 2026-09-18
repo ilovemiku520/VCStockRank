@@ -2,6 +2,7 @@
 """Standalone research entry point."""
 
 import os
+from pathlib import Path
 import numpy as np
 import pandas as pd
 import torch
@@ -13,6 +14,8 @@ from config import ModelConfig, PortfolioConfig
 from research.horizons import portfolio_for
 from research.inference import predict_panel
 from research.runtime import configure_runtime
+from research.checkpoints import restore_config
+from research.experiments import read_json
 from model.multitask import MultiTaskVCformerTPA
 from portfolio.backtest import Backtester
 from evaluation.factor_analysis import FactorAnalyzer
@@ -30,13 +33,8 @@ def load_model_and_data(model_path='logs/best_model.pt', factor_path='data/facto
     checkpoint = torch.load(model_path, map_location=config.DEVICE, weights_only=False)
     if checkpoint.get('protocol_version') not in (3, 4):
         raise ValueError("checkpoint 来自旧评估协议，请先运行 main.py 重新训练")
-    saved_config = checkpoint['config']
-    for key in dir(saved_config):
-        if key.isupper() and key != 'DEVICE':
-            setattr(config, key, getattr(saved_config, key))
-    config.FEATURE_COLS = checkpoint.get('feature_cols')
-    if not config.FEATURE_COLS:
-        raise ValueError('Checkpoint is missing its feature schema; retrain the model.')
+    summary_path = Path(factor_path).resolve().parent.parent / 'summary.json'
+    restore_config(config, checkpoint, read_json(summary_path, {}).get('settings'))
     configure_runtime(config)
 
     model = MultiTaskVCformerTPA(config)
@@ -122,7 +120,7 @@ def run_backtest_and_evaluate(predictions, price_data, factors, portfolio_config
         ic_mean = ic_std = icir = ic_positive_ratio = np.nan
         print("    ⚠ IC 分析失败：无有效数据")
 
-    print("  计算分层收益（基于未来 5 日超额收益）...")
+    print(f"  计算分层收益（基于未来 {horizon} 日超额收益）...")
     if not temp_factors.empty:
         try:
             decile_returns, long_short = fa.compute_decile_returns(

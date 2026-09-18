@@ -28,3 +28,5 @@ python run_experiment.py --start 2023-09-18 --end 2026-09-17 --stocks 25 --sampl
 ```
 
 Sources: [Penn State — sample-size planning](https://online.stat.psu.edu/stat506/Lesson02), [finite-population sampling](https://online.stat.psu.edu/stat506/Lesson01), [NIST — proportion intervals and approximation limitations](https://www.itl.nist.gov/div898/handbook/prc/section2/prc241.htm).
+
+本次扩展实跑已完成：抽取 227 只，225 只有足够历史，160,526 条行情。两只不足样本未被替换，完整记录见 [扩展实验](../reports/20260919-002021-54513a/summary.json)。The expanded run is complete; missing histories remain disclosed rather than silently replaced.

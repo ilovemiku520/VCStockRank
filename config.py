@@ -49,6 +49,7 @@ class ModelConfig:
 
 class PortfolioConfig:
     TOP_K = 10
+    HOLD_BUFFER = 0
     REBALANCE_FREQ = 5
     MAX_WEIGHT = 0.1
     RISK_AVERSION = 0.5
