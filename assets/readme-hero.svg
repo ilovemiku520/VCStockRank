@@ -1,0 +1,17 @@
+<!-- 关注初音未来谢谢喵，ilovemiku520 | Please follow Hatsune Miku, thank you, meow. ilovemiku520 -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 320" role="img" aria-labelledby="title desc">
+<title id="title">VCStockRank — A-share ranking research workbench</title>
+<desc id="desc">A navy and mint project banner with an abstract data, model, and replay diagram. The artwork does not represent investment performance.</desc>
+<defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#0c1424"/><stop offset="1" stop-color="#173d46"/></linearGradient><pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#c2f4ec" stroke-opacity=".045"/></pattern></defs>
+<rect width="1200" height="320" rx="20" fill="url(#bg)"/><rect width="1200" height="320" rx="20" fill="url(#grid)"/>
+<path d="M740 0 600 320H1200V0Z" fill="#030f19" opacity=".16"/>
+<g font-family="Segoe UI,Arial,sans-serif"><text x="54" y="66" fill="#6edbc9" font-size="13" letter-spacing="3.6">RESEARCH WORKBENCH</text>
+<text x="50" y="151" fill="#f0f7fc" font-size="70" font-weight="750" letter-spacing="-3">VCStockRank</text>
+<text x="55" y="194" fill="#aec3d4" font-size="19">A-share ranking. Model comparison. Replayable evidence.</text>
+<g font-size="12" font-weight="600" letter-spacing="1"><rect x="54" y="237" width="127" height="30" rx="15" fill="#6edbc9" fill-opacity=".12"/><text x="72" y="257" fill="#96eee0">1 / 3 / 5 DAYS</text><rect x="193" y="237" width="162" height="30" rx="15" fill="#a8bed7" fill-opacity=".10"/><text x="211" y="257" fill="#ccdce9">DEEP + STATISTICAL</text><rect x="367" y="237" width="122" height="30" rx="15" fill="#a8bed7" fill-opacity=".10"/><text x="388" y="257" fill="#ccdce9">ZH / EN UI</text></g>
+<g transform="translate(734 62)"><rect width="410" height="205" rx="18" fill="#0b1c2b" stroke="#365363"/>
+<circle cx="22" cy="21" r="4" fill="#65dbc6"/><circle cx="38" cy="21" r="4" fill="#d5b77e"/><circle cx="54" cy="21" r="4" fill="#607d93"/><path d="M0 43H410" stroke="#253e50"/>
+<g fill="none" stroke="#547286"><path d="M113 122H159M251 122H297"/><path d="m151 116 8 6-8 6m138-12 8 6-8 6"/></g>
+<g transform="translate(23 74)"><rect width="90" height="95" rx="12" fill="#122d3a"/><g fill="#6edbc9"><rect x="20" y="22" width="11" height="11" rx="2"/><rect x="39" y="22" width="11" height="11" rx="2"/><rect x="58" y="22" width="11" height="11" rx="2"/><rect x="20" y="41" width="11" height="11" rx="2"/><rect x="39" y="41" width="11" height="11" rx="2"/><rect x="58" y="41" width="11" height="11" rx="2"/></g><text x="45" y="78" text-anchor="middle" fill="#c7d9e7" font-size="11" letter-spacing="1">DATA</text></g>
+<g transform="translate(159 74)"><rect width="92" height="95" rx="12" fill="#173141"/><path d="m23 27 23-9 24 15-24 19-23-25 47 6M46 18V52" fill="none" stroke="#829fd0" stroke-width="1.5"/><g fill="#a6c4f1"><circle cx="23" cy="27" r="4"/><circle cx="46" cy="18" r="4"/><circle cx="70" cy="33" r="4"/><circle cx="46" cy="52" r="4"/></g><text x="46" y="78" text-anchor="middle" fill="#c7d9e7" font-size="11" letter-spacing="1">MODELS</text></g>
+<g transform="translate(297 74)"><rect width="90" height="95" rx="12" fill="#17313a"/><path d="M64 33a21 21 0 1 0-2 19M64 19V33H50" stroke="#dcc085" stroke-width="3" fill="none"/><path d="m41 26 15 9-15 9Z" fill="#dcc085"/><text x="45" y="78" text-anchor="middle" fill="#c7d9e7" font-size="11" letter-spacing="1">REPLAY</text></g></g></g></svg>
