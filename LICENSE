@@ -14,10 +14,8 @@ non-commercial or commercial purposes, without prior written permission from
 the applicable copyright holder. This includes use in AI training, fine-tuning,
 datasets and AI-assisted workflows to the extent permission is required by law.
 
-Public availability, access to source code, technical instructions, and a GitHub
-Star or Fork do not grant an additional license. This notice supersedes prior
-repository notices that suggested starring the repository was sufficient
-permission for the version to which this notice applies.
+Public availability, access to source code and technical instructions do not
+grant a license to use the covered material.
 
 Third-party software, dependencies, models, assets and third-party contributions
 remain subject to their respective licenses and rights. Their copyright and
@@ -46,9 +44,7 @@ CLAIMS, DAMAGES OR OTHER LIABILITY ARISING FROM THE MATERIAL OR ITS USE.
 教学、研究、非商业还是商业目的。在依法需要许可的范围内，AI 训练、微调、
 数据集及 AI 辅助工作流程中的使用同样需要事先书面许可。
 
-公开仓库、可访问源码、技术操作说明以及 Star 或 Fork 均不构成额外使用授权。
-对于适用本声明的版本，本声明取代此前可能使人认为“收藏即可获得使用许可”
-的仓库声明。
+公开仓库、可访问源码以及技术操作说明均不构成使用上述内容的授权。
 
 第三方软件、依赖、模型、素材及第三方贡献仍适用其各自的许可与权利声明，
 应保留相应版权和许可信息。本声明不主张取得他人的权利，也不重新许可他人
