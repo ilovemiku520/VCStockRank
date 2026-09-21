@@ -1,21 +1,64 @@
-MIT License
+All Rights Reserved / 保留所有权利
 
-Copyright (c) 2026 ilovemiku520
+Copyright (c) 2026 ilovemiku520.
+All rights reserved.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+This notice applies to the original code, documentation, designs and other
+copyrightable material in this repository to the extent that ilovemiku520
+owns the rights or is authorized to set the terms for that material.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+No license or permission is granted to use, run, copy, modify, create derivative
+works of, publish, distribute, sublicense, sell or otherwise exploit the covered
+material, for any purpose, including personal, educational, research,
+non-commercial or commercial purposes, without prior written permission from
+the applicable copyright holder. This includes use in AI training, fine-tuning,
+datasets and AI-assisted workflows to the extent permission is required by law.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+Public availability, access to source code, technical instructions, and a GitHub
+Star or Fork do not grant an additional license. This notice supersedes prior
+repository notices that suggested starring the repository was sufficient
+permission for the version to which this notice applies.
+
+Third-party software, dependencies, models, assets and third-party contributions
+remain subject to their respective licenses and rights. Their copyright and
+license notices must be preserved. This notice does not claim ownership of, or
+relicense, material controlled by others.
+
+This notice takes effect with the commit introducing it. It does not revoke
+licenses or permissions already granted for previously released versions or
+copies. It does not limit rights that cannot be restricted under applicable law,
+or rights granted under GitHub's Terms of Service, including viewing and
+forking public repositories within GitHub.
+
+Permission requests: ilovemiku520@outlook.com
+
+TO THE EXTENT PERMITTED BY LAW, THE MATERIAL IS PROVIDED "AS IS", WITHOUT
+WARRANTIES OF ANY KIND, AND THE COPYRIGHT HOLDERS SHALL NOT BE LIABLE FOR
+CLAIMS, DAMAGES OR OTHER LIABILITY ARISING FROM THE MATERIAL OR ITS USE.
+
+中文说明
+
+本声明适用于本仓库中由 ilovemiku520 享有权利或有权决定授权条款的原创代码、
+文档、设计及其他受著作权保护的内容，保留所有权利。
+
+未经相应著作权人事先书面许可，不授予任何使用、运行、复制、修改、创作衍生
+作品、发表、分发、再许可、销售或其他利用上述内容的权利，无论用于个人、
+教学、研究、非商业还是商业目的。在依法需要许可的范围内，AI 训练、微调、
+数据集及 AI 辅助工作流程中的使用同样需要事先书面许可。
+
+公开仓库、可访问源码、技术操作说明以及 Star 或 Fork 均不构成额外使用授权。
+对于适用本声明的版本，本声明取代此前可能使人认为“收藏即可获得使用许可”
+的仓库声明。
+
+第三方软件、依赖、模型、素材及第三方贡献仍适用其各自的许可与权利声明，
+应保留相应版权和许可信息。本声明不主张取得他人的权利，也不重新许可他人
+拥有的内容。
+
+本声明自引入它的提交起适用，不撤销此前已对历史版本或副本授予的许可，
+不限制适用法律规定不得排除的权利，也不限制 GitHub 服务条款已授予的权利，
+包括在 GitHub 平台内查看和 Fork 公开仓库。
+
+书面授权联系：ilovemiku520@outlook.com
+
+在法律允许的范围内，内容按现状提供，不作任何保证；著作权人不承担因内容
+或其使用产生的索赔、损害或其他责任。

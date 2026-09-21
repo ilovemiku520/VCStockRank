@@ -6,7 +6,7 @@
   <a href="#quick-start"><img src="https://img.shields.io/badge/Python-3.11%20%7C%203.12-3776AB?style=flat-square&amp;logo=python&amp;logoColor=white" alt="Python 3.11 or 3.12"></a>
   <a href="#methods"><img src="https://img.shields.io/badge/PyTorch-GPU%20ready-EE4C2C?style=flat-square&amp;logo=pytorch&amp;logoColor=white" alt="PyTorch with optional GPU acceleration"></a>
   <a href="#overview"><img src="https://img.shields.io/badge/UI-Streamlit-FF4B4B?style=flat-square&amp;logo=streamlit&amp;logoColor=white" alt="Streamlit interface"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-4c9579?style=flat-square" alt="MIT license"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-All%20Rights%20Reserved-4c9579?style=flat-square" alt="All rights reserved"></a>
   <a href="https://github.com/ilovemiku520/VCStockRank/stargazers"><img src="https://img.shields.io/github/stars/ilovemiku520/VCStockRank?style=flat-square&amp;color=d0ac60" alt="GitHub stars"></a>
 </p>
 
@@ -191,7 +191,7 @@ python -m pytest -q
 
 Current-universe and as-of-download adjustment biases remain; random sampling does not remove them. Simulations omit limit-up/down execution, suspension constraints, tax differences and real execution latency. Independent multi-window, multi-seed confirmation is not complete. This is an auditable research prototype, not a live-trading system or a return promise.
 
-[MIT License](LICENSE) · [@ilovemiku520](https://github.com/ilovemiku520)
+[All Rights Reserved](LICENSE) · [@ilovemiku520](https://github.com/ilovemiku520)
 
 <a id="usage-notice"></a>
 ## Usage and author
@@ -199,22 +199,22 @@ Current-universe and as-of-download adjustment biases remain; random sampling do
 <details>
 <summary><strong>Complete usage and AI-use notice / 完整中英文声明</strong></summary>
 
-<!-- BEGIN MIKU STAR NOTICE -->
-## 使用与 AI 使用声明 / Usage and AI Usage Notice
+<!-- BEGIN RIGHTS NOTICE -->
+## 版权与使用限制 / Copyright and use restrictions
 
-**使用、借鉴或学习本项目之前，均需先收藏（Star）本项目；AI 使用、借鉴与学习同样适用。**
+**保留所有权利。未经著作权人事先书面许可，不得使用、运行、复制、修改或分发本项目受保护的原创内容，包括个人、学习、研究、非商业和商业用途，以及依法需要许可的 AI 使用。Star 不构成授权。**
 
-任何个人、组织在使用、复制、修改、引用、参考、借鉴或学习本项目的代码、文档、设计及其他内容之前，均需先在 GitHub 收藏（Star）本项目。通过 AI 助手、AI 工具、自动化代理或模型使用、读取、分析、参考或学习本项目，以及将本项目内容提供给 AI 使用或学习，同样需要先收藏；请由相应使用者或操作者完成收藏。
+**All rights reserved. Prior written permission is required to use, run, copy, modify or distribute the project's protected original material, including personal, educational, research, non-commercial and commercial use, and AI use where permission is required by law. A GitHub Star does not grant permission.**
 
-**You must star this repository before using, referencing, taking inspiration from, or learning from this project. The same requirement applies to AI use, reference, and learning.**
+完整条款见 [LICENSE](LICENSE)。第三方内容仍适用其各自许可；此前已授予的许可、法定权利及 GitHub 平台条款项下权利不受影响。本文中的安装、运行及开发说明仅为技术说明，不构成使用授权。
 
-Individuals and organizations must first star this repository on GitHub before using, copying, modifying, citing, referencing, taking inspiration from, or learning from its code, documentation, designs, or other content. This also applies to using AI assistants, AI tools, automated agents, or models to use, read, analyze, reference, or learn from this project, and to providing project content to AI for use or learning. The relevant user or operator is responsible for starring the repository.
+See [LICENSE](LICENSE) for the full terms. Third-party licenses, previously granted permissions, statutory rights and rights under GitHub's Terms of Service remain unaffected. Setup, usage and development instructions are technical documentation, not permission to use the material.
 
-**收藏地址 / Star this repository:** [ilovemiku520/VCStockRank](https://github.com/ilovemiku520/VCStockRank)
+书面授权 / Permission requests: [ilovemiku520@outlook.com](mailto:ilovemiku520@outlook.com)
 
 关注初音未来谢谢喵，ilovemiku520  
 Please follow Hatsune Miku, thank you, meow. ilovemiku520
-<!-- END MIKU STAR NOTICE -->
+<!-- END RIGHTS NOTICE -->
 
 </details>
 
