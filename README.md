@@ -13,7 +13,7 @@
 <p align="center"><strong>简体中文</strong> | <a href="README.en.md">English</a></p>
 <p align="center"><a href="#overview">工作台</a> · <a href="#quick-start">快速开始</a> · <a href="#results">真实结果</a> · <a href="#methods">模型方法</a> · <a href="#documentation">文档导航</a></p>
 
-> **使用须经书面许可：** 保留所有权利；Star 不构成授权。完整条款见 [LICENSE](LICENSE)。
+> **使用须经书面许可：** 保留所有权利。完整条款见 [LICENSE](LICENSE)。
 
 <a id="overview"></a>
 ## 从行情到结果，一处看清研究过程
@@ -202,9 +202,9 @@ python -m pytest -q
 <!-- BEGIN RIGHTS NOTICE -->
 ## 版权与使用限制 / Copyright and use restrictions
 
-**保留所有权利。未经著作权人事先书面许可，不得使用、运行、复制、修改或分发本项目受保护的原创内容，包括个人、学习、研究、非商业和商业用途，以及依法需要许可的 AI 使用。Star 不构成授权。**
+**保留所有权利。未经著作权人事先书面许可，不得使用、运行、复制、修改或分发本项目受保护的原创内容，包括个人、学习、研究、非商业和商业用途，以及依法需要许可的 AI 使用。**
 
-**All rights reserved. Prior written permission is required to use, run, copy, modify or distribute the project's protected original material, including personal, educational, research, non-commercial and commercial use, and AI use where permission is required by law. A GitHub Star does not grant permission.**
+**All rights reserved. Prior written permission is required to use, run, copy, modify or distribute the project's protected original material, including personal, educational, research, non-commercial and commercial use, and AI use where permission is required by law.**
 
 完整条款见 [LICENSE](LICENSE)。第三方内容仍适用其各自许可；此前已授予的许可、法定权利及 GitHub 平台条款项下权利不受影响。本文中的安装、运行及开发说明仅为技术说明，不构成使用授权。
 
