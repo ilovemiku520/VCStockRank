@@ -1,6 +1,7 @@
 <p align="center"><img src="assets/readme-hero.svg" alt="VCStockRank — A-share ranking research workbench" width="100%"></p>
 
-<p align="center"><strong>Real market data · Deep and statistical models · Replayable backtests</strong></p>
+<h1 align="center">VCStockRank</h1>
+<p align="center">A research workbench for cross-sectional A-share ranking. Compare a neural model with a PCA-ridge baseline on the same stock universe and backtest protocol, then inspect turnover costs, net returns, and drawdown.</p>
 
 <p align="center">
   <a href="#quick-start"><img src="https://img.shields.io/badge/Python-3.11%20%7C%203.12-3776AB?style=flat-square&amp;logo=python&amp;logoColor=white" alt="Python 3.11 or 3.12"></a>
@@ -13,17 +14,14 @@
 <p align="center"><a href="README.md">简体中文</a> | <strong>English</strong></p>
 <p align="center"><a href="#overview">Overview</a> · <a href="#quick-start">Quick start</a> · <a href="#results">Results</a> · <a href="#methods">Methods</a> · <a href="#documentation">Documentation</a></p>
 
-> **Star first:** before using, referencing, or learning from this project—including AI use and learning—star this repository. [Full notice](#usage-notice).
+> **All rights reserved.** Prior written permission is required to use the project’s protected original material. See [LICENSE](LICENSE) for the full terms.
 
 <a id="overview"></a>
-## A workbench for inspectable research
+## Explore the workbench
 
-VCStockRank is an A-share cross-sectional ranking research prototype. Compare GPU deep models with PCA-ridge baselines, inspect risk and trading costs, and replay saved experiments in a bilingual workbench.
-
-| Model comparison | Inspectable evidence | Interactive analysis |
-|---|---|---|
-| Deep ranking + PCA-ridge / EWMA | Saved settings, reports and replay checks | Equity, drawdown, IC and cost analysis |
-| Matched 1 / 3 / 5-day horizons | Seeded sampling and time-based splits | Real reports, CSV import and labeled demos |
+- **Open a saved experiment.** Inspect equity, drawdown, information coefficients (IC), and cost drag for 1-, 3-, and 5-trading-day horizons in Streamlit, or upload your own returns CSV. [Quick start](#quick-start)
+- **Inspect the evidence.** Review the 225-stock expanded study and the 25-stock pilot, with links to their saved reports. [Experiment results](#results)
+- **Train or replay a run.** Use VCformer-TPA or PCA-ridge and retain the settings and evidence for seeded sampling, time-based splits, and backtests. [Models and reproducibility](#methods)
 
 ![Actual English workbench: saved 25-stock PCA-ridge pilot report](assets/workbench-en.jpg)
 
@@ -44,7 +42,7 @@ python -m venv .venv
 
 | Activate the environment | Command |
 |---|---|
-| Windows PowerShell | `.venv\Scripts\Activate.ps1` |
+| Windows PowerShell | `.\.venv\Scripts\Activate.ps1` |
 | macOS / Linux | `source .venv/bin/activate` |
 
 ```bash
