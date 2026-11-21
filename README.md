@@ -1,6 +1,7 @@
 <p align="center"><img src="assets/readme-hero.svg" alt="VCStockRank — A-share ranking research workbench" width="100%"></p>
 
-<p align="center"><strong>真实行情 · 深度模型与统计基线 · 可重放的回测证据</strong></p>
+<h1 align="center">VCStockRank</h1>
+<p align="center">A 股横截面排序研究工作台。用同一股票池与回测协议，对比神经网络和 PCA 岭回归，检查换手成本、净收益和回撤。</p>
 
 <p align="center">
   <a href="#quick-start"><img src="https://img.shields.io/badge/Python-3.11%20%7C%203.12-3776AB?style=flat-square&amp;logo=python&amp;logoColor=white" alt="Python 3.11 or 3.12"></a>
@@ -13,17 +14,14 @@
 <p align="center"><strong>简体中文</strong> | <a href="README.en.md">English</a></p>
 <p align="center"><a href="#overview">工作台</a> · <a href="#quick-start">快速开始</a> · <a href="#results">真实结果</a> · <a href="#methods">模型方法</a> · <a href="#documentation">文档导航</a></p>
 
-> **使用须经书面许可：** 保留所有权利。完整条款见 [LICENSE](LICENSE)。
+> **保留所有权利。** 使用本项目受保护的原创内容须事先取得书面许可。完整条款见 [LICENSE](LICENSE)。
 
 <a id="overview"></a>
-## 从行情到结果，一处看清研究过程
+## 选择研究入口
 
-VCStockRank 是面向 A 股横截面排序的研究原型。把 GPU 深度模型、PCA 岭回归基线、风险与交易成本、实验复现放进同一个中英文工作台。
-
-| 模型对照 | 证据与复现 | 交互分析 |
-|---|---|---|
-| 深度排序 + PCA 岭回归 / EWMA | 保存设置、报告与重放核对 | 净值、回撤、IC 与费用分析 |
-| 对照 1 / 3 / 5 日周期 | 固定种子抽样与时间切分 | 真实报告、CSV 导入与明确标注的演示 |
+- **浏览已保存的实验**。在 Streamlit 工作台查看 1、3、5 个交易日的净值、回撤、信息系数（IC）和费用拖累，也可上传自己的收益 CSV。[快速开始](#quick-start)
+- **核对结果和证据**。对照 225 股扩样实验与 25 股试点，打开每次实验附带的报告。[实验结果](#results)
+- **训练或重放**。使用 VCformer-TPA 或 PCA 岭回归，从固定种子抽样、按时间切分到回测，保留配置和证据。[模型与复现](#methods)
 
 ![实际工作台：已保存的 25 股 PCA 岭回归试点报告](assets/workbench-zh.jpg)
 
@@ -44,7 +42,7 @@ python -m venv .venv
 
 | 激活虚拟环境 | 命令 |
 |---|---|
-| Windows PowerShell | `.venv\Scripts\Activate.ps1` |
+| Windows PowerShell | `.\.venv\Scripts\Activate.ps1` |
 | macOS / Linux | `source .venv/bin/activate` |
 
 ```bash
